@@ -84,7 +84,7 @@
 
     //BlogPara.java
     @Data
-    public class BlogPara implements JsonBeanValidate<BlogPara> {
+    public class BlogPara implements JsonBeanValidate {
     
         private String code;
     
@@ -97,10 +97,6 @@
         @NotBlank(message="4003")
         private String content;
     
-        @Override
-        public Class<BlogPara> reqType() {
-            return BlogPara.class;
-        }
     }
     //调用方式
 	@Inject
@@ -120,7 +116,7 @@
     public class BlogController extends JsonController {
         @Before(BlogPara.class)
         public void json() {
-            BlogPara jsonBean = getJsonBean(BlogPara.class);
+            BlogPara jsonBean = getJsonBean();
             jsonBean.setCode("200");
             renderJson(jsonBean);
         }
