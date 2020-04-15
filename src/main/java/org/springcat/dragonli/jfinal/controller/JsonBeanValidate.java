@@ -10,17 +10,16 @@ import org.springcat.dragonli.validate.ValidateException;
 import org.springcat.dragonli.validate.ValidationUtil;
 
 
-public interface JsonBeanValidate<T> extends Interceptor {
+public interface JsonBeanValidate extends Interceptor {
 
-    abstract Class<T> reqType() ;
 
-    default void otherValidate(T obj) throws ValidateException {}
+    default void otherValidate(Object obj) throws ValidateException {}
 
     default void intercept(Invocation invocation) {
         Controller controller = invocation.getController();
         String rawData = controller.getRawData();
         try {
-            T jsonBean = JsonKit.parse(rawData, reqType());
+            Object jsonBean = JsonKit.parse(rawData, getClass());
 
             //自定义验证
             try {

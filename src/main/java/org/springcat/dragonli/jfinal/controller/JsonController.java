@@ -5,11 +5,11 @@ import com.jfinal.kit.JsonKit;
 
 public abstract class JsonController extends Controller {
 
-    public <T> T getJsonBean(Class<T> beanClass) {
-        T jsonBean = getAttr("$jsonBean");
+    public <T> T getJsonBean() {
+        T jsonBean = getAttr("$jsonbean");
         if(jsonBean != null){
-            return  jsonBean;
+            return jsonBean;
         }
-        return JsonKit.parse(getRawData(), beanClass);
+        return (T) JsonKit.parse(getRawData(), jsonBean.getClass());
     }
 }
