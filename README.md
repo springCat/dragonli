@@ -7,7 +7,7 @@
 
 ### 设计思想及原理
 
-*  类似spring cloud和dubbo,微服务基本套路,rpc通信方式为http+json
+*  类似spring cloud和dubbo,微服务基本套路,rpc通信方式为http+json,如果不想要这种客户端负载均衡策略方式,也可以用fabio,或者nginx+三方插件这种方式从consul拉取服务,配置路由策略,来实现服务器端的负均衡和跨语言
 
 
 ### dragonli目前实现的功能：
@@ -84,7 +84,7 @@
 
     //BlogPara.java
     @Data
-    public class BlogPara implements JsonBeanValidate<BlogPara> {
+    public class BlogPara implements JsonBeanValidate {
     
         private String code;
     
@@ -97,10 +97,6 @@
         @NotBlank(message="4003")
         private String content;
     
-        @Override
-        public Class<BlogPara> reqType() {
-            return BlogPara.class;
-        }
     }
     //调用方式
 	@Inject
@@ -120,7 +116,7 @@
     public class BlogController extends JsonController {
         @Before(BlogPara.class)
         public void json() {
-            BlogPara jsonBean = getJsonBean(BlogPara.class);
+            BlogPara jsonBean = getJsonBean();
             jsonBean.setCode("200");
             renderJson(jsonBean);
         }
