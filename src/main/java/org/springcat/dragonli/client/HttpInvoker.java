@@ -23,8 +23,6 @@ public class HttpInvoker {
 
     public static Object invoke(RpcRequest request, Class<?> responseType) throws RpcException{
         try {
-
-
                 String serviceName = request.getServiceName();
                 Map<String,String> header = request.getHeader();
 
