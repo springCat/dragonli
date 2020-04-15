@@ -1,6 +1,7 @@
 package org.springcat.dragonli.registry;
 
 import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -25,9 +26,4 @@ public class AppInfo {
 
     private List<String> appTags;
 
-
-    public String getDefaultIp(){
-        InetAddress localhost = NetUtil.getLocalhost();
-        return localhost.getHostAddress();
-    }
 }

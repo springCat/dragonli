@@ -1,30 +1,28 @@
 package org.springcat.dragonli.jfinal;
 
-import com.jfinal.aop.Interceptor;
-import com.jfinal.aop.Invocation;
+import cn.hutool.core.util.StrUtil;
 import com.jfinal.config.*;
+import com.jfinal.kit.Prop;
 import com.jfinal.template.Engine;
-import org.springcat.dragonli.consul.ConsulUtil;
 import org.springcat.dragonli.context.Context;
-import org.springcat.dragonli.jfinal.plugin.ConsulRegistryPlugin;
+import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
 import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
 import org.springcat.dragonli.registry.AppInfo;
-
-import java.util.Arrays;
 
 /**
  * 仅仅为了简化初始化配置
  */
 public abstract class DragonLiConfig extends JFinalConfig {
 
+    private static Prop p;
+
     @Override
     public void configConstant(Constants me) {
-        //目前返回值无用,留个hook,后续可以用于获取jf内置参数
-        me = configConstantPlus(me);
-        ConsulUtil.init("127.0.0.1",8500);
+        p = configConstantPlus(me);
+        me.setConfigPluginOrder(1);
     }
 
-    public abstract Constants configConstantPlus(Constants me);
+    public abstract Prop configConstantPlus(Constants me);
 
     @Override
     public void configRoute(Routes me) {
@@ -37,23 +35,41 @@ public abstract class DragonLiConfig extends JFinalConfig {
 
     @Override
     public void configPlugin(Plugins me) {
+        String ip = p.get("app.consul.ip");
+        Integer port = p.getInt("app.consul.port");
+        //为了先从配置中心拉取配置
+        me.add( new ConsulPlugin(ip,port,initAppInfo()));
+
         me = configPluginPlus(me);
 
-        //RegistryP
-        AppInfo appInfo = AppInfo.builder()
-                .name("jfinalDemo")
-                .address("10.0.75.1")
-                .port(8080)
-                .checkUrl("http://10.0.75.1:8080/status")
-                .checkInterval("10s")
-                .checkTimout("1s")
-                .appTags(Arrays.asList("urlprefix-/jfinal/"))
-                .build();
-        ConsulRegistryPlugin consulRegistryPlugin = new ConsulRegistryPlugin(ConsulUtil.use(),appInfo);
-        me.add(consulRegistryPlugin);
         //init rpc client
-        RpcPlugin rpcPlugin = new RpcPlugin("com.demo.blog");
+        RpcPlugin rpcPlugin = new RpcPlugin(p.get("app.scanPackages",""));
         me.add(rpcPlugin);
+
+
+
+    }
+
+    private AppInfo initAppInfo(){
+
+        String appName = p.get("app.name");
+        String appIp = p.get("app.ip");
+        int appPort = p.getInt("app.port",8080);
+        String appHealthCheckUrl = p.get("app.health.checkUrl",StrUtil.format("http://{}:{}/status", appIp, appPort));
+        String appHealthInterval = p.get("app.health.interval","3s");
+        String appHealthTimout = p.get("app.health.timout","1s");
+        String appLabel = p.get("app.label","");
+
+        AppInfo appInfo = AppInfo.builder()
+                .name(appName)
+                .address(appIp)
+                .port(appPort)
+                .checkUrl(appHealthCheckUrl)
+                .checkInterval(appHealthInterval)
+                .checkTimout(appHealthTimout)
+                .appTags(StrUtil.split(appLabel, ','))
+                .build();
+        return appInfo;
     }
 
     public abstract Plugins configPluginPlus(Plugins me);
@@ -61,13 +77,10 @@ public abstract class DragonLiConfig extends JFinalConfig {
     @Override
     public void configInterceptor(Interceptors me) {
         me = configInterceptorPlus(me);
-        me.add(new Interceptor() {
-            @Override
-            public void intercept(Invocation inv) {
-                Context.init();
-                inv.invoke();
-                Context.clear();
-            }
+        me.add(inv -> {
+            Context.init();
+            inv.invoke();
+            Context.clear();
         });
     }
 

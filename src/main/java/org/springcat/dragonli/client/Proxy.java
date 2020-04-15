@@ -6,13 +6,10 @@ import cn.hutool.core.util.StrUtil;
 import org.springcat.dragonli.context.Context;
 import org.springcat.dragonli.validate.ValidateException;
 import org.springcat.dragonli.validate.ValidationUtil;
-import javax.validation.ConstraintViolation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
 
 public class Proxy {
 
@@ -37,7 +34,9 @@ public class Proxy {
                         request.setHeader((Map<String, String>) args[1]);
                     }
                 }
-                request.setServiceName(AnnotationUtil.getAnnotationValue(method.getDeclaringClass(), Rpc.class));
+                Map<String, Object> map = AnnotationUtil.getAnnotationValueMap(method.getDeclaringClass(), Rpc.class);
+                request.setServiceName((String) map.get("value"));
+                request.setLabel((String[]) map.get("labels"));
                 request.setClassName(StrUtil.strip(method.getDeclaringClass().getSimpleName(),"Service").toLowerCase());
                 request.setMethodName(method.getName());
 

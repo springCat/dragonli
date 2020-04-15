@@ -16,7 +16,7 @@ public class ConfigUtil {
 
     private static Dict dict;
 
-    public static String get(String key) {
+    public static String getAppConf(String key) {
         return confCache.get(key, () -> {
             Response<GetValue> kvValue = ConsulUtil.use().getKVValue(key);
             if(kvValue == null || kvValue.getValue() == null){
@@ -26,17 +26,18 @@ public class ConfigUtil {
         });
     }
 
-    public static void fetchInitConf() {
+    public static void fetchSysConf(AppInfo appInfo) {
         Dict tempDict = new Dict();
-        AppInfo appInfo = ConsulUtil.getAppInfo();
-        Response<List<GetValue>> kvValues = ConsulUtil.use().getKVValues("initconf" + appInfo.getName());
-        for (GetValue value : kvValues.getValue()) {
-            tempDict.put(value.getKey(),value.getDecodedValue());
+        Response<List<GetValue>> kvValues = ConsulUtil.use().getKVValues("/sysconf/" + appInfo.getName());
+        if(kvValues != null && kvValues.getValue() != null) {
+            for (GetValue value : kvValues.getValue()) {
+                tempDict.put(value.getKey(), value.getDecodedValue());
+            }
         }
         dict = tempDict;
     }
 
-    public static Dict getInitConf() {
+    public static Dict getSysConf() {
         if(dict == null){
             throw new RuntimeException("InitConf should fetch from Consul first");
         }

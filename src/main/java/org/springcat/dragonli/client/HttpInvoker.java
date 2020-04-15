@@ -3,6 +3,7 @@ package org.springcat.dragonli.client;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.ecwid.consul.v1.health.HealthServicesRequest;
 import com.ecwid.consul.v1.health.model.HealthService;
 import org.springcat.dragonli.jfinal.JFinalHttpTransform;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 public class HttpInvoker {
 
-    private static TimedCache<String, List<HealthService>> cache = CacheUtil.newTimedCache(1000);
+    private static TimedCache<String, List<HealthService>> serviceCache = CacheUtil.newTimedCache(1000);
     private static ILoadBalanceRule loadBalanceRule = new ConsistentHashRule();
     private static ISerialize serialize = new JFinalJsonSerialize();
     private static IHttpTransform httpTransform = new JFinalHttpTransform();
@@ -26,7 +27,7 @@ public class HttpInvoker {
                 String serviceName = request.getServiceName();
                 Map<String,String> header = request.getHeader();
 
-                List<HealthService> serviceList = cache.get(serviceName, () -> {
+                List<HealthService> serviceList = serviceCache.get(serviceName, () -> {
                     return ConsulUtil.use().getHealthServices(serviceName, HealthServicesRequest.newBuilder().build()).getValue();
                 });
 

@@ -55,7 +55,6 @@
 			<scope>test</scope>
 		</dependency>
 
-
 		<!-- validate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
