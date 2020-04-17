@@ -8,8 +8,7 @@ import org.springcat.dragonli.validate.ValidateException;
 import org.springcat.dragonli.validate.ValidationUtil;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Proxy {
 

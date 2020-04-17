@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.jfinal.config.*;
 import com.jfinal.kit.Prop;
 import com.jfinal.template.Engine;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springcat.dragonli.context.Context;
 import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
 import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
@@ -12,71 +14,94 @@ import org.springcat.dragonli.registry.AppInfo;
 /**
  * 仅仅为了简化初始化配置
  */
+@NoArgsConstructor
+@Data
 public abstract class DragonLiConfig extends JFinalConfig {
 
-    private static Prop p;
+    private String consulIp;
+
+    private int consulPort;
+
+    private AppInfo appInfo;
+
+    private String scanPackages;
+
+    public Prop loadDragonLiProp(){
+        return null;
+    }
+
+    private boolean initByUser(){
+        return false;
+    }
+
+    private boolean initByProp(){
+        Prop p = loadDragonLiProp();
+        if(p != null) {
+            String appName = p.get("app.name");
+            String appIp = p.get("app.ip");
+            int appPort = p.getInt("app.port", 8080);
+            String appHealthCheckUrl = p.get("app.health.checkUrl", StrUtil.format("http://{}:{}/status", appIp, appPort));
+            String appHealthInterval = p.get("app.health.interval", "3s");
+            String appHealthTimout = p.get("app.health.timout", "1s");
+            String appLabel = p.get("app.label", "");
+
+            AppInfo appInfo = AppInfo.builder()
+                    .name(appName)
+                    .address(appIp)
+                    .port(appPort)
+                    .checkUrl(appHealthCheckUrl)
+                    .checkInterval(appHealthInterval)
+                    .checkTimout(appHealthTimout)
+                    .appTags(StrUtil.split(appLabel, ','))
+                    .build();
+
+            this.appInfo = appInfo;
+            this.consulIp = p.get("app.consul.ip");
+            this.consulPort = p.getInt("app.consul.port");
+            this.scanPackages = p.get("app.scanPackages", "");
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void configConstant(Constants me) {
-        p = configConstantPlus(me);
+        configConstantPlus(me);
         me.setConfigPluginOrder(1);
     }
 
-    public abstract Prop configConstantPlus(Constants me);
+    public abstract void configConstantPlus(Constants me);
 
     @Override
     public void configRoute(Routes me) {
-        me = configRoutePlus(me);
+        configRoutePlus(me);
         JFinalStatusController.init(me);
     }
 
-    public abstract Routes configRoutePlus(Routes me);
-
+    public abstract void configRoutePlus(Routes me);
 
     @Override
     public void configPlugin(Plugins me) {
-        String ip = p.get("app.consul.ip");
-        Integer port = p.getInt("app.consul.port");
+        if(!initByUser()){
+            if(!initByProp()){
+                return;
+            }
+        }
         //为了先从配置中心拉取配置
-        me.add( new ConsulPlugin(ip,port,initAppInfo()));
+        me.add( new ConsulPlugin(consulIp,consulPort,appInfo));
 
-        me = configPluginPlus(me);
+        configPluginPlus(me);
 
         //init rpc client
-        RpcPlugin rpcPlugin = new RpcPlugin(p.get("app.scanPackages",""));
+        RpcPlugin rpcPlugin = new RpcPlugin(scanPackages);
         me.add(rpcPlugin);
-
-
-
     }
 
-    private AppInfo initAppInfo(){
-
-        String appName = p.get("app.name");
-        String appIp = p.get("app.ip");
-        int appPort = p.getInt("app.port",8080);
-        String appHealthCheckUrl = p.get("app.health.checkUrl",StrUtil.format("http://{}:{}/status", appIp, appPort));
-        String appHealthInterval = p.get("app.health.interval","3s");
-        String appHealthTimout = p.get("app.health.timout","1s");
-        String appLabel = p.get("app.label","");
-
-        AppInfo appInfo = AppInfo.builder()
-                .name(appName)
-                .address(appIp)
-                .port(appPort)
-                .checkUrl(appHealthCheckUrl)
-                .checkInterval(appHealthInterval)
-                .checkTimout(appHealthTimout)
-                .appTags(StrUtil.split(appLabel, ','))
-                .build();
-        return appInfo;
-    }
-
-    public abstract Plugins configPluginPlus(Plugins me);
+    public abstract void configPluginPlus(Plugins me);
 
     @Override
     public void configInterceptor(Interceptors me) {
-        me = configInterceptorPlus(me);
+        configInterceptorPlus(me);
         me.add(inv -> {
             Context.init();
             inv.invoke();
@@ -84,27 +109,24 @@ public abstract class DragonLiConfig extends JFinalConfig {
         });
     }
 
-    public abstract Interceptors configInterceptorPlus(Interceptors me);
-
-
+    public abstract void configInterceptorPlus(Interceptors me);
 
     @Override
     public void configEngine(Engine me) {
-        me = configEnginePlus(me);
+        configEnginePlus(me);
     }
     /**
      * Config engine
      */
-    public abstract Engine configEnginePlus(Engine me);
-
+    public abstract void configEnginePlus(Engine me);
 
     @Override
     public void configHandler(Handlers me){
-        me = configHandlerPlus(me);
+        configHandlerPlus(me);
     }
     /**
      * Config handler
      */
-    public abstract Handlers configHandlerPlus(Handlers me);
+    public abstract void configHandlerPlus(Handlers me);
 
 }
