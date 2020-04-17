@@ -9,22 +9,17 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.ecwid.consul.v1.health.HealthServicesRequest;
 import com.ecwid.consul.v1.health.model.HealthService;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.retry.Retry;
-import io.vavr.control.Try;
-import org.springcat.dragonli.jfinal.JFinalHttpTransform;
 import org.springcat.dragonli.loadbalance.ConsistentHashRule;
 import org.springcat.dragonli.loadbalance.ILoadBalanceRule;
 import org.springcat.dragonli.consul.ConsulUtil;
+import org.springcat.dragonli.serialize.FastJsonSerialize;
 import org.springcat.dragonli.serialize.ISerialize;
-import org.springcat.dragonli.jfinal.JFinalJsonSerialize;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public class HttpInvoker {
@@ -33,8 +28,8 @@ public class HttpInvoker {
 
     private static TimedCache<String, List<HealthService>> serviceCache = CacheUtil.newTimedCache(1000);
     private static ILoadBalanceRule loadBalanceRule = new ConsistentHashRule();
-    private static ISerialize serialize = new JFinalJsonSerialize();
-    private static IHttpTransform httpTransform = new JFinalHttpTransform();
+    private static ISerialize serialize = new FastJsonSerialize();
+    private static IHttpTransform httpTransform = new HttpclientTransform();
     private static LFUCache<String, CircuitBreaker> circuitBreakerCache = CacheUtil.newLFUCache(10000);
     private static LFUCache<String, Retry> retryCache = CacheUtil.newLFUCache(10000);
 

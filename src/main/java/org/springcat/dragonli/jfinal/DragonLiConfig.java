@@ -2,6 +2,8 @@ package org.springcat.dragonli.jfinal;
 
 import cn.hutool.core.util.StrUtil;
 import com.jfinal.config.*;
+import com.jfinal.json.FastJsonFactory;
+import com.jfinal.json.MixedJsonFactory;
 import com.jfinal.kit.Prop;
 import com.jfinal.template.Engine;
 import lombok.Data;
@@ -56,8 +58,8 @@ public abstract class DragonLiConfig extends JFinalConfig {
                     .build();
 
             this.appInfo = appInfo;
-            this.consulIp = p.get("app.consul.ip");
-            this.consulPort = p.getInt("app.consul.port");
+            this.consulIp = p.get("app.consul.ip","127.0.0.1");
+            this.consulPort = p.getInt("app.consul.port",8500);
             this.scanPackages = p.get("app.scanPackages", "");
             return true;
         }
@@ -68,6 +70,10 @@ public abstract class DragonLiConfig extends JFinalConfig {
     public void configConstant(Constants me) {
         configConstantPlus(me);
         me.setConfigPluginOrder(1);
+        me.setInjectDependency(true);
+        // 配置对超类中的属性进行注入
+        me.setInjectSuperClass(true);
+        me.setJsonFactory(new MixedJsonFactory());
     }
 
     public abstract void configConstantPlus(Constants me);

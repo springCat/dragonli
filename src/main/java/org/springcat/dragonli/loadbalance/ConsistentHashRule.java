@@ -15,10 +15,9 @@ public class ConsistentHashRule implements ILoadBalanceRule{
         return serviceList.get(i);
     }
 
-    public  int consistentHash(long input, int buckets) {
+    public int consistentHash(long input, int buckets) {
         input = 2862933555777941757L * input + 1;
         double nextDouble = ((double) ((int) (input >>> 33) + 1)) / (0x1.0p31);
-        // Jump from bucket to bucket until we go out of range
         int candidate = 0;
         int next;
         while (true) {
