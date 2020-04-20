@@ -19,62 +19,34 @@
 6. 客户端和服务器端双重参数验证(利用jsr303规范,注解)
 7. 通信协议目前默认方式为http+json(http客户端和json序列化性能需要更换其他高性能库来实现)
 8. context机制来传递全局变量,为后续调用链,日志,用户身份鉴权等场景打基础传递
+9. 异常处理和熔断处理(利用resilience4j来实现),目前已经实现,后续会完善
 
 ### dragonli待实现的功能：
-1. 异常处理和熔断处理(准备利用resilience4j来实现)
+1. api doc生成(因为采用单参数接口的形式,通过反射获取对象属性和jsr303的标签,作为原数据,可以生成md文档,
+    或者暴露元数据以供生成各种格式的文档的)
 2. 调用链日志(google drapper论文中的原来,和spring cloud)
 3. 监控(准备接入promethues)
 4. api gateway待实现( 利用nginx第三方插件,从consul拉取注册的服务或者自己实现)
+5. 灵活的框架参数配置
 ....
 
 ### 启动前,需要先启动consul
 
-### JFinalConfig中配置 ：
+### JFinalConfig中配置,继承DragonLiConfig,注入配置文件就好：
 ```java
-	public void configConstant(Constants me) {
-        ....
-        //初始化consul
-		ConsulUtil.init("127.0.0.1",8500);
-	}
-
-    public void configRoute(Routes me) {
-        ....
-		//初始化健康检查
-		JFinalStatusController.init(me);
-	}
-    
-    public void configPlugin(Plugins me) { 
-             ....
-    	    //RegistryP
-    		AppInfo appInfo = AppInfo.builder()
-    				.name("jfinalDemo")
-    				.address("10.0.75.1")
-    				.port(8080)
-    				.checkUrl("http://10.0.75.1:8080/status")
-    				.checkInterval("10s")
-    				.checkTimout("1s")
-    				.appTags(Arrays.asList("urlprefix-/jfinal/"))
-    				.build();
-    		ConsulRegistryPlugin consulRegistryPlugin = new ConsulRegistryPlugin(ConsulUtil.use(),appInfo);
-    		me.add(consulRegistryPlugin);
-    		//init rpc client 客户端才需要,服务端不需要
-    		RpcPlugin rpcPlugin = new RpcPlugin("com.demo.blog");
-    		me.add(rpcPlugin);
-    }
-    
-	public void configInterceptor(Interceptors me) {
-		me.add(new Interceptor() {
-			@Override
-			public void intercept(Invocation inv) {
-				Context.init();
-				inv.invoke();
-				Context.clear();
-			}
-		});
- 	}
+        public class DemoConfig extends DragonLiConfig {
+        	
+        	static Prop p;
+        
+        	@Override
+        	public Prop loadDragonLiProp() {
+        		return p;
+        	}
+            ...
+        }
 ```
 
-### 具体客户端代码中使用 ：
+### 具体消费者代码中使用 ：
 ```java
     //定义BlogService.java
     @Rpc("jfinalDemo")
@@ -98,6 +70,7 @@
         private String content;
     
     }
+
     //调用方式
 	@Inject
 	private BlogService blogService;
@@ -111,7 +84,7 @@
         renderJson(resp);
     }
 ```
-### 具体服务端代码中使用 ：
+### 具体生产者代码中使用 ：
 ```java
     public class BlogController extends JsonController {
         @Before(BlogPara.class)
@@ -126,3 +99,5 @@
 ### 调用结果 ：
 1.  curl http://localhost:8080/blog/test -d '{"id":10,"title":"title","content":"content"}'
 2.  {"code":"200","id":10,"title":"title","content":"content"}
+
+### 示例的demo https://github.com/springCat/dragonli-demo
