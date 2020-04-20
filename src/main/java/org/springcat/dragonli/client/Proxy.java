@@ -3,6 +3,7 @@ package org.springcat.dragonli.client;
 import cn.hutool.aop.ProxyUtil;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.StrUtil;
+import com.jfinal.kit.HttpKit;
 import org.springcat.dragonli.context.Context;
 import org.springcat.dragonli.validate.ValidateException;
 import org.springcat.dragonli.validate.ValidationUtil;
@@ -29,7 +30,6 @@ public class Proxy {
                         ValidationUtil.validate(args[0]);
                         request.setBody(args[0]);
                     } else if(args.length > 1 && args[1] instanceof Map){
-
                         request.setHeader((Map<String, String>) args[1]);
                     }
                 }
@@ -43,7 +43,7 @@ public class Proxy {
                     request.setHeader(new HashMap<String, String>());
                 }
                 //为框架 调用链日志,负载均衡等保留
-                Map<String, String> sysHeader = Context.getAll();
+                Map<String, String> sysHeader = Context.getAllRpcParam();
                 if(sysHeader != null) {
                     request.getHeader().putAll(sysHeader);
                 }
