@@ -29,7 +29,8 @@ public class Proxy {
                         //客户端参数验证不通过,直接拒绝,不进行调用
                         ValidationUtil.validate(args[0]);
                         request.setBody(args[0]);
-                    } else if(args.length > 1 && args[1] instanceof Map){
+                    }
+                    if(args.length > 1 && args[1] instanceof Map){
                         request.setHeader((Map<String, String>) args[1]);
                     }
                 }

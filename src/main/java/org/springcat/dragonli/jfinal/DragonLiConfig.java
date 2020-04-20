@@ -101,7 +101,7 @@ public abstract class DragonLiConfig extends JFinalConfig {
         //init rpc client
         RpcPlugin rpcPlugin = new RpcPlugin(scanPackages);
         me.add(rpcPlugin);
-    }
+}
 
     public abstract void configPluginPlus(Plugins me);
 

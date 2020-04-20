@@ -79,7 +79,7 @@ public class HttpclientTransform implements IHttpTransform {
             return;
         }
         for (Map.Entry<String, String> headerValue : headers.entrySet()) {
-            request.addHeader(headerValue.getKey(), headerValue.getKey());
+            request.addHeader(headerValue.getKey(), headerValue.getValue());
         }
     }
 
