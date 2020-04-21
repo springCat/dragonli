@@ -12,12 +12,12 @@ import java.util.List;
 
 public class ConfigUtil {
 
-    private static TimedCache<String, String> confCache = CacheUtil.newTimedCache(1000);
+    private static TimedCache<String, String> userConfCache = CacheUtil.newTimedCache(1000);
 
     private static Dict dict;
 
-    public static String getAppConf(String key) {
-        return confCache.get(key, () -> {
+    public static String getUserConf(String key) {
+        return userConfCache.get(key, () -> {
             Response<GetValue> kvValue = ConsulUtil.use().getKVValue(key);
             if(kvValue == null || kvValue.getValue() == null){
                 return null;

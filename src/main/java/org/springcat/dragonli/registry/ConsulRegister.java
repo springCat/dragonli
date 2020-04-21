@@ -11,7 +11,7 @@ public class ConsulRegister {
     public void register(ConsulClient client,AppInfo appInfo) throws Exception{
         NewService application = new NewService();
         application.setName(appInfo.getName());
-        application.setAddress(appInfo.getAddress());
+        application.setAddress(appInfo.getIp());
         application.setPort(appInfo.getPort());
         if(appInfo.getAppTags() != null && appInfo.getAppTags().size() > 0) {
             application.setTags(appInfo.getAppTags());
@@ -33,6 +33,6 @@ public class ConsulRegister {
     }
 
     public String genServiceId(AppInfo appInfo){
-        return appInfo.getName() + NetUtil.ipv4ToLong(appInfo.getAddress());
+        return appInfo.getName() + NetUtil.ipv4ToLong(appInfo.getIp());
     }
 }

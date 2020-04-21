@@ -84,14 +84,12 @@ public class HttpInvoker {
         });
 
         CircuitBreaker circuitBreaker = circuitBreakerCache.get(url, () -> {
-
             CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig
                     .custom()
                     .minimumNumberOfCalls(50)
                     .enableAutomaticTransitionFromOpenToHalfOpen()
                     .waitDurationInOpenState(Duration.ofSeconds(30))
                     .build();
-
             return CircuitBreaker.of(url, circuitBreakerConfig);
         });
 
@@ -99,7 +97,7 @@ public class HttpInvoker {
                 .decorateSupplier(circuitBreaker, () -> {
                     String respStr = httpTransform.post(url, reqStr, headers);
                     long cost = timeInterval.interval();
-                    log.info("uid:{},url:{},cost:{},req:{},resp:{}", headers.get("x-uid"), url, cost, reqStr, respStr);
+                    log.info("uid:{},url:{},cost:{},req:{},resp:{}", headers.get("client-ip"), url, cost, reqStr, respStr);
                     return respStr;
                 });
 

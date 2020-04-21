@@ -4,6 +4,7 @@ import com.jfinal.plugin.IPlugin;
 import org.springcat.dragonli.config.ConfigUtil;
 import org.springcat.dragonli.consul.ConsulUtil;
 import org.springcat.dragonli.registry.AppInfo;
+import org.springcat.dragonli.registry.ConsulInfo;
 import org.springcat.dragonli.registry.ConsulRegister;
 
 public class ConsulPlugin implements IPlugin {
@@ -12,9 +13,9 @@ public class ConsulPlugin implements IPlugin {
     private int port;
     private AppInfo appInfo;
 
-    public ConsulPlugin(String ip, int port, AppInfo appInfo) {
-        this.ip = ip;
-        this.port = port;
+    public ConsulPlugin(ConsulInfo consulInfo, AppInfo appInfo) {
+        this.ip = consulInfo.getIp();
+        this.port = consulInfo.getPort();
         this.appInfo = appInfo;
     }
 

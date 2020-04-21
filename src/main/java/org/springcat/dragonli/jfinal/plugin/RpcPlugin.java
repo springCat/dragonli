@@ -2,6 +2,7 @@ package org.springcat.dragonli.jfinal.plugin;
 
 import com.jfinal.aop.AopManager;
 import com.jfinal.plugin.IPlugin;
+import org.springcat.dragonli.client.RpcInfo;
 import org.springcat.dragonli.client.RpcUtil;
 import org.springcat.dragonli.validate.ValidationUtil;
 
@@ -11,16 +12,16 @@ import java.util.Map;
 
 public class RpcPlugin implements IPlugin {
 
-    private String scanPackages = "";
+    private RpcInfo rpcInfo;
 
-    public RpcPlugin(String scanPackages) {
-        this.scanPackages = scanPackages;
+    public RpcPlugin(RpcInfo rpcInfo) {
+        this.rpcInfo = rpcInfo;
     }
 
     @Override
     public boolean start() {
         ValidationUtil.init();
-        List<Class<?>> services = RpcUtil.scanRpcService(scanPackages);
+        List<Class<?>> services = RpcUtil.scanRpcService(rpcInfo.getScanPackages());
         Map<Class<?>, Object> classObjectMap = RpcUtil.convert2RpcServiceImpl(services);
 
         for (Map.Entry<Class<?>, Object> classObjectEntry : classObjectMap.entrySet()) {
