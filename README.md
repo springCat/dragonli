@@ -32,17 +32,11 @@
 
 ### 启动前,需要先启动consul
 
-### JFinalConfig中配置,继承DragonLiConfig,注入配置文件就好：
+### JFinalConfig中配置,继承DragonLiConfig,在resources中拖入dragonli.setting修改对应配置就好：
 ```java
         public class DemoConfig extends DragonLiConfig {
-        	
-        	static Prop p;
+        	...
         
-        	@Override
-        	public Prop loadDragonLiProp() {
-        		return p;
-        	}
-            ...
         }
 ```
 
