@@ -2,6 +2,7 @@ package org.springcat.dragonli.jfinal;
 
 import cn.hutool.core.util.StrUtil;
 import com.jfinal.config.*;
+import com.jfinal.core.Controller;
 import com.jfinal.json.FastJsonFactory;
 import com.jfinal.json.MixedJsonFactory;
 import com.jfinal.kit.Prop;
@@ -110,9 +111,28 @@ public abstract class DragonLiConfig extends JFinalConfig {
         configInterceptorPlus(me);
         me.add(inv -> {
             Context.init();
+            Context.setRpcParam("client-ip",getClientIp(inv.getController()));
             inv.invoke();
             Context.clear();
         });
+    }
+
+    /**
+     * 1 先判断client-ip是否已经存在,用于消费者已经获取客户端IP,传递到生产者的场景
+     * 2 不存在client-ip,就获取x-forwarded-for的值,根据http协议从反向代理服务器来的请求赋值到这个值
+     * 3 不存在的话,就直接获取请求发起端的ip,用于服务没有前置的反向代理,直接面对用户的场景
+     * @param controller
+     * @return
+     */
+    private String getClientIp(Controller controller){
+        String ip = controller.getHeader("client-ip");
+        if (StrUtil.isBlank(ip)) {
+             ip = controller.getHeader("x-forwarded-for");
+        }
+        if (StrUtil.isBlank(ip)) {
+            ip =  controller.getRequest().getRemoteAddr();
+        }
+        return ip;
     }
 
     public abstract void configInterceptorPlus(Interceptors me);

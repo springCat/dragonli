@@ -4,7 +4,6 @@ import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.date.TimeInterval;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.ecwid.consul.v1.health.HealthServicesRequest;
@@ -43,7 +42,7 @@ public class HttpInvoker {
                 return ConsulUtil.use().getHealthServices(serviceName, HealthServicesRequest.newBuilder().build()).getValue();
             });
 
-            HealthService choose = loadBalanceRule.choose(serviceList, headers.getOrDefault("x-uid", IdUtil.fastSimpleUUID()).getBytes());
+            HealthService choose = loadBalanceRule.choose(serviceList, headers.getOrDefault("client-ip", "").getBytes());
             if (choose == null) {
                 throw new RpcException("can not find healthService");
             }
