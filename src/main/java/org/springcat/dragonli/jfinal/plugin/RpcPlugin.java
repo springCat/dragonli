@@ -2,11 +2,9 @@ package org.springcat.dragonli.jfinal.plugin;
 
 import com.jfinal.aop.AopManager;
 import com.jfinal.plugin.IPlugin;
+import org.springcat.dragonli.core.rpc.RpcInvoke;
 import org.springcat.dragonli.core.rpc.RpcInfo;
-import org.springcat.dragonli.core.rpc.RpcUtil;
 import org.springcat.dragonli.core.validate.ValidationUtil;
-
-import java.util.List;
 import java.util.Map;
 
 
@@ -20,12 +18,16 @@ public class RpcPlugin implements IPlugin {
 
     @Override
     public boolean start() {
-        ValidationUtil.init();
-        List<Class<?>> services = RpcUtil.scanRpcService(rpcInfo.getScanPackages());
-        Map<Class<?>, Object> classObjectMap = RpcUtil.convert2RpcServiceImpl(services);
-
-        for (Map.Entry<Class<?>, Object> classObjectEntry : classObjectMap.entrySet()) {
-            AopManager.me().addSingletonObject(classObjectEntry.getKey(), classObjectEntry.getValue());
+        try {
+            ValidationUtil.init();
+            RpcInvoke.init(rpcInfo,(Map<Class<?>, Object> map) ->{
+                for (Map.Entry<Class<?>, Object> classObjectEntry : map.entrySet()) {
+                    AopManager.me().addSingletonObject(classObjectEntry.getKey(), classObjectEntry.getValue());
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
         }
         return true;
     }

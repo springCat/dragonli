@@ -18,7 +18,7 @@ public class ConfigUtil {
 
     public static String getUserConf(String key) {
         return userConfCache.get(key, () -> {
-            Response<GetValue> kvValue = ConsulUtil.use().getKVValue(key);
+            Response<GetValue> kvValue = ConsulUtil.client().getKVValue(key);
             if(kvValue == null || kvValue.getValue() == null){
                 return null;
             }
@@ -28,7 +28,7 @@ public class ConfigUtil {
 
     public static void fetchSysConf(AppInfo appInfo) {
         Dict tempDict = new Dict();
-        Response<List<GetValue>> kvValues = ConsulUtil.use().getKVValues("/sysconf/" + appInfo.getName());
+        Response<List<GetValue>> kvValues = ConsulUtil.client().getKVValues("/sysconf/" + appInfo.getName());
         if(kvValues != null && kvValues.getValue() != null) {
             for (GetValue value : kvValues.getValue()) {
                 tempDict.put(value.getKey(), value.getDecodedValue());

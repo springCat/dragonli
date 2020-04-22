@@ -20,9 +20,10 @@ public class RpcUtil {
     }
 
     public static Map<Class<?>,Object> convert2RpcServiceImpl(List<Class<?>> services){
+        Proxy proxy = new Proxy();
         Map<Class<?>,Object> map = new HashMap();
         for (Class<?> service : services) {
-            Object impl = Proxy.me.impl(service);
+            Object impl = proxy.impl(service);
             map.put(service,impl);
         }
         return map;

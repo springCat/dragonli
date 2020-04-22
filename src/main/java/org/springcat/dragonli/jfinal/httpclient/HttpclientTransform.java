@@ -2,6 +2,7 @@ package org.springcat.dragonli.jfinal.httpclient;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import com.ecwid.consul.v1.health.model.HealthService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -59,22 +60,24 @@ public class HttpclientTransform implements IHttpTransform {
     }
 
     @Override
-    public String post(RpcRequest rpcRequest){
-        HttpPost httpPost = new HttpPost(rpcRequest.getRequestUrl());
-        addHeadersToRequest(httpPost, rpcRequest.getHeader());
-        HttpResponse resp = null;
+    public Object post(RpcRequest rpcRequest, HealthService healthService){
+        HttpPost httpPost = new HttpPost(genUrl(rpcRequest,healthService));
+        addHeadersToRequest(httpPost, rpcRequest.getRpcHeader());
+        HttpResponse httpResponse = null;
         try {
-            httpPost.setEntity(new StringEntity(rpcRequest.getBodyStr()));
-            resp = httpClient.execute(httpPost);
-            if(resp.getStatusLine().getStatusCode() == 200) {
-                HttpEntity entity = resp.getEntity();
-                return IoUtil.read(resp.getEntity().getContent(),Charset.defaultCharset());
+            String req = rpcRequest.getSerialize().encode(rpcRequest.getRequestObj());
+            httpPost.setEntity(new StringEntity(req));
+            httpResponse = httpClient.execute(httpPost);
+            if(httpResponse.getStatusLine().getStatusCode() == 200) {
+                String resp = IoUtil.read(httpResponse.getEntity().getContent(), Charset.defaultCharset());
+                return rpcRequest.getSerialize().decode(resp, rpcRequest.getReturnType());
             }
         } catch (IOException e) {
             log.error("RpcRequest:{},error:{}",rpcRequest,e.getMessage());
         }
         return null;
     }
+
 
     private void addHeadersToRequest(HttpRequestBase request, Map<String, String> headers) {
         if (headers == null) {

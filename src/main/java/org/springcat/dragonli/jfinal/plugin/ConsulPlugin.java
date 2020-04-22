@@ -24,7 +24,7 @@ public class ConsulPlugin implements IPlugin {
         try {
             ConsulUtil.init(ip,port);
             ConfigUtil.fetchSysConf(appInfo);
-            ConsulRegister.register(ConsulUtil.use(), appInfo);
+            ConsulRegister.register(ConsulUtil.client(), appInfo);
             return true;
         }catch (Exception exception){
             exception.printStackTrace();
@@ -35,7 +35,7 @@ public class ConsulPlugin implements IPlugin {
     @Override
     public boolean stop() {
         try {
-            ConsulRegister.unregister(ConsulUtil.use(), appInfo);
+            ConsulRegister.unregister(ConsulUtil.client(), appInfo);
             return true;
         } catch (Exception exception) {
             exception.printStackTrace();

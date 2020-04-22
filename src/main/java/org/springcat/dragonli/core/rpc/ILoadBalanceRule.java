@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface ILoadBalanceRule {
 
-    HealthService choose(List<HealthService> serviceList,byte[] loadBalanceParam);
+    HealthService choose(List<HealthService> serviceList,RpcRequest rpcRequest);
 }

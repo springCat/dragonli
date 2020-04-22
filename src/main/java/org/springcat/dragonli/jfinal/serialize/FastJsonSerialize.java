@@ -13,4 +13,6 @@ public class FastJsonSerialize implements ISerialize {
     public String encode(Object object) {
         return FastJson.getJson().toJson(object);
     }
+
+
 }
