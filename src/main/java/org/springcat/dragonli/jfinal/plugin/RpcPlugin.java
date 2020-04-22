@@ -2,9 +2,9 @@ package org.springcat.dragonli.jfinal.plugin;
 
 import com.jfinal.aop.AopManager;
 import com.jfinal.plugin.IPlugin;
-import org.springcat.dragonli.client.RpcInfo;
-import org.springcat.dragonli.client.RpcUtil;
-import org.springcat.dragonli.validate.ValidationUtil;
+import org.springcat.dragonli.core.rpc.RpcInfo;
+import org.springcat.dragonli.core.rpc.RpcUtil;
+import org.springcat.dragonli.core.validate.ValidationUtil;
 
 import java.util.List;
 import java.util.Map;

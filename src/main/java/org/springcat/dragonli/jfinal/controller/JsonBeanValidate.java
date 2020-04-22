@@ -6,8 +6,8 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 import com.jfinal.kit.JsonKit;
 import com.jfinal.kit.Ret;
-import org.springcat.dragonli.validate.ValidateException;
-import org.springcat.dragonli.validate.ValidationUtil;
+import org.springcat.dragonli.core.validate.ValidateException;
+import org.springcat.dragonli.core.validate.ValidationUtil;
 
 
 public interface JsonBeanValidate extends Interceptor {

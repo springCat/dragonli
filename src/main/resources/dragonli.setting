@@ -1,17 +1,20 @@
 [consul]
-address = 127.0.0.1
-port = 8500111
+ip = 127.0.0.1
+port = 8500
 
 [app]
-name = appDemo
-address = 192.168.99.170
+name = jfinalDemo
+ip = 192.168.99.170
 port = 8080
 appTags =
-checkUrl = http://10.0.75.1:8080/status
+checkUrl = http://192.168.99.170:8080/status
 checkInterval = 3s
 checkTimout = 1s
 
-
 [rpc]
-scanPackages =
+scanPackages = com.demo
+serializeImplClass = org.springcat.dragonli.jfinal.serialize.FastJsonSerialize
+httpTransformImplClass = org.springcat.dragonli.jfinal.httpclient.HttpclientTransform
+loadBalanceRuleImplClass = org.springcat.dragonli.jfinal.loadbalance.ConsistentHashRule
+
 

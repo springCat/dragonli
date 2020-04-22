@@ -1,19 +1,18 @@
 package org.springcat.dragonli.jfinal;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.setting.Setting;
 import com.jfinal.config.*;
 import com.jfinal.core.Controller;
 import com.jfinal.json.MixedJsonFactory;
 import com.jfinal.template.Engine;
-import org.springcat.dragonli.client.RpcInfo;
-import org.springcat.dragonli.context.Context;
+import org.springcat.dragonli.core.rpc.RpcInfo;
+import org.springcat.dragonli.core.Context;
 import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
 import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
-import org.springcat.dragonli.registry.AppInfo;
-import org.springcat.dragonli.registry.ConsulInfo;
-import org.springcat.dragonli.setting.SettingGroup;
-import org.springcat.dragonli.setting.SettingUtil;
+import org.springcat.dragonli.core.registry.AppInfo;
+import org.springcat.dragonli.core.registry.ConsulInfo;
+import org.springcat.dragonli.core.config.SettingGroup;
+import org.springcat.dragonli.core.config.SettingUtil;
 
 
 /**
