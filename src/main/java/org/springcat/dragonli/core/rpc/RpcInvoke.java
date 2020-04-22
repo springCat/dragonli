@@ -54,8 +54,6 @@ public class RpcInvoke {
     }
 
     private static Supplier<Object> decorateHttpTransformPost (RpcRequest rpcRequest,HealthService healthService){
-        TimeInterval timeInterval = new TimeInterval();
-
         String key = StrUtil.join("|",
                 healthService.getService().getAddress(),
                 healthService.getService().getPort(),
@@ -78,10 +76,7 @@ public class RpcInvoke {
 
         Supplier<Object> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, () -> {
-                    Object respStr = httpTransform.post(rpcRequest,healthService);
-                    long cost = timeInterval.interval();
-                    log.info("RpcRequest:{},", rpcRequest);
-                    return respStr;
+                    return httpTransform.post(rpcRequest,healthService);
                 });
 
         decoratedSupplier = Retry

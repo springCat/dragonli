@@ -60,20 +60,19 @@ public class HttpclientTransform implements IHttpTransform {
     }
 
     @Override
-    public Object post(RpcRequest rpcRequest, HealthService healthService){
-        HttpPost httpPost = new HttpPost(genUrl(rpcRequest,healthService));
-        addHeadersToRequest(httpPost, rpcRequest.getRpcHeader());
+    public String post(String url, Map<String, String> headers, String request){
+        HttpPost httpPost = new HttpPost(url);
+        addHeadersToRequest(httpPost, headers);
         HttpResponse httpResponse = null;
         try {
-            String req = rpcRequest.getSerialize().encode(rpcRequest.getRequestObj());
-            httpPost.setEntity(new StringEntity(req));
+            httpPost.setEntity(new StringEntity(request));
             httpResponse = httpClient.execute(httpPost);
             if(httpResponse.getStatusLine().getStatusCode() == 200) {
                 String resp = IoUtil.read(httpResponse.getEntity().getContent(), Charset.defaultCharset());
-                return rpcRequest.getSerialize().decode(resp, rpcRequest.getReturnType());
+                return resp;
             }
         } catch (IOException e) {
-            log.error("RpcRequest:{},error:{}",rpcRequest,e.getMessage());
+            log.error(e.getMessage());
         }
         return null;
     }
