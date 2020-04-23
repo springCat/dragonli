@@ -3,26 +3,26 @@ package org.springcat.dragonli.jfinal.plugin;
 import com.jfinal.plugin.IPlugin;
 import org.springcat.dragonli.core.config.ConfigUtil;
 import org.springcat.dragonli.core.consul.ConsulUtil;
-import org.springcat.dragonli.core.registry.AppInfo;
-import org.springcat.dragonli.core.consul.ConsulInfo;
+import org.springcat.dragonli.core.registry.AppConf;
+import org.springcat.dragonli.core.consul.ConsulConf;
 import org.springcat.dragonli.core.registry.ConsulRegister;
 
 public class ConsulPlugin implements IPlugin {
 
-    private ConsulInfo consulInfo;
-    private AppInfo appInfo;
+    private ConsulConf consulConf;
+    private AppConf appConf;
 
-    public ConsulPlugin(ConsulInfo consulInfo, AppInfo appInfo) {
-        this.consulInfo = consulInfo;
-        this.appInfo = appInfo;
+    public ConsulPlugin(ConsulConf consulConf, AppConf appConf) {
+        this.consulConf = consulConf;
+        this.appConf = appConf;
     }
 
     @Override
     public boolean start() {
         try {
-            ConsulUtil.init(consulInfo);
-            ConfigUtil.fetchSysConf(appInfo);
-            ConsulRegister.register(ConsulUtil.client(), appInfo);
+            ConsulUtil.init(consulConf);
+            ConfigUtil.fetchSysConf(appConf);
+            ConsulRegister.register(ConsulUtil.client(), appConf);
             return true;
         }catch (Exception exception){
             exception.printStackTrace();
@@ -33,7 +33,7 @@ public class ConsulPlugin implements IPlugin {
     @Override
     public boolean stop() {
         try {
-            ConsulRegister.unregister(ConsulUtil.client(), appInfo);
+            ConsulRegister.unregister(ConsulUtil.client(), appConf);
             return true;
         } catch (Exception exception) {
             exception.printStackTrace();

@@ -3,7 +3,6 @@ package org.springcat.dragonli.core.rpc;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
-import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
@@ -26,7 +25,7 @@ public class RpcInvoke {
     private static ILoadBalanceRule loadBalanceRule;
     private static ISerialize serialize;
     private static IHttpTransform httpTransform;
-    private static RpcConfInfo rpcConfInfo;
+    private static RpcConf rpcConf;
     private static IErrorHandle errorHandle;
     private static IServiceRegister serviceRegister;
     private static IValidation validation;
@@ -35,23 +34,23 @@ public class RpcInvoke {
     private LFUCache<String, Retry> retryCache = CacheUtil.newLFUCache(10000);
 
 
-    public static void init(RpcConfInfo rpcConfInfoPara, Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        rpcConfInfo = rpcConfInfoPara;
+    public static void init(RpcConf rpcConfPara, Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        rpcConf = rpcConfPara;
         //初始化负载均衡
-        loadBalanceRule = (ILoadBalanceRule) Class.forName(rpcConfInfo.getLoadBalanceRuleImplClass()).newInstance();
+        loadBalanceRule = (ILoadBalanceRule) Class.forName(rpcConf.getLoadBalanceRuleImplClass()).newInstance();
         //初始化序列化
-        serialize = (ISerialize) Class.forName(rpcConfInfo.getSerializeImplClass()).newInstance();
+        serialize = (ISerialize) Class.forName(rpcConf.getSerializeImplClass()).newInstance();
         //初始化http请求客户端
-        httpTransform = (IHttpTransform) Class.forName(rpcConfInfo.getHttpTransformImplClass()).newInstance();
+        httpTransform = (IHttpTransform) Class.forName(rpcConf.getHttpTransformImplClass()).newInstance();
         //初始化错误处理
-        errorHandle = (IErrorHandle) Class.forName(rpcConfInfo.getErrorHandleImplClass()).newInstance();
+        errorHandle = (IErrorHandle) Class.forName(rpcConf.getErrorHandleImplClass()).newInstance();
         //初始化服务列表获取
-        serviceRegister = (IServiceRegister) Class.forName(rpcConfInfo.getServiceRegisterImplClass()).newInstance();
+        serviceRegister = (IServiceRegister) Class.forName(rpcConf.getServiceRegisterImplClass()).newInstance();
         //初始化验证
-        validation = (IValidation) Class.forName(rpcConfInfo.getIValidation()).newInstance();
+        validation = (IValidation) Class.forName(rpcConf.getIValidation()).newInstance();
 
         //初始化接口代理类
-        List<Class<?>> services = RpcUtil.scanRpcService(rpcConfInfo.getScanPackages());
+        List<Class<?>> services = RpcUtil.scanRpcService(rpcConf.getScanPackages());
 
         //初始化接口实现类
         Map<Class<?>, Object> implMap = RpcUtil.convert2RpcServiceImpl(services);

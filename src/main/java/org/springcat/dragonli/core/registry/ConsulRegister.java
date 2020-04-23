@@ -8,32 +8,32 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ConsulRegister {
 
-    public void register(ConsulClient client,AppInfo appInfo) throws Exception{
+    public void register(ConsulClient client, AppConf appConf) throws Exception{
         NewService application = new NewService();
-        application.setName(appInfo.getName());
-        application.setAddress(appInfo.getIp());
-        application.setPort(appInfo.getPort());
-        if(appInfo.getAppTags() != null && appInfo.getAppTags().size() > 0) {
-            application.setTags(appInfo.getAppTags());
+        application.setName(appConf.getName());
+        application.setAddress(appConf.getIp());
+        application.setPort(appConf.getPort());
+        if(appConf.getAppTags() != null && appConf.getAppTags().size() > 0) {
+            application.setTags(appConf.getAppTags());
         }
-        application.setId(genServiceId(appInfo));
+        application.setId(genServiceId(appConf));
         //check
         NewService.Check serviceCheck = new NewService.Check();
-        serviceCheck.setInterval(appInfo.getCheckInterval());
-        serviceCheck.setTimeout(appInfo.getCheckTimout());
-        serviceCheck.setHttp(appInfo.getCheckUrl());
+        serviceCheck.setInterval(appConf.getCheckInterval());
+        serviceCheck.setTimeout(appConf.getCheckTimout());
+        serviceCheck.setHttp(appConf.getCheckUrl());
         application.setCheck(serviceCheck);
         client.agentServiceRegister(application);
     }
 
-    public void unregister(ConsulClient client,AppInfo appInfo) throws Exception{
-        String appId = genServiceId(appInfo);
+    public void unregister(ConsulClient client, AppConf appConf) throws Exception{
+        String appId = genServiceId(appConf);
         client.agentCheckDeregister("service:"+appId);
         client.agentServiceDeregister(appId);
     }
 
-    public String genServiceId(AppInfo appInfo){
-        return appInfo.getName() + NetUtil.ipv4ToLong(appInfo.getIp());
+    public String genServiceId(AppConf appConf){
+        return appConf.getName() + NetUtil.ipv4ToLong(appConf.getIp());
     }
 
 

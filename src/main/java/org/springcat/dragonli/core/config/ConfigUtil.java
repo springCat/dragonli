@@ -3,11 +3,9 @@ package org.springcat.dragonli.core.config;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.setting.Setting;
-import cn.hutool.setting.SettingUtil;
 import com.ecwid.consul.v1.Response;
 import com.ecwid.consul.v1.kv.model.GetValue;
-import org.springcat.dragonli.core.registry.AppInfo;
+import org.springcat.dragonli.core.registry.AppConf;
 import org.springcat.dragonli.core.consul.ConsulUtil;
 
 import java.util.List;
@@ -33,9 +31,9 @@ public class ConfigUtil {
         });
     }
 
-    public static void fetchSysConf(AppInfo appInfo) {
+    public static void fetchSysConf(AppConf appConf) {
         Dict tempDict = new Dict();
-        Response<List<GetValue>> kvValues = ConsulUtil.client().getKVValues("/sysconf/" + appInfo.getName());
+        Response<List<GetValue>> kvValues = ConsulUtil.client().getKVValues("/sysconf/" + appConf.getName());
         if(kvValues != null && kvValues.getValue() != null) {
             for (GetValue value : kvValues.getValue()) {
                 tempDict.put(value.getKey(), value.getDecodedValue());

@@ -1,12 +1,12 @@
 package org.springcat.dragonli.core.config;
 
-import org.springcat.dragonli.core.rpc.RpcConfInfo;
-import org.springcat.dragonli.core.registry.AppInfo;
-import org.springcat.dragonli.core.consul.ConsulInfo;
+import org.springcat.dragonli.core.rpc.RpcConf;
+import org.springcat.dragonli.core.registry.AppConf;
+import org.springcat.dragonli.core.consul.ConsulConf;
 
 public enum SettingGroup{
 
-    consul(ConsulInfo.class),app(AppInfo.class),rpc(RpcConfInfo.class);
+    consulConf(ConsulConf.class), appConf(AppConf.class), rpcConf(RpcConf.class);
 
     private Class cls;
 

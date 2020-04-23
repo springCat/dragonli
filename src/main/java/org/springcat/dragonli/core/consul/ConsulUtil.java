@@ -9,8 +9,8 @@ public class ConsulUtil {
     private static ConsulClient client;
 
 
-    public static void init(ConsulInfo consulInfo){
-        client = new ConsulClient(consulInfo.getIp(),consulInfo.getPort());
+    public static void init(ConsulConf consulConf){
+        client = new ConsulClient(consulConf.getIp(), consulConf.getPort());
     }
 
     public static ConsulClient client(){

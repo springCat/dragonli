@@ -3,13 +3,13 @@ package org.springcat.dragonli.jfinal;
 import com.jfinal.config.*;
 import com.jfinal.json.MixedJsonFactory;
 import com.jfinal.template.Engine;
-import org.springcat.dragonli.core.rpc.RpcConfInfo;
+import org.springcat.dragonli.core.rpc.RpcConf;
 import org.springcat.dragonli.core.Context;
 import org.springcat.dragonli.core.rpc.RpcUtil;
 import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
 import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
-import org.springcat.dragonli.core.registry.AppInfo;
-import org.springcat.dragonli.core.consul.ConsulInfo;
+import org.springcat.dragonli.core.registry.AppConf;
+import org.springcat.dragonli.core.consul.ConsulConf;
 import org.springcat.dragonli.core.config.SettingGroup;
 import org.springcat.dragonli.core.config.SettingUtil;
 
@@ -42,17 +42,17 @@ public abstract class DragonLiConfig extends JFinalConfig {
     @Override
     public void configPlugin(Plugins me) {
 
-        ConsulInfo consulInfo = SettingUtil.getConfBean(SettingGroup.consul);
-        AppInfo appInfo = SettingUtil.getConfBean(SettingGroup.app);
-        RpcConfInfo rpcConfInfo = SettingUtil.getConfBean(SettingGroup.rpc);
+        ConsulConf consulConf = SettingUtil.getConfBean(SettingGroup.consulConf);
+        AppConf appConf = SettingUtil.getConfBean(SettingGroup.appConf);
+        RpcConf rpcConf = SettingUtil.getConfBean(SettingGroup.rpcConf);
 
         //为了先从配置中心拉取配置
-        me.add(new ConsulPlugin(consulInfo,appInfo));
+        me.add(new ConsulPlugin(consulConf, appConf));
 
         configPluginPlus(me);
 
         //init rpc client
-        RpcPlugin rpcPlugin = new RpcPlugin(rpcConfInfo);
+        RpcPlugin rpcPlugin = new RpcPlugin(rpcConf);
         me.add(rpcPlugin);
 }
 

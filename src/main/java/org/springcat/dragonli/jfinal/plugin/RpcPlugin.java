@@ -3,21 +3,21 @@ package org.springcat.dragonli.jfinal.plugin;
 import com.jfinal.aop.AopManager;
 import com.jfinal.plugin.IPlugin;
 import org.springcat.dragonli.core.rpc.RpcInvoke;
-import org.springcat.dragonli.core.rpc.RpcConfInfo;
+import org.springcat.dragonli.core.rpc.RpcConf;
 import java.util.Map;
 
 public class RpcPlugin implements IPlugin {
 
-    private RpcConfInfo rpcConfInfo;
+    private RpcConf rpcConf;
 
-    public RpcPlugin(RpcConfInfo rpcConfInfo) {
-        this.rpcConfInfo = rpcConfInfo;
+    public RpcPlugin(RpcConf rpcConf) {
+        this.rpcConf = rpcConf;
     }
 
     @Override
     public boolean start() {
         try {
-            RpcInvoke.init(rpcConfInfo,(Map<Class<?>, Object> map) ->{
+            RpcInvoke.init(rpcConf,(Map<Class<?>, Object> map) ->{
                 for (Map.Entry<Class<?>, Object> classObjectEntry : map.entrySet()) {
                     AopManager.me().addSingletonObject(classObjectEntry.getKey(), classObjectEntry.getValue());
                 }

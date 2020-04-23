@@ -3,7 +3,7 @@ package org.springcat.dragonli.core.consul;
 import lombok.Data;
 
 @Data
-public class ConsulInfo {
+public class ConsulConf {
     private String ip;
     private int port;
 }
