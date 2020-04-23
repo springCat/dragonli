@@ -1,7 +1,7 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import org.hibernate.validator.HibernateValidator;
-import org.springcat.dragonli.core.rpc.exception.ValidateException;
+import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.IValidation;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -22,12 +22,16 @@ public class Jsr303Validation implements IValidation {
         validator = validatorFactory.getValidator();
     }
 
-    public void validate(Object jsonBean) throws ValidateException {
+    public String validate(Object jsonBean){
+        if(jsonBean == null){
+            return RpcExceptionCodes.REQUEST_NONNULL.getCode();
+        }
         //jsr303验证
         Set<ConstraintViolation<Object>> violations = validator.validate(jsonBean);
         if(violations.size() > 0){
             ConstraintViolation<Object> next = violations.iterator().next();
-            throw new ValidateException(next.getMessage());
+            return next.getMessage();
         }
+        return null;
     }
 }

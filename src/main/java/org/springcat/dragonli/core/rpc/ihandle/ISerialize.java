@@ -1,10 +1,11 @@
 package org.springcat.dragonli.core.rpc.ihandle;
 
+import org.springcat.dragonli.core.rpc.RpcResponse;
 import org.springcat.dragonli.core.rpc.exception.SerializeException;
 
 public interface ISerialize {
 
-     <T> T decode(String data, Class<T> type) throws SerializeException;
+     RpcResponse decode(String data, Class type) throws SerializeException;
 
      String encode(Object object) throws SerializeException;
 

@@ -1,13 +1,8 @@
 package org.springcat.dragonli.core.rpc;
 
-
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.LFUCache;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.retry.Retry;
 import lombok.SneakyThrows;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.exception.TransformException;
@@ -76,10 +71,13 @@ public class RpcInvoke {
      * @throws RpcException
      */
     @SneakyThrows
-    public static Object invoke(RpcRequest rpcRequest) throws RpcException{
+    public static RpcResponse invoke(RpcRequest rpcRequest) throws RpcException{
 
-        //1 校验参数,异常会抛出
-        validation.validate(rpcRequest.getRequestObj());
+        //1 校验参数,异常会中止流程
+        String code = validation.validate(rpcRequest.getRequestObj());
+        if(StrUtil.isNotBlank(code)){
+            return new RpcResponse(code);
+        }
 
         //2 serviceGetter
         List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(rpcRequest);

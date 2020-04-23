@@ -1,10 +1,7 @@
 package org.springcat.dragonli.core.rpc.ihandle;
 
-import org.springcat.dragonli.core.rpc.exception.ValidateException;
-
 public interface IValidation {
 
-     void validate(Object jsonBean) throws ValidateException;
+     String validate(Object jsonBean);
 
-     default void errorHandler(ValidateException exception){}
 }
