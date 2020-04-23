@@ -6,7 +6,6 @@ import org.springcat.dragonli.core.rpc.RpcInvoke;
 import org.springcat.dragonli.core.rpc.RpcConfInfo;
 import java.util.Map;
 
-
 public class RpcPlugin implements IPlugin {
 
     private RpcConfInfo rpcConfInfo;

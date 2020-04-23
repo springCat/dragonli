@@ -16,7 +16,7 @@ public abstract class JsonController extends Controller {
      * @return
      */
     public <T> T getJsonBean(Class<T> cls) {
-        T jsonBean = getAttr("$jsonbean");
+        T jsonBean = getAttr("$jsonbean$");
 
         if(jsonBean != null){
             return jsonBean;

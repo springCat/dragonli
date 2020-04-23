@@ -51,7 +51,6 @@ public class HttpclientTransform implements IHttpTransform {
                 setDefaultRequestConfig(requestConfig).
                 useSystemProperties();
 
-
         this.httpClient = httpClientBuilder.build();
     }
 

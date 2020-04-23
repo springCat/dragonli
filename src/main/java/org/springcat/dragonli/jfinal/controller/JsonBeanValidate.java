@@ -6,12 +6,10 @@ import com.jfinal.core.Controller;
 import com.jfinal.kit.JsonKit;
 import com.jfinal.kit.Ret;
 import org.hibernate.validator.HibernateValidator;
-import org.springcat.dragonli.core.rpc.exception.ValidateException;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
-
 
 public interface JsonBeanValidate extends Interceptor {
 
@@ -33,7 +31,6 @@ public interface JsonBeanValidate extends Interceptor {
         String rawData = controller.getRawData();
         try {
             Object jsonBean = JsonKit.parse(rawData, getClass());
-
             //自定义验证
             try {
                 //jsr303验证
@@ -45,9 +42,8 @@ public interface JsonBeanValidate extends Interceptor {
                 controller.renderJson(result);
                 return;
             }
-
             //验证通过,把json对象缓存起来,减少序列化次数
-            controller.setAttr("$jsonbean",jsonBean);
+            controller.setAttr("$jsonbean$",jsonBean);
             invocation.invoke();
         } catch (Exception exception){
             System.out.println(exception);
