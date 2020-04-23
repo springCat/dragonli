@@ -70,10 +70,7 @@
 	private BlogService blogService;
 
     public void test(){
-        BlogPara blogPara = new BlogPara();
-        blogPara.setId(1);
-        blogPara.setContent("content");
-        blogPara.setTitle("title");
+        BlogPara jsonBean = getJsonBean(BlogPara.class);
         BlogPara resp = blogService.json(blogPara);
         renderJson(resp);
     }

@@ -38,7 +38,7 @@ public class RpcInvoke {
     private static IServiceRegister serviceRegister;
 
     private static IValidation validation;
-    
+
     public static void init(RpcConf rpcConfPara, Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         rpcConf = rpcConfPara;
         //初始化负载均衡
@@ -78,7 +78,7 @@ public class RpcInvoke {
     @SneakyThrows
     public static Object invoke(RpcRequest rpcRequest) throws RpcException{
 
-        //1 校验参数
+        //1 校验参数,异常会抛出
         validation.validate(rpcRequest.getRequestObj());
 
         //2 serviceGetter
