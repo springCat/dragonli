@@ -9,7 +9,7 @@ import org.springcat.dragonli.core.consul.ConsulConf;
  */
 public enum SettingGroup{
 
-    consulConf(ConsulConf.class), appConf(AppConf.class), rpcConf(RpcConf.class);
+    consul(ConsulConf.class), application(AppConf.class), rpc(RpcConf.class);
 
     private Class cls;
 

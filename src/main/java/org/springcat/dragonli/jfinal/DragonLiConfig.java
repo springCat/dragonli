@@ -42,9 +42,9 @@ public abstract class DragonLiConfig extends JFinalConfig {
     @Override
     public void configPlugin(Plugins me) {
 
-        ConsulConf consulConf = SettingUtil.getConfBean(SettingGroup.consulConf);
-        AppConf appConf = SettingUtil.getConfBean(SettingGroup.appConf);
-        RpcConf rpcConf = SettingUtil.getConfBean(SettingGroup.rpcConf);
+        ConsulConf consulConf = SettingUtil.getConfBean(SettingGroup.consul);
+        AppConf appConf = SettingUtil.getConfBean(SettingGroup.application);
+        RpcConf rpcConf = SettingUtil.getConfBean(SettingGroup.rpc);
 
         //为了先从配置中心拉取配置
         me.add(new ConsulPlugin(consulConf, appConf));

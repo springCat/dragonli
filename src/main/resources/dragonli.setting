@@ -2,7 +2,7 @@
 ip = 127.0.0.1
 port = 8500
 
-[app]
+[application]
 name = jfinalDemo
 ip = 192.168.99.170
 port = 8080
