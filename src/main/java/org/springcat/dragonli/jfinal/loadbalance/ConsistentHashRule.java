@@ -2,6 +2,7 @@ package org.springcat.dragonli.jfinal.loadbalance;
 
 import cn.hutool.core.util.HashUtil;
 import com.ecwid.consul.v1.health.model.HealthService;
+import org.springcat.dragonli.core.registry.RegisterServerInfo;
 import org.springcat.dragonli.core.rpc.ILoadBalanceRule;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class ConsistentHashRule implements ILoadBalanceRule {
 
 
-    public HealthService choose(List<HealthService> serviceList, RpcRequest rpcRequest) {
+    public RegisterServerInfo choose(List<RegisterServerInfo> serviceList, RpcRequest rpcRequest) {
         if(serviceList == null || serviceList.size() == 0){
             return null;
         }

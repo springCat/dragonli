@@ -2,18 +2,16 @@ package org.springcat.dragonli.core.rpc;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
-import com.ecwid.consul.v1.health.model.HealthService;
-
+import org.springcat.dragonli.core.registry.RegisterServerInfo;
 import java.util.Map;
-
 
 public interface IHttpTransform {
 
 
       String post(String url, Map<String, String> headers, String request);
 
-      default Object post(RpcRequest rpcRequest, HealthService healthService){
-            String url = genUrl(rpcRequest, healthService);
+      default Object post(RpcRequest rpcRequest, RegisterServerInfo registerServerInfo){
+            String url = genUrl(rpcRequest, registerServerInfo);
             Map<String, String> headers = rpcRequest.getRpcHeader();
             ISerialize serialize = rpcRequest.getSerialize();
             String request = serialize.encode(rpcRequest.getRequestObj());
@@ -29,11 +27,11 @@ public interface IHttpTransform {
       }
 
 
-      default String genUrl(RpcRequest rpcRequest, HealthService healthService) {
+      default String genUrl(RpcRequest rpcRequest, RegisterServerInfo registerServerInfo) {
             String url = new StringBuilder("http://")
-                    .append(healthService.getService().getAddress())
+                    .append(registerServerInfo.getAddress())
                     .append(":")
-                    .append(healthService.getService().getPort())
+                    .append(registerServerInfo.getPort())
                     .append("/")
                     .append(StrUtil.lowerFirst(StrUtil.strip(rpcRequest.getClassName(),"Service")))
                     .append("/")

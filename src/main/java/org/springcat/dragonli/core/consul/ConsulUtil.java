@@ -31,8 +31,6 @@ public class ConsulUtil {
         return innterAppInfo;
     }
 
-    public static List<HealthService> getServiceList(String serviceName){
-        return client.getHealthServices(serviceName, HealthServicesRequest.newBuilder().build()).getValue();
-    }
+
 
 }

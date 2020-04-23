@@ -1,9 +1,15 @@
 package org.springcat.dragonli.core.registry;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.net.NetUtil;
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.agent.model.NewService;
+import com.ecwid.consul.v1.health.HealthServicesRequest;
+import com.ecwid.consul.v1.health.model.HealthService;
 import lombok.experimental.UtilityClass;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @UtilityClass
 public class ConsulRegister {
@@ -35,4 +41,18 @@ public class ConsulRegister {
     public String genServiceId(AppInfo appInfo){
         return appInfo.getName() + NetUtil.ipv4ToLong(appInfo.getIp());
     }
+
+
+    public  List<RegisterServerInfo> getServiceList(ConsulClient client,String serviceName){
+        List<RegisterServerInfo> list = new ArrayList<>();
+        List<HealthService> value = client.getHealthServices(serviceName, HealthServicesRequest.newBuilder().build()).getValue();
+        for (HealthService healthService : value) {
+            HealthService.Service service = healthService.getService();
+            RegisterServerInfo registerServerInfo = new RegisterServerInfo();
+            BeanUtil.copyProperties(service,registerServerInfo);
+            list.add(registerServerInfo);
+        }
+        return list;
+    }
+
 }

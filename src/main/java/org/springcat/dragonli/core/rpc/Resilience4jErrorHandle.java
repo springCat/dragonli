@@ -3,11 +3,10 @@ package org.springcat.dragonli.core.rpc;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
 import cn.hutool.core.util.StrUtil;
-import com.ecwid.consul.v1.health.model.HealthService;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.retry.Retry;
-
+import org.springcat.dragonli.core.registry.RegisterServerInfo;
 import java.time.Duration;
 import java.util.function.Supplier;
 
@@ -18,10 +17,10 @@ public class Resilience4jErrorHandle implements IErrorHandle {
     private LFUCache<String, Retry> retryCache = CacheUtil.newLFUCache(10000);
 
     @Override
-    public Supplier<Object> transformErrorHandle(IHttpTransform httpTransform, RpcRequest rpcRequest, HealthService healthService){
+    public Supplier<Object> transformErrorHandle(IHttpTransform httpTransform, RpcRequest rpcRequest, RegisterServerInfo registerServerInfo){
         String key = StrUtil.join("|",
-                healthService.getService().getAddress(),
-                healthService.getService().getPort(),
+                registerServerInfo.getAddress(),
+                registerServerInfo.getPort(),
                 rpcRequest.getClassName(),
                 rpcRequest.getMethodName());
 
@@ -41,7 +40,7 @@ public class Resilience4jErrorHandle implements IErrorHandle {
 
         Supplier<Object> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, () -> {
-                    return httpTransform.post(rpcRequest,healthService);
+                    return httpTransform.post(rpcRequest,registerServerInfo);
                 });
 
         decoratedSupplier = Retry

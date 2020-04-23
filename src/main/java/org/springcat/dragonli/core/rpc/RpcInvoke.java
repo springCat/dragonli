@@ -3,6 +3,8 @@ package org.springcat.dragonli.core.rpc;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.ecwid.consul.v1.health.model.HealthService;
+import org.springcat.dragonli.core.registry.RegisterServerInfo;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -57,10 +59,10 @@ public class RpcInvoke {
      */
     public static Object invoke(RpcRequest rpcRequest) throws RpcException {
         //serviceGetter
-        List<HealthService> serviceList = serviceRegister.getServiceList(rpcRequest);
+        List<RegisterServerInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
 
         //loaderBalance
-        HealthService choose = loadBalanceRule.choose(serviceList,rpcRequest);
+        RegisterServerInfo choose = loadBalanceRule.choose(serviceList,rpcRequest);
         if (choose == null) {
             log.error("can not find healthService");
             return null;

@@ -15,6 +15,6 @@ public class RpcInfo {
 
     private String errorHandleImplClass = "org.springcat.dragonli.core.rpc.Resilience4jErrorHandle";
 
-    private String serviceRegisterImplClass = "org.springcat.dragonli.core.rpc.ConsulServiceRegister";
+    private String serviceRegisterImplClass = "org.springcat.dragonli.core.registry.ConsulServiceRegister";
 
 }

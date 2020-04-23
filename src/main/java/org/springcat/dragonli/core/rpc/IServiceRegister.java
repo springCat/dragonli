@@ -1,9 +1,9 @@
 package org.springcat.dragonli.core.rpc;
 
-import com.ecwid.consul.v1.health.model.HealthService;
+import org.springcat.dragonli.core.registry.RegisterServerInfo;
 import java.util.List;
 
 public interface IServiceRegister {
 
-    List<HealthService> getServiceList(RpcRequest rpcRequest);
+    List<RegisterServerInfo> getServiceList(RpcRequest rpcRequest);
 }

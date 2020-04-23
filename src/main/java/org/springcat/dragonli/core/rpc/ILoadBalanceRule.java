@@ -1,9 +1,9 @@
 package org.springcat.dragonli.core.rpc;
+import org.springcat.dragonli.core.registry.RegisterServerInfo;
 
-import com.ecwid.consul.v1.health.model.HealthService;
 import java.util.List;
 
 public interface ILoadBalanceRule {
 
-    HealthService choose(List<HealthService> serviceList,RpcRequest rpcRequest);
+    RegisterServerInfo choose(List<RegisterServerInfo> serviceList, RpcRequest rpcRequest);
 }
