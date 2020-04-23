@@ -4,7 +4,7 @@ import com.jfinal.aop.AopManager;
 import com.jfinal.plugin.IPlugin;
 import org.springcat.dragonli.core.rpc.RpcInvoke;
 import org.springcat.dragonli.core.rpc.RpcInfo;
-import org.springcat.dragonli.core.validate.ValidationUtil;
+import org.springcat.dragonli.core.rpc.validate.ValidationUtil;
 import java.util.Map;
 
 

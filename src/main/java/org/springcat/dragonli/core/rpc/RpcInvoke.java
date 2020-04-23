@@ -2,8 +2,8 @@ package org.springcat.dragonli.core.rpc;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import com.ecwid.consul.v1.health.model.HealthService;
-import org.springcat.dragonli.core.registry.RegisterServerInfo;
+import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServerInfo;
+import org.springcat.dragonli.core.rpc.ihandle.*;
 
 import java.util.List;
 import java.util.Map;

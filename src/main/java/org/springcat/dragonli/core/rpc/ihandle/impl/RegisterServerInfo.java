@@ -1,4 +1,4 @@
-package org.springcat.dragonli.core.registry;
+package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import lombok.Data;
 

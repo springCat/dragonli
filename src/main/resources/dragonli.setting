@@ -13,8 +13,8 @@ checkTimout = 1s
 
 [rpc]
 scanPackages = com.demo
-serializeImplClass = org.springcat.dragonli.jfinal.serialize.FastJsonSerialize
-httpTransformImplClass = org.springcat.dragonli.jfinal.httpclient.HttpclientTransform
-loadBalanceRuleImplClass = org.springcat.dragonli.jfinal.loadbalance.ConsistentHashRule
+serializeImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.FastJsonSerialize
+httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
+loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
 
 

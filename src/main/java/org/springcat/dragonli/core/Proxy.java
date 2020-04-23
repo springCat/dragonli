@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import org.springcat.dragonli.core.rpc.RpcException;
 import org.springcat.dragonli.core.rpc.RpcInvoke;
 import org.springcat.dragonli.core.rpc.RpcRequest;
-import org.springcat.dragonli.core.validate.ValidateException;
+import org.springcat.dragonli.core.rpc.validate.ValidateException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

@@ -1,4 +1,4 @@
-package org.springcat.dragonli.core.validate;
+package org.springcat.dragonli.core.rpc.validate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

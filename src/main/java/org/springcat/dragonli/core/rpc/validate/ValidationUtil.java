@@ -1,4 +1,4 @@
-package org.springcat.dragonli.core.validate;
+package org.springcat.dragonli.core.rpc.validate;
 import lombok.experimental.UtilityClass;
 import org.hibernate.validator.HibernateValidator;
 import javax.validation.ConstraintViolation;

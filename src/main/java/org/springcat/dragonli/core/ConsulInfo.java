@@ -1,4 +1,4 @@
-package org.springcat.dragonli.core.consul;
+package org.springcat.dragonli.core;
 
 import lombok.Data;
 

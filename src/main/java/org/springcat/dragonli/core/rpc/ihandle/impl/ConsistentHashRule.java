@@ -1,9 +1,7 @@
-package org.springcat.dragonli.jfinal.loadbalance;
+package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import cn.hutool.core.util.HashUtil;
-import com.ecwid.consul.v1.health.model.HealthService;
-import org.springcat.dragonli.core.registry.RegisterServerInfo;
-import org.springcat.dragonli.core.rpc.ILoadBalanceRule;
+import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 
 import java.util.List;

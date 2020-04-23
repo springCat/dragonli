@@ -1,7 +1,7 @@
-package org.springcat.dragonli.jfinal.serialize;
+package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import com.jfinal.json.FastJson;
-import org.springcat.dragonli.core.rpc.ISerialize;
+import org.springcat.dragonli.core.rpc.ihandle.ISerialize;
 
 public class FastJsonSerialize implements ISerialize {
     @Override

@@ -1,4 +1,4 @@
-package org.springcat.dragonli.jfinal.httpclient;
+package org.springcat.dragonli.core.rpc.ihandle.impl;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;;
@@ -10,7 +10,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springcat.dragonli.core.rpc.IHttpTransform;
+import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;

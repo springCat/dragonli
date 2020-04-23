@@ -1,12 +1,8 @@
-package org.springcat.dragonli.core.consul;
+package org.springcat.dragonli.core;
 
 import com.ecwid.consul.v1.ConsulClient;
-import com.ecwid.consul.v1.health.HealthServicesRequest;
-import com.ecwid.consul.v1.health.model.HealthService;
 import lombok.experimental.UtilityClass;
 import org.springcat.dragonli.core.registry.AppInfo;
-
-import java.util.List;
 
 @UtilityClass
 public class ConsulUtil {

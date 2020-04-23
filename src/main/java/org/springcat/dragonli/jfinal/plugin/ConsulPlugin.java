@@ -2,9 +2,9 @@ package org.springcat.dragonli.jfinal.plugin;
 
 import com.jfinal.plugin.IPlugin;
 import org.springcat.dragonli.core.config.ConfigUtil;
-import org.springcat.dragonli.core.consul.ConsulUtil;
+import org.springcat.dragonli.core.ConsulUtil;
 import org.springcat.dragonli.core.registry.AppInfo;
-import org.springcat.dragonli.core.consul.ConsulInfo;
+import org.springcat.dragonli.core.ConsulInfo;
 import org.springcat.dragonli.core.registry.ConsulRegister;
 
 public class ConsulPlugin implements IPlugin {

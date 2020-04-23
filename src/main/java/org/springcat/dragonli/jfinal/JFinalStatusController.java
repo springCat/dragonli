@@ -2,7 +2,7 @@ package org.springcat.dragonli.jfinal;
 
 import com.jfinal.config.Routes;
 import com.jfinal.core.Controller;
-import org.springcat.dragonli.core.consul.ConsulUtil;
+import org.springcat.dragonli.core.ConsulUtil;
 
 
 public class JFinalStatusController extends Controller {

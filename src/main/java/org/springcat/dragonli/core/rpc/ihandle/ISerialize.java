@@ -1,4 +1,4 @@
-package org.springcat.dragonli.core.rpc;
+package org.springcat.dragonli.core.rpc.ihandle;
 
 public interface ISerialize {
      <T> T decode(String data, Class<T> type) ;

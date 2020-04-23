@@ -9,7 +9,7 @@ import org.springcat.dragonli.core.rpc.RpcUtil;
 import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
 import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
 import org.springcat.dragonli.core.registry.AppInfo;
-import org.springcat.dragonli.core.consul.ConsulInfo;
+import org.springcat.dragonli.core.ConsulInfo;
 import org.springcat.dragonli.core.config.SettingGroup;
 import org.springcat.dragonli.core.config.SettingUtil;
 

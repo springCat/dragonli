@@ -1,8 +1,10 @@
-package org.springcat.dragonli.core.rpc;
+package org.springcat.dragonli.core.rpc.ihandle;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
-import org.springcat.dragonli.core.registry.RegisterServerInfo;
+import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServerInfo;
+import org.springcat.dragonli.core.rpc.RpcRequest;
+
 import java.util.Map;
 
 public interface IHttpTransform {
