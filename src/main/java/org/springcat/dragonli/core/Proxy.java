@@ -2,10 +2,10 @@ package org.springcat.dragonli.core;
 
 import cn.hutool.aop.ProxyUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springcat.dragonli.core.rpc.RpcException;
+import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.RpcInvoke;
 import org.springcat.dragonli.core.rpc.RpcRequest;
-import org.springcat.dragonli.core.rpc.validate.ValidateException;
+import org.springcat.dragonli.core.rpc.exception.ValidateException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

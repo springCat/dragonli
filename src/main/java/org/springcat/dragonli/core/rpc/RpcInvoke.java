@@ -2,6 +2,8 @@ package org.springcat.dragonli.core.rpc;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import org.springcat.dragonli.core.rpc.exception.RpcException;
+import org.springcat.dragonli.core.rpc.exception.ValidateException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServerInfo;
 import org.springcat.dragonli.core.rpc.ihandle.*;
 
@@ -17,14 +19,13 @@ public class RpcInvoke {
     private static ILoadBalanceRule loadBalanceRule;
     private static ISerialize serialize;
     private static IHttpTransform httpTransform;
-    private static RpcInvoke invoke;
     private static RpcInfo rpcInfo;
     private static IErrorHandle errorHandle;
     private static IServiceRegister serviceRegister;
+    private static IValidation validation;
 
     public static void init(RpcInfo rpcInfo1,Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         rpcInfo = rpcInfo1;
-
         //初始化负载均衡
         loadBalanceRule = (ILoadBalanceRule) Class.forName(rpcInfo.getLoadBalanceRuleImplClass()).newInstance();
         //初始化序列化
@@ -35,6 +36,8 @@ public class RpcInvoke {
         errorHandle = (IErrorHandle) Class.forName(rpcInfo.getErrorHandleImplClass()).newInstance();
         //初始化服务列表获取
         serviceRegister = (IServiceRegister) Class.forName(rpcInfo.getServiceRegisterImplClass()).newInstance();
+        //初始化验证
+        validation = (IValidation) Class.forName(rpcInfo.getIValidation()).newInstance();
 
 
         //初始化接口代理类
@@ -42,9 +45,6 @@ public class RpcInvoke {
         Map<Class<?>, Object> implMap = RpcUtil.convert2RpcServiceImpl(services);
         consumer.accept(implMap);
     }
-
-
-
 
     /**
      *
@@ -57,11 +57,15 @@ public class RpcInvoke {
      * @return
      * @throws RpcException
      */
-    public static Object invoke(RpcRequest rpcRequest) throws RpcException {
-        //serviceGetter
+    public static Object invoke(RpcRequest rpcRequest) throws RpcException, ValidateException {
+
+        //1 校验参数
+        validation.validate(rpcRequest.getRequestObj());
+
+        //2 serviceGetter
         List<RegisterServerInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
 
-        //loaderBalance
+        //3 loaderBalance
         RegisterServerInfo choose = loadBalanceRule.choose(serviceList,rpcRequest);
         if (choose == null) {
             log.error("can not find healthService");
@@ -70,7 +74,7 @@ public class RpcInvoke {
 
         rpcRequest.setSerialize(serialize);
 
-        //transform
+        //4 errorHandle and httpTransform
         try {
             Supplier<Object> supplier = errorHandle.transformErrorHandle(httpTransform,rpcRequest, choose);
             return supplier.get();

@@ -4,7 +4,6 @@ import com.jfinal.aop.AopManager;
 import com.jfinal.plugin.IPlugin;
 import org.springcat.dragonli.core.rpc.RpcInvoke;
 import org.springcat.dragonli.core.rpc.RpcInfo;
-import org.springcat.dragonli.core.rpc.validate.ValidationUtil;
 import java.util.Map;
 
 
@@ -19,7 +18,6 @@ public class RpcPlugin implements IPlugin {
     @Override
     public boolean start() {
         try {
-            ValidationUtil.init();
             RpcInvoke.init(rpcInfo,(Map<Class<?>, Object> map) ->{
                 for (Map.Entry<Class<?>, Object> classObjectEntry : map.entrySet()) {
                     AopManager.me().addSingletonObject(classObjectEntry.getKey(), classObjectEntry.getValue());

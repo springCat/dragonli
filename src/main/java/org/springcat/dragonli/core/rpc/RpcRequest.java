@@ -5,7 +5,7 @@ import cn.hutool.core.util.ArrayUtil;
 import lombok.Data;
 import org.springcat.dragonli.core.Context;
 import org.springcat.dragonli.core.rpc.ihandle.ISerialize;
-import org.springcat.dragonli.core.rpc.validate.ValidateException;
+import org.springcat.dragonli.core.rpc.exception.ValidateException;
 
 import java.lang.reflect.Method;
 import java.util.Map;

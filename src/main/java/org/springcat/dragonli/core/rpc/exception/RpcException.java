@@ -1,4 +1,4 @@
-package org.springcat.dragonli.core.rpc;
+package org.springcat.dragonli.core.rpc.exception;
 
 
 public class RpcException extends Throwable {

@@ -15,22 +15,18 @@ import java.util.List;
 
 public class ConsulServiceRegister implements IServiceRegister {
 
-    private static TimedCache<String, List<RegisterServerInfo>> serviceCache = CacheUtil.newTimedCache(1000);
-
+    //need cache
     public List<RegisterServerInfo> getServiceList(RpcRequest rpcRequest){
-        List<RegisterServerInfo> registerServerInfoList = serviceCache.get(rpcRequest.getServiceName(), () -> {
-            ConsulClient client = ConsulUtil.client();
-            List<RegisterServerInfo> list = new ArrayList<>();
-            List<HealthService> value = client.getHealthServices(rpcRequest.getServiceName(), HealthServicesRequest.newBuilder().build()).getValue();
-            for (HealthService healthService : value) {
-                HealthService.Service service = healthService.getService();
-                RegisterServerInfo registerServerInfo = new RegisterServerInfo();
-                BeanUtil.copyProperties(service, registerServerInfo);
-                list.add(registerServerInfo);
-            }
-            return list;
-        });
-        return registerServerInfoList;
+        ConsulClient client = ConsulUtil.client();
+        List<RegisterServerInfo> list = new ArrayList<>();
+        List<HealthService> value = client.getHealthServices(rpcRequest.getServiceName(), HealthServicesRequest.newBuilder().build()).getValue();
+        for (HealthService healthService : value) {
+            HealthService.Service service = healthService.getService();
+            RegisterServerInfo registerServerInfo = new RegisterServerInfo();
+            BeanUtil.copyProperties(service, registerServerInfo);
+            list.add(registerServerInfo);
+        }
+        return list;
     }
 
 

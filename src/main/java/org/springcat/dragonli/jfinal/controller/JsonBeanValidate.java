@@ -5,14 +5,28 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 import com.jfinal.kit.JsonKit;
 import com.jfinal.kit.Ret;
-import org.springcat.dragonli.core.rpc.validate.ValidateException;
-import org.springcat.dragonli.core.rpc.validate.ValidationUtil;
+import org.hibernate.validator.HibernateValidator;
+import org.springcat.dragonli.core.rpc.exception.ValidateException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.util.Set;
 
 
 public interface JsonBeanValidate extends Interceptor {
 
+     Validator validator = Validation.byProvider(HibernateValidator.class).configure().failFast(false).buildValidatorFactory().getValidator();
 
-    default void otherValidate(Object obj) throws ValidateException {}
+     default void validate(Object jsonBean) throws Throwable {
+        //jsr303验证
+        Set<ConstraintViolation<Object>> violations = validator.validate(jsonBean);
+        if(violations.size() > 0){
+            ConstraintViolation<Object> next = violations.iterator().next();
+            throw new Throwable(next.getMessage());
+        }
+    }
+
+    default void otherValidate(Object obj) throws Throwable {}
 
     default void intercept(Invocation invocation) {
         Controller controller = invocation.getController();
@@ -23,11 +37,11 @@ public interface JsonBeanValidate extends Interceptor {
             //自定义验证
             try {
                 //jsr303验证
-                ValidationUtil.validate(jsonBean);
+                validate(jsonBean);
                 //用户自定义验证
                 otherValidate(jsonBean);
-            } catch (ValidateException e) {
-                Ret result = Ret.create().set("code", e.getCode());
+            } catch (Throwable e) {
+                Ret result = Ret.create().set("code", e.getMessage());
                 controller.renderJson(result);
                 return;
             }
