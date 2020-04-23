@@ -9,4 +9,8 @@ import java.util.List;
 public interface IServiceRegister {
 
     List<RegisterServerInfo> getServiceList(RpcRequest rpcRequest) throws ServiceNotFindException;
+
+    default void errorHandler(ServiceNotFindException exception){
+
+    }
 }

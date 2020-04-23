@@ -6,7 +6,7 @@ import cn.hutool.core.lang.Dict;
 import com.ecwid.consul.v1.Response;
 import com.ecwid.consul.v1.kv.model.GetValue;
 import org.springcat.dragonli.core.registry.AppInfo;
-import org.springcat.dragonli.core.ConsulUtil;
+import org.springcat.dragonli.core.consul.ConsulUtil;
 
 import java.util.List;
 

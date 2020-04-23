@@ -1,7 +1,6 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import lombok.Data;
-
 import java.util.List;
 import java.util.Map;
 

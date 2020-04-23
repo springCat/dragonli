@@ -4,7 +4,6 @@ import cn.hutool.core.util.HashUtil;
 import org.springcat.dragonli.core.rpc.exception.LoadBalanceException;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
 import org.springcat.dragonli.core.rpc.RpcRequest;
-
 import java.util.List;
 
 public class ConsistentHashRule implements ILoadBalanceRule {

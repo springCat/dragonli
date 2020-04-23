@@ -12,7 +12,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springcat.dragonli.core.rpc.exception.TransformException;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 

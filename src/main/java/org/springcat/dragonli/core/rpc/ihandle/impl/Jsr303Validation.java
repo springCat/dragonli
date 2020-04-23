@@ -1,6 +1,5 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
 
-import lombok.experimental.UtilityClass;
 import org.hibernate.validator.HibernateValidator;
 import org.springcat.dragonli.core.rpc.exception.ValidateException;
 import org.springcat.dragonli.core.rpc.ihandle.IValidation;

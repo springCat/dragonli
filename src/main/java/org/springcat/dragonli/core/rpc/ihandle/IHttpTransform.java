@@ -1,7 +1,6 @@
 package org.springcat.dragonli.core.rpc.ihandle;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.log.Log;
 import org.springcat.dragonli.core.rpc.exception.TransformException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServerInfo;
 import org.springcat.dragonli.core.rpc.RpcRequest;
@@ -24,6 +23,10 @@ public interface IHttpTransform {
                     .append("/")
                     .append(rpcRequest.getMethodName()).toString();
             return url;
+      }
+
+      default void errorHandler(TransformException TransformException){
+
       }
 
 }

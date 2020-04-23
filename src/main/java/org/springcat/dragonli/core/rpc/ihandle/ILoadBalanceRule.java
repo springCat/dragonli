@@ -8,4 +8,8 @@ import java.util.List;
 public interface ILoadBalanceRule {
 
     RegisterServerInfo choose(List<RegisterServerInfo> serviceList, RpcRequest rpcRequest) throws LoadBalanceException;
+
+    default void errorHandler(LoadBalanceException exception){
+
+    }
 }

@@ -1,13 +1,14 @@
 package org.springcat.dragonli.core.rpc;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
-import com.jfinal.core.Controller;
-import lombok.experimental.UtilityClass;
 import org.springcat.dragonli.core.Proxy;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.Service;
 import java.util.*;
+import java.util.function.Consumer;
 
 
 public class RpcUtil {
@@ -48,6 +49,10 @@ public class RpcUtil {
             ip =  request.getRemoteAddr();
         }
         return ip;
+    }
+
+    public static void initRpcServicesHook(List<Class<?>> services){
+
     }
 
 
