@@ -11,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
+import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class HttpclientTransform implements IHttpTransform {
             }
             return null;
         } catch (Exception e) {
-            throw new RpcException(e.getMessage());
+            throw new RpcException(RpcExceptionCodes.ERR_TRANSFORM_INVOKE.getCode());
         }
     }
 

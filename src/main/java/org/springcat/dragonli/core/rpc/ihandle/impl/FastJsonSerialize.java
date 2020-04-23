@@ -3,6 +3,7 @@ package org.springcat.dragonli.core.rpc.ihandle.impl;
 import com.jfinal.json.FastJson;
 import org.springcat.dragonli.core.rpc.RpcResponse;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
+import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.ISerialize;
 
 /**
@@ -15,7 +16,7 @@ public class FastJsonSerialize implements ISerialize {
         try {
             return (RpcResponse) FastJson.getJson().parse(data,type);
         }catch (Exception e){
-            throw new RpcException(e.getMessage());
+            throw new RpcException(RpcExceptionCodes.ERR_REQUEST_SERIALIZE.getCode());
         }
 
     }
@@ -25,7 +26,7 @@ public class FastJsonSerialize implements ISerialize {
         try {
             return FastJson.getJson().toJson(object);
         }catch (Exception e){
-            throw new RpcException(e.getMessage());
+            throw new RpcException(RpcExceptionCodes.ERR_RESPONSE_DESERIALIZE.getCode());
         }
     }
 

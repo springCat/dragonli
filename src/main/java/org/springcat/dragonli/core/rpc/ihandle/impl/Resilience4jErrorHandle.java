@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.function.Supplier;
 
 /**
- * 用Resilience4j 来处理失败重试和熔断,后续的限流也可以用他来实现
+ * 用Resilience4j 来处理失败重试和熔断,待完善,后续的限流也可以用他来实现
  */
 public class Resilience4jErrorHandle implements IErrorHandle {
 
@@ -20,7 +20,6 @@ public class Resilience4jErrorHandle implements IErrorHandle {
 
     @Override
     public <T> Supplier<T> decorateCircuitBreaker(String key,Supplier<T> supplier) {
-
         CircuitBreaker circuitBreaker = circuitBreakerCache.get(key, () -> {
             CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig
                     .custom()
@@ -30,7 +29,6 @@ public class Resilience4jErrorHandle implements IErrorHandle {
                     .build();
             return CircuitBreaker.of(key, circuitBreakerConfig);
         });
-
         return  CircuitBreaker.decorateSupplier(circuitBreaker, supplier);
     }
 
@@ -39,9 +37,7 @@ public class Resilience4jErrorHandle implements IErrorHandle {
         Retry retry = retryCache.get(key, () -> {
             return Retry.ofDefaults(key);
         });
-
         return Retry.decorateSupplier(retry, supplier);
-
     }
 
 }

@@ -6,6 +6,7 @@ import com.ecwid.consul.v1.health.HealthServicesRequest;
 import com.ecwid.consul.v1.health.model.HealthService;
 import org.springcat.dragonli.core.consul.ConsulUtil;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
+import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.IServiceRegister;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class ConsulServiceRegister implements IServiceRegister {
             }
             return list;
         }catch (Exception e){
-            throw new RpcException(e.getMessage());
+            throw new RpcException(RpcExceptionCodes.ERR_SERVICE_NOT_FIND.getCode());
         }
     }
 

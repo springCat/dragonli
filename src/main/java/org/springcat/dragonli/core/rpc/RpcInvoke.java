@@ -78,7 +78,7 @@ public class RpcInvoke {
 
         //2 serviceGetter
         List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
-
+        
         //3 loaderBalance
         RegisterServiceInfo choose = loadBalanceRule.choose(serviceList,rpcRequest);
 

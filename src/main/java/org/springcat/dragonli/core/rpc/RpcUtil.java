@@ -6,8 +6,6 @@ import org.springcat.dragonli.core.Proxy;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-
-
 public class RpcUtil {
 
     public static List<Class<?>> scanRpcService(String scanPackages){
