@@ -1,16 +1,15 @@
 package org.springcat.dragonli.core.rpc;
 
+
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
-import org.springcat.dragonli.core.rpc.exception.ValidateException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServerInfo;
 import org.springcat.dragonli.core.rpc.ihandle.*;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class RpcInvoke {
 
@@ -24,8 +23,8 @@ public class RpcInvoke {
     private static IServiceRegister serviceRegister;
     private static IValidation validation;
 
-    public static void init(RpcInfo rpcInfo1,Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        rpcInfo = rpcInfo1;
+    public static void init(RpcInfo rpcInfoPara,Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        rpcInfo = rpcInfoPara;
         //初始化负载均衡
         loadBalanceRule = (ILoadBalanceRule) Class.forName(rpcInfo.getLoadBalanceRuleImplClass()).newInstance();
         //初始化序列化
@@ -39,9 +38,10 @@ public class RpcInvoke {
         //初始化验证
         validation = (IValidation) Class.forName(rpcInfo.getIValidation()).newInstance();
 
-
         //初始化接口代理类
         List<Class<?>> services = RpcUtil.scanRpcService(rpcInfo.getScanPackages());
+
+        //初始化
         Map<Class<?>, Object> implMap = RpcUtil.convert2RpcServiceImpl(services);
         consumer.accept(implMap);
     }
@@ -50,14 +50,14 @@ public class RpcInvoke {
      *
      *
      *  method -> buildRpcRequest -> serialize  -> loaderBalance  -> transform  -> deserialize -> return
-     *                                              |                   |                           |
-     *                                              ------------->   errorHandle   ---------------->
+     *                                                                 |
+     *                                                              errorHandle
      *
      * @param rpcRequest
      * @return
      * @throws RpcException
      */
-    public static Object invoke(RpcRequest rpcRequest) throws RpcException, ValidateException {
+    public static Object invoke(RpcRequest rpcRequest) throws RpcException{
 
         //1 校验参数
         validation.validate(rpcRequest.getRequestObj());
@@ -67,20 +67,27 @@ public class RpcInvoke {
 
         //3 loaderBalance
         RegisterServerInfo choose = loadBalanceRule.choose(serviceList,rpcRequest);
-        if (choose == null) {
-            log.error("can not find healthService");
-            return null;
+
+        //4 serialize encode
+        String body = serialize.encode(rpcRequest.getRequestObj());
+
+        //5 Transform invoke
+        String url = httpTransform.genUrl(rpcRequest,choose);
+        String resp = httpTransform.post(url, rpcRequest.getRpcHeader(), body);
+
+        //6 serialize decode
+        if(StrUtil.isNotBlank(resp)){
+            return serialize.decode(resp, rpcRequest.getReturnType());
         }
 
-        rpcRequest.setSerialize(serialize);
-
-        //4 errorHandle and httpTransform
-        try {
-            Supplier<Object> supplier = errorHandle.transformErrorHandle(httpTransform,rpcRequest, choose);
-            return supplier.get();
-        } catch (Exception e) {
-            throw new RpcException(e.getMessage());
-        }
+//        //4 errorHandle and httpTransform
+//        try {
+//            Supplier<Object> supplier = errorHandle.transformErrorHandle(transform,rpcRequest, choose);
+//            return supplier.get();
+//        } catch (Exception e) {
+//            throw new RpcException(e.getMessage());
+//        }
+        return null;
     }
 
 

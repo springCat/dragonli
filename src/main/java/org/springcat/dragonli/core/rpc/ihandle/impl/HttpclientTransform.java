@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.springcat.dragonli.core.rpc.exception.TransformException;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -56,21 +57,21 @@ public class HttpclientTransform implements IHttpTransform {
     }
 
     @Override
-    public String post(String url, Map<String, String> headers, String request){
-        HttpPost httpPost = new HttpPost(url);
-        addHeadersToRequest(httpPost, headers);
-        HttpResponse httpResponse = null;
+    public String post(String url, Map<String, String> headers, String request) throws TransformException {
         try {
+            HttpPost httpPost = new HttpPost(url);
+            addHeadersToRequest(httpPost, headers);
+            HttpResponse httpResponse = null;
             httpPost.setEntity(new StringEntity(request));
             httpResponse = httpClient.execute(httpPost);
             if(httpResponse.getStatusLine().getStatusCode() == 200) {
                 String resp = IoUtil.read(httpResponse.getEntity().getContent(), Charset.defaultCharset());
                 return resp;
             }
-        } catch (IOException e) {
-            log.error(e.getMessage());
+            return null;
+        } catch (Exception e) {
+            throw new TransformException(e.getMessage());
         }
-        return null;
     }
 
 
