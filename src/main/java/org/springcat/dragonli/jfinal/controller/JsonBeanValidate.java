@@ -1,6 +1,5 @@
 package org.springcat.dragonli.jfinal.controller;
 
-
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;

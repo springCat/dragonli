@@ -13,4 +13,8 @@ public class RpcInfo {
 
     private String loadBalanceRuleImplClass;
 
+    private String errorHandleImplClass = "org.springcat.dragonli.core.rpc.Resilience4jErrorHandle";
+
+    private String serviceRegisterImplClass = "org.springcat.dragonli.core.rpc.ConsulServiceRegister";
+
 }

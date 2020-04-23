@@ -1,9 +1,7 @@
 package org.springcat.dragonli.jfinal.httpclient;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
-import com.ecwid.consul.v1.health.model.HealthService;
-import org.apache.http.HttpEntity;
+import cn.hutool.log.LogFactory;;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -13,8 +11,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springcat.dragonli.core.rpc.IHttpTransform;
-import org.springcat.dragonli.core.rpc.RpcRequest;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;

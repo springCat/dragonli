@@ -2,7 +2,7 @@ package org.springcat.dragonli.core.config;
 
 import org.springcat.dragonli.core.rpc.RpcInfo;
 import org.springcat.dragonli.core.registry.AppInfo;
-import org.springcat.dragonli.core.registry.ConsulInfo;
+import org.springcat.dragonli.core.consul.ConsulInfo;
 
 public enum SettingGroup{
 

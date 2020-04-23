@@ -19,8 +19,8 @@ public class ConsulUtil {
         innterAppInfo = appInfo;
     }
 
-    public static void init(String ip,int port){
-        client = new ConsulClient(ip,port);
+    public static void init(ConsulInfo consulInfo){
+        client = new ConsulClient(consulInfo.getIp(),consulInfo.getPort());
     }
 
     public static ConsulClient client(){
