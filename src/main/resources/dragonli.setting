@@ -13,8 +13,13 @@ checkTimout = 1s
 
 [rpc]
 scanPackages = com.demo
+
+validationImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Jsr303Validation
 serializeImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.FastJsonSerialize
 httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
 loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
+errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
+serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceRegister
+
 
 

@@ -7,7 +7,7 @@ public class RpcConfInfo {
 
     private String scanPackages;
 
-    private String IValidation = "org.springcat.dragonli.core.rpc.ihandle.impl.Jsr303Validation";
+    private String validationImplClass = "org.springcat.dragonli.core.rpc.ihandle.impl.Jsr303Validation";
 
     private String serializeImplClass = "org.springcat.dragonli.core.rpc.ihandle.impl.FastJsonSerialize";
 
