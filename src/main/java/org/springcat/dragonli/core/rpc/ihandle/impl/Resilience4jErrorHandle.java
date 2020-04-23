@@ -9,6 +9,9 @@ import org.springcat.dragonli.core.rpc.ihandle.IErrorHandle;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+/**
+ * 用Resilience4j 来处理失败重试和熔断,后续的限流也可以用他来实现
+ */
 public class Resilience4jErrorHandle implements IErrorHandle {
 
     private LFUCache<String, CircuitBreaker> circuitBreakerCache = CacheUtil.newLFUCache(10000);

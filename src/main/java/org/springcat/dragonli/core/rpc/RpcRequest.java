@@ -11,6 +11,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * 整个rpc请求的参数封装类
+ */
 @Data
 public class RpcRequest{
 

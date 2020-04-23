@@ -4,7 +4,11 @@ import com.jfinal.json.FastJson;
 import org.springcat.dragonli.core.rpc.exception.SerializeException;
 import org.springcat.dragonli.core.rpc.ihandle.ISerialize;
 
+/**
+ * 默认fastjson
+ */
 public class FastJsonSerialize implements ISerialize {
+
     @Override
     public <T> T decode(String data, Class<T> type) throws SerializeException {
         try {
@@ -23,6 +27,5 @@ public class FastJsonSerialize implements ISerialize {
             throw new SerializeException(e.getMessage());
         }
     }
-
 
 }

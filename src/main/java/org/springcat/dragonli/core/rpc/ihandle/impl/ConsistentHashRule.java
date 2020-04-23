@@ -6,10 +6,12 @@ import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.List;
 
+/**
+ * 默认负载均衡采用用户份id一致性hash策略
+ */
 public class ConsistentHashRule implements ILoadBalanceRule {
 
-
-    public RegisterServerInfo choose(List<RegisterServerInfo> serviceList, RpcRequest rpcRequest) throws LoadBalanceException {
+    public RegisterServiceInfo choose(List<RegisterServiceInfo> serviceList, RpcRequest rpcRequest) throws LoadBalanceException {
         try {
             String loaderBalanceFlag = rpcRequest.getRpcHeader().getOrDefault("client-ip", "");
             int i = consistentHash(HashUtil.murmur32(loaderBalanceFlag.getBytes()), serviceList.size());

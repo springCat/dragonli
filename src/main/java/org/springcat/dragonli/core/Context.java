@@ -1,10 +1,13 @@
 package org.springcat.dragonli.core;
 
 import cn.hutool.core.lang.Dict;
-
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * 用于跨参数方法传递,大部分场景都在系统框架层面,应用层面应该慎重使用
+ */
 public class Context {
 
     /**

@@ -8,6 +8,12 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ConsulRegister {
 
+    /**
+     * 服务注册
+     * @param client
+     * @param appConf
+     * @throws Exception
+     */
     public void register(ConsulClient client, AppConf appConf) throws Exception{
         NewService application = new NewService();
         application.setName(appConf.getName());
@@ -26,12 +32,23 @@ public class ConsulRegister {
         client.agentServiceRegister(application);
     }
 
+    /**
+     * 服务注销
+     * @param client
+     * @param appConf
+     * @throws Exception
+     */
     public void unregister(ConsulClient client, AppConf appConf) throws Exception{
         String appId = genServiceId(appConf);
         client.agentCheckDeregister("service:"+appId);
         client.agentServiceDeregister(appId);
     }
 
+    /**
+     * 生成服务id,每个服务实例唯一
+     * @param appConf
+     * @return
+     */
     public String genServiceId(AppConf appConf){
         return appConf.getName() + NetUtil.ipv4ToLong(appConf.getIp());
     }

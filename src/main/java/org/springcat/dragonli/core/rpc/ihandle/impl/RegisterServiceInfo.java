@@ -4,8 +4,11 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 服务信息封装类,用于隔离consul的类注入到框架的代码中,属性和consul service保持一致
+ */
 @Data
-public class RegisterServerInfo {
+public class RegisterServiceInfo {
 
     private String id;
 

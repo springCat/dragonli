@@ -15,6 +15,9 @@ import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+/**
+ * 默认使用httpclient 单例连接池方式
+ */
 public class HttpclientTransform implements IHttpTransform {
 
     private static final Log log = LogFactory.get(HttpclientTransform.class);

@@ -10,6 +10,9 @@ import org.springcat.dragonli.core.rpc.exception.ValidateException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+/**
+ * rpc服务入口,用于包装服务接口生成实现类的实列,把方法调用转换为远程调用
+ */
 public class Proxy {
 
     private static RpcInvoke invoke = new RpcInvoke();

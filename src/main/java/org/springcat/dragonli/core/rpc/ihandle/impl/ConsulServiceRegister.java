@@ -11,19 +11,22 @@ import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 默认为consul服务注册中心,因为consul agent是部署在本机的,暂时不加缓存,后续压测后再看
+ */
 public class ConsulServiceRegister implements IServiceRegister {
 
     //need cache
-    public List<RegisterServerInfo> getServiceList(RpcRequest rpcRequest) throws ServiceNotFindException {
+    public List<RegisterServiceInfo> getServiceList(RpcRequest rpcRequest) throws ServiceNotFindException {
         try {
             ConsulClient client = ConsulUtil.client();
-            List<RegisterServerInfo> list = new ArrayList<>();
+            List<RegisterServiceInfo> list = new ArrayList<>();
             List<HealthService> value = client.getHealthServices(rpcRequest.getServiceName(), HealthServicesRequest.newBuilder().build()).getValue();
             for (HealthService healthService : value) {
                 HealthService.Service service = healthService.getService();
-                RegisterServerInfo registerServerInfo = new RegisterServerInfo();
-                BeanUtil.copyProperties(service, registerServerInfo);
-                list.add(registerServerInfo);
+                RegisterServiceInfo registerServiceInfo = new RegisterServiceInfo();
+                BeanUtil.copyProperties(service, registerServiceInfo);
+                list.add(registerServiceInfo);
             }
             return list;
         }catch (Exception e){

@@ -11,29 +11,34 @@ import io.github.resilience4j.retry.Retry;
 import lombok.SneakyThrows;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.exception.TransformException;
-import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServerInfo;
+import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
 import org.springcat.dragonli.core.rpc.ihandle.*;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * 整个框架的核心类
+ */
 public class RpcInvoke {
 
     private static final Log log = LogFactory.get(RpcInvoke.class);
 
-    private static ILoadBalanceRule loadBalanceRule;
-    private static ISerialize serialize;
-    private static IHttpTransform httpTransform;
     private static RpcConf rpcConf;
+
+    private static ILoadBalanceRule loadBalanceRule;
+
+    private static ISerialize serialize;
+
+    private static IHttpTransform httpTransform;
+
     private static IErrorHandle errorHandle;
+
     private static IServiceRegister serviceRegister;
+
     private static IValidation validation;
-
-    private LFUCache<String, CircuitBreaker> circuitBreakerCache = CacheUtil.newLFUCache(10000);
-    private LFUCache<String, Retry> retryCache = CacheUtil.newLFUCache(10000);
-
-
+    
     public static void init(RpcConf rpcConfPara, Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         rpcConf = rpcConfPara;
         //初始化负载均衡
@@ -47,7 +52,7 @@ public class RpcInvoke {
         //初始化服务列表获取
         serviceRegister = (IServiceRegister) Class.forName(rpcConf.getServiceRegisterImplClass()).newInstance();
         //初始化验证
-        validation = (IValidation) Class.forName(rpcConf.getIValidation()).newInstance();
+        validation = (IValidation) Class.forName(rpcConf.getValidationImplClass()).newInstance();
 
         //初始化接口代理类
         List<Class<?>> services = RpcUtil.scanRpcService(rpcConf.getScanPackages());
@@ -77,10 +82,10 @@ public class RpcInvoke {
         validation.validate(rpcRequest.getRequestObj());
 
         //2 serviceGetter
-        List<RegisterServerInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
+        List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
 
         //3 loaderBalance
-        RegisterServerInfo choose = loadBalanceRule.choose(serviceList,rpcRequest);
+        RegisterServiceInfo choose = loadBalanceRule.choose(serviceList,rpcRequest);
 
         //4 serialize encode
         String body = serialize.encode(rpcRequest.getRequestObj());

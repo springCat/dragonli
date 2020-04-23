@@ -5,7 +5,6 @@ import java.util.List;
 
 @Data
 public class AppConf {
-
     private String name;
 
     private String ip;
@@ -19,5 +18,4 @@ public class AppConf {
     private String checkInterval;
 
     private List<String> appTags;
-
 }
