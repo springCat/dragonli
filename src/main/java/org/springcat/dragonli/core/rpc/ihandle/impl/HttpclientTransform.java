@@ -10,7 +10,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springcat.dragonli.core.rpc.exception.TransformException;
+import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -58,7 +58,7 @@ public class HttpclientTransform implements IHttpTransform {
     }
 
     @Override
-    public String post(String url, Map<String, String> headers, String request) throws TransformException {
+    public String post(String url, Map<String, String> headers, String request) throws RpcException {
         try {
             HttpPost httpPost = new HttpPost(url);
             addHeadersToRequest(httpPost, headers);
@@ -71,7 +71,7 @@ public class HttpclientTransform implements IHttpTransform {
             }
             return null;
         } catch (Exception e) {
-            throw new TransformException(e.getMessage());
+            throw new RpcException(e.getMessage());
         }
     }
 

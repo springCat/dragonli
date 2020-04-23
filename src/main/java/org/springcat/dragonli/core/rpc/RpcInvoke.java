@@ -3,9 +3,7 @@ package org.springcat.dragonli.core.rpc;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import lombok.SneakyThrows;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
-import org.springcat.dragonli.core.rpc.exception.TransformException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
 import org.springcat.dragonli.core.rpc.ihandle.*;
 import java.util.List;
@@ -70,7 +68,6 @@ public class RpcInvoke {
      * @return
      * @throws RpcException
      */
-    @SneakyThrows
     public static RpcResponse invoke(RpcRequest rpcRequest) throws RpcException{
 
         //1 校验参数,异常会中止流程
@@ -93,8 +90,8 @@ public class RpcInvoke {
         Supplier<String> transformSupplier = () ->{
             try {
                 return httpTransform.post(url, rpcRequest.getRpcHeader(), body);
-            }catch(TransformException e){
-                httpTransform.errorHandler(e);
+            }catch(RpcException e){
+                    //todo
             }
             return null;
         };
@@ -109,6 +106,5 @@ public class RpcInvoke {
         }
         return null;
     }
-
 
 }

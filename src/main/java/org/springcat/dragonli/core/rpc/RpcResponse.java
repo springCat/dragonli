@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class RpcResponse {
-    private String code;
 
+    private String code;
 }

@@ -1,7 +1,7 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import cn.hutool.core.util.HashUtil;
-import org.springcat.dragonli.core.rpc.exception.LoadBalanceException;
+import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.List;
@@ -11,13 +11,13 @@ import java.util.List;
  */
 public class ConsistentHashRule implements ILoadBalanceRule {
 
-    public RegisterServiceInfo choose(List<RegisterServiceInfo> serviceList, RpcRequest rpcRequest) throws LoadBalanceException {
+    public RegisterServiceInfo choose(List<RegisterServiceInfo> serviceList, RpcRequest rpcRequest) throws RpcException {
         try {
             String loaderBalanceFlag = rpcRequest.getRpcHeader().getOrDefault("client-ip", "");
             int i = consistentHash(HashUtil.murmur32(loaderBalanceFlag.getBytes()), serviceList.size());
             return serviceList.get(i);
         }catch (Exception e){
-            throw new LoadBalanceException(e.getMessage());
+            throw new RpcException(e.getMessage());
         }
     }
 

@@ -5,7 +5,7 @@ import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.health.HealthServicesRequest;
 import com.ecwid.consul.v1.health.model.HealthService;
 import org.springcat.dragonli.core.consul.ConsulUtil;
-import org.springcat.dragonli.core.rpc.exception.ServiceNotFindException;
+import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.ihandle.IServiceRegister;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 public class ConsulServiceRegister implements IServiceRegister {
 
     //need cache
-    public List<RegisterServiceInfo> getServiceList(RpcRequest rpcRequest) throws ServiceNotFindException {
+    public List<RegisterServiceInfo> getServiceList(RpcRequest rpcRequest) throws RpcException {
         try {
             ConsulClient client = ConsulUtil.client();
             List<RegisterServiceInfo> list = new ArrayList<>();
@@ -30,7 +30,7 @@ public class ConsulServiceRegister implements IServiceRegister {
             }
             return list;
         }catch (Exception e){
-            throw new ServiceNotFindException(e.getMessage());
+            throw new RpcException(e.getMessage());
         }
     }
 

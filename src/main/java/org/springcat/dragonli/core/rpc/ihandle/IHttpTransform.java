@@ -1,7 +1,7 @@
 package org.springcat.dragonli.core.rpc.ihandle;
 
 import cn.hutool.core.util.StrUtil;
-import org.springcat.dragonli.core.rpc.exception.TransformException;
+import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface IHttpTransform {
 
-      String post(String url, Map<String, String> headers, String request) throws TransformException;
+      String post(String url, Map<String, String> headers, String request) throws RpcException;
 
       default String genUrl(RpcRequest rpcRequest, RegisterServiceInfo registerServiceInfo) {
             String url = new StringBuilder("http://")
@@ -22,7 +22,5 @@ public interface IHttpTransform {
                     .append(rpcRequest.getMethodName()).toString();
             return url;
       }
-
-      default void errorHandler(TransformException TransformException){}
 
 }
