@@ -83,7 +83,7 @@
     public class BlogController extends JsonController {
         @Before(BlogPara.class)
         public void json() {
-            BlogPara jsonBean = getJsonBean();
+            BlogPara jsonBean = getJsonBean(BlogPara.class);
             jsonBean.setCode("200");
             renderJson(jsonBean);
         }
