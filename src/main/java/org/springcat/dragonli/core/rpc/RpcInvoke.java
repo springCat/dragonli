@@ -2,15 +2,12 @@ package org.springcat.dragonli.core.rpc;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.convert.Converter;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
 import org.springcat.dragonli.core.rpc.ihandle.*;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +30,6 @@ public class RpcInvoke {
 
     private static IHttpTransform httpTransform;
 
-    private static IErrorHandle errorHandle;
-
     private static IServiceRegister serviceRegister;
 
     private static IValidation validation;
@@ -49,8 +44,7 @@ public class RpcInvoke {
         serialize = (ISerialize) Class.forName(rpcConf.getSerializeImplClass()).newInstance();
         //初始化http请求客户端
         httpTransform = (IHttpTransform) Class.forName(rpcConf.getHttpTransformImplClass()).newInstance();
-        //初始化错误处理
-        errorHandle = (IErrorHandle) Class.forName(rpcConf.getErrorHandleImplClass()).newInstance();
+
         //初始化服务列表获取
         serviceRegister = (IServiceRegister) Class.forName(rpcConf.getServiceRegisterImplClass()).newInstance();
         //初始化验证
@@ -77,6 +71,11 @@ public class RpcInvoke {
                 rpcMethodInfo.setControllerPath(className);
                 rpcMethodInfo.setMethodName(method.getName());
                 rpcMethodInfo.setReturnType(method.getReturnType());
+                //初始化方法级别的错误处理
+                IErrorHandle errorHandle = (IErrorHandle) Class.forName(rpcConf.getErrorHandleImplClass()).newInstance();
+                errorHandle.init(method.toString());
+                rpcMethodInfo.setIErrorHandle(errorHandle);
+
                 apiMap.put(method,rpcMethodInfo);
             }
         }
@@ -84,11 +83,9 @@ public class RpcInvoke {
 
     /**
      *
-     *
      *  method -> buildRpcRequest -> serialize  -> loaderBalance  -> transform  -> deserialize -> return
      *                                                                 | |
      *                                                              errorHandle
-     *
      * @param rpcRequest
      * @return
      * @throws RpcException
@@ -113,7 +110,7 @@ public class RpcInvoke {
         //4 serialize encode
         String body = serialize.encode(rpcRequest.getRequestObj());
 
-        //5   decorate error handle
+        //5 decorate error handle
         String url = httpTransform.genUrl(rpcRequest,choose);
         Supplier<String> transformSupplier = () ->{
             try {
@@ -123,7 +120,9 @@ public class RpcInvoke {
             }
             return null;
         };
-        Supplier<String> supplier = errorHandle.transformErrorHandle(transformSupplier, rpcRequest, choose);
+
+        //错误处理装饰类
+        Supplier<String> supplier = rpcRequest.getRpcMethodInfo().getIErrorHandle().transformErrorHandle(transformSupplier, rpcRequest, choose);
 
         //6 Transform invoke
         String resp = supplier.get();
