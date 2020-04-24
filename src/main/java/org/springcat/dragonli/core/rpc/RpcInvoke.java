@@ -3,8 +3,10 @@ package org.springcat.dragonli.core.rpc;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import lombok.Data;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
 import org.springcat.dragonli.core.rpc.ihandle.*;
@@ -18,71 +20,24 @@ import java.util.function.Supplier;
 /**
  * 整个框架的核心类
  */
+@Data
 public class RpcInvoke {
 
     private static final Log log = LogFactory.get(RpcInvoke.class);
 
-    private static RpcConf rpcConf;
+    private RpcConf rpcConf;
 
-    private static ILoadBalanceRule loadBalanceRule;
+    private ILoadBalanceRule loadBalanceRule;
 
-    private static ISerialize serialize;
+    private ISerialize serialize;
 
-    private static IHttpTransform httpTransform;
+    private IHttpTransform httpTransform;
 
-    private static IServiceRegister serviceRegister;
+    private IServiceRegister serviceRegister;
 
-    private static IValidation validation;
+    private IValidation validation;
 
-    private static Map<Method,RpcMethodInfo> apiMap = new HashMap<>();
-
-    public static void init(RpcConf rpcConfPara, Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        rpcConf = rpcConfPara;
-        //初始化负载均衡
-        loadBalanceRule = (ILoadBalanceRule) Class.forName(rpcConf.getLoadBalanceRuleImplClass()).newInstance();
-        //初始化序列化
-        serialize = (ISerialize) Class.forName(rpcConf.getSerializeImplClass()).newInstance();
-        //初始化http请求客户端
-        httpTransform = (IHttpTransform) Class.forName(rpcConf.getHttpTransformImplClass()).newInstance();
-
-        //初始化服务列表获取
-        serviceRegister = (IServiceRegister) Class.forName(rpcConf.getServiceRegisterImplClass()).newInstance();
-        //初始化验证
-        validation = (IValidation) Class.forName(rpcConf.getValidationImplClass()).newInstance();
-
-        //初始化接口代理类
-        List<Class<?>> services = RpcStarter.scanRpcService(rpcConf.getScanPackages());
-
-        //初始化接口实现类
-        Map<Class<?>, Object> implMap = RpcStarter.convert2RpcServiceImpl(services);
-        consumer.accept(implMap);
-
-        for (Class<?> service : services) {
-            Method[] declaredMethods = service.getDeclaredMethods();
-
-            String className = service.getSimpleName();
-            className = StrUtil.strip(className,rpcConf.getRpcServiceClassNameSuffix());
-            className = StrUtil.lowerFirst(className);
-
-            for (Method method : declaredMethods) {
-                RpcMethodInfo rpcMethodInfo = new RpcMethodInfo();
-                Map<String, Object> annotationValueMap = AnnotationUtil.getAnnotationValueMap(service, Rpc.class);
-                BeanUtil.fillBeanWithMapIgnoreCase(annotationValueMap,rpcMethodInfo,false);
-                // 处理前后路径中的/
-                rpcMethodInfo.setUrl(StrUtil.strip(rpcMethodInfo.getUrl(),"/"));
-                rpcMethodInfo.setRootPath(StrUtil.strip(rpcMethodInfo.getRootPath(),"/"));
-                rpcMethodInfo.setControllerPath(className);
-                rpcMethodInfo.setMethodName(method.getName());
-                rpcMethodInfo.setReturnType(method.getReturnType());
-                //初始化方法级别的错误处理
-                IErrorHandle errorHandle = (IErrorHandle) Class.forName(rpcConf.getErrorHandleImplClass()).newInstance();
-                errorHandle.init(method.toString());
-                rpcMethodInfo.setIErrorHandle(errorHandle);
-
-                apiMap.put(method,rpcMethodInfo);
-            }
-        }
-    }
+    private Map<Method,RpcMethodInfo> apiMap;
 
     /**
      *
@@ -93,7 +48,7 @@ public class RpcInvoke {
      * @return
      * @throws RpcException
      */
-    public static RpcResponse invoke(RpcRequest rpcRequest) throws RpcException{
+    public RpcResponse invoke(RpcRequest rpcRequest) throws RpcException{
 
         RpcMethodInfo rpcMethodInfo = getApiMap().get(rpcRequest.getMethod());
         rpcRequest.setRpcMethodInfo(rpcMethodInfo);
@@ -135,9 +90,5 @@ public class RpcInvoke {
             return serialize.decode(resp, rpcRequest.getRpcMethodInfo().getReturnType());
         }
         return null;
-    }
-
-    public static Map<Method, RpcMethodInfo> getApiMap() {
-        return apiMap;
     }
 }

@@ -4,7 +4,6 @@ import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ArrayUtil;
 import lombok.Data;
 import org.springcat.dragonli.core.Context;
-import org.springcat.dragonli.core.rpc.ihandle.ISerialize;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -24,9 +23,7 @@ public class RpcRequest{
         if(reqHeader != null){
             rpcHeader.putAll(reqHeader);
         }
-
         this.method = method;
-
     }
 
     private Method method;
