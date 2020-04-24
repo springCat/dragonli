@@ -68,6 +68,9 @@ public class RpcInvoke {
                 RpcMethodInfo rpcMethodInfo = new RpcMethodInfo();
                 Map<String, Object> annotationValueMap = AnnotationUtil.getAnnotationValueMap(service, Rpc.class);
                 BeanUtil.fillBeanWithMapIgnoreCase(annotationValueMap,rpcMethodInfo,false);
+                // 处理前后路径中的/
+                rpcMethodInfo.setUrl(StrUtil.strip(rpcMethodInfo.getUrl(),"/"));
+                rpcMethodInfo.setRootPath(StrUtil.strip(rpcMethodInfo.getRootPath(),"/"));
                 rpcMethodInfo.setControllerPath(className);
                 rpcMethodInfo.setMethodName(method.getName());
                 rpcMethodInfo.setReturnType(method.getReturnType());

@@ -21,4 +21,5 @@ public class RegisterServiceInfo {
     private Map<String, String> meta;
 
     private Integer port;
+
 }

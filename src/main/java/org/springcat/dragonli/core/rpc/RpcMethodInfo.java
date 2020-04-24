@@ -8,6 +8,8 @@ public class RpcMethodInfo {
 
     private String appName;
 
+    private String rootPath;
+
     private String controllerPath;
 
     private String methodName;
