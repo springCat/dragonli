@@ -16,12 +16,12 @@ public class RpcPlugin implements IPlugin {
 
     @Override
     public boolean start() {
-            try {
-            DragonLiStarter.start(rpcConf,(Map<Class<?>, Object> map) ->{
-                for (Map.Entry<Class<?>, Object> classObjectEntry : map.entrySet()) {
-                    AopManager.me().addSingletonObject(classObjectEntry.getKey(), classObjectEntry.getValue());
-                }
-            });
+        try {
+            Map<Class<?>, Object> map = DragonLiStarter.start(rpcConf);
+            //把生成接口实现类,注入jfinal的ioc
+            for (Map.Entry<Class<?>, Object> classObjectEntry : map.entrySet()) {
+                AopManager.me().addSingletonObject(classObjectEntry.getKey(), classObjectEntry.getValue());
+            }
         }catch (Exception e){
             e.printStackTrace();
             return false;

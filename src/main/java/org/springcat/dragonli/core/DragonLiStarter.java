@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 public class DragonLiStarter {
 
     @SneakyThrows
-    public static void start(RpcConf rpcConf, Consumer<Map<Class<?>, Object>> consumer){
+    public static Map<Class<?>, Object> start(RpcConf rpcConf){
 
         RpcInvoke invoke = new RpcInvoke();
 
@@ -65,7 +65,7 @@ public class DragonLiStarter {
 
         //初始化接口实现类
         Map<Class<?>, Object> serviceImplMap = buildServiceImpl(services,invoke);
-        consumer.accept(serviceImplMap);
+        return serviceImplMap;
     }
 
     public static List<Class<?>> scanRpcService(String scanPackages){

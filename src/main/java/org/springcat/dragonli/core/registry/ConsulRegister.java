@@ -35,7 +35,6 @@ public class ConsulRegister {
         application.setCheck(serviceCheck);
         //meta
         HashMap<String, String> map = MapUtil.newHashMap();
-        map.put(RpcEnum.ROOTPATH.name(),appConf.getRootPath());
         application.setMeta(map);
         client.agentServiceRegister(application);
     }
