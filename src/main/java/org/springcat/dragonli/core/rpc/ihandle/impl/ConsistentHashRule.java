@@ -11,9 +11,11 @@ import java.util.List;
  */
 public class ConsistentHashRule implements ILoadBalanceRule {
 
+    public final static String LOADER_BALANCE_FLAG = "client-ip";
+
     public RegisterServiceInfo choose(List<RegisterServiceInfo> serviceList, RpcRequest rpcRequest) throws RpcException {
         try {
-            String loaderBalanceFlag = rpcRequest.getRpcHeader().getOrDefault("client-ip", "");
+            String loaderBalanceFlag = rpcRequest.getRpcHeader().getOrDefault(LOADER_BALANCE_FLAG, "");
             int i = consistentHash(HashUtil.murmur32(loaderBalanceFlag.getBytes()), serviceList.size());
             return serviceList.get(i);
         }catch (Exception e){

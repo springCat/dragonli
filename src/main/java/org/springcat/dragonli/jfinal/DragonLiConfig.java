@@ -6,6 +6,7 @@ import com.jfinal.template.Engine;
 import org.springcat.dragonli.core.rpc.RpcConf;
 import org.springcat.dragonli.core.Context;
 import org.springcat.dragonli.core.rpc.RpcUtil;
+import org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule;
 import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
 import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
 import org.springcat.dragonli.core.registry.AppConf;
@@ -63,7 +64,8 @@ public abstract class DragonLiConfig extends JFinalConfig {
         configInterceptorPlus(me);
         me.add(inv -> {
             Context.init();
-            Context.setRpcParam("client-ip", RpcUtil.getClientIp(inv.getController().getRequest()));
+            //传递rpc调用间的参数
+            Context.setRpcParam(ConsistentHashRule.LOADER_BALANCE_FLAG, RpcUtil.getClientIp(inv.getController().getRequest()));
             inv.invoke();
             Context.clear();
         });
