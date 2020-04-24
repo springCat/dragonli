@@ -1,32 +1,15 @@
 package org.springcat.dragonli.core.rpc;
 
+import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springcat.dragonli.core.Proxy;
+import org.springcat.dragonli.core.rpc.exception.RpcException;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class RpcUtil {
-
-    public static List<Class<?>> scanRpcService(String scanPackages){
-        List<Class<?>> list = new ArrayList<>();
-        String[] scanPackageArray = scanPackages.split(",");
-        for (String scanPackage : scanPackageArray) {
-            Set<Class<?>> classes = ClassUtil.scanPackageByAnnotation(scanPackage, Rpc.class);
-            list.addAll(classes);
-        }
-        return list;
-    }
-
-    public static Map<Class<?>,Object> convert2RpcServiceImpl(List<Class<?>> services){
-        Proxy proxy = new Proxy();
-        Map<Class<?>,Object> map = new HashMap();
-        for (Class<?> service : services) {
-            Object impl = proxy.impl(service);
-            map.put(service,impl);
-        }
-        return map;
-    }
 
     /**
      * 1 先判断client-ip是否已经存在,用于消费者已经获取客户端IP,传递到生产者的场景
@@ -46,9 +29,6 @@ public class RpcUtil {
         return ip;
     }
 
-    public static void initRpcServicesHook(List<Class<?>> services){
-
-    }
 
 
 }

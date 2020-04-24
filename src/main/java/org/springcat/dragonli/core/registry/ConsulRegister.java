@@ -1,9 +1,13 @@
 package org.springcat.dragonli.core.registry;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.net.NetUtil;
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.agent.model.NewService;
 import lombok.experimental.UtilityClass;
+import org.springcat.dragonli.core.rpc.RpcEnum;
+
+import java.util.HashMap;
 
 @UtilityClass
 public class ConsulRegister {
@@ -29,6 +33,10 @@ public class ConsulRegister {
         serviceCheck.setTimeout(appConf.getCheckTimout());
         serviceCheck.setHttp(appConf.getCheckUrl());
         application.setCheck(serviceCheck);
+        //meta
+        HashMap<String, String> map = MapUtil.newHashMap();
+        map.put(RpcEnum.ROOTPATH.name(),appConf.getRootPath());
+        application.setMeta(map);
         client.agentServiceRegister(application);
     }
 

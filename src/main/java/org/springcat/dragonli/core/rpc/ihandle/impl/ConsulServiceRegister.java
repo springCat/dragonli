@@ -22,7 +22,7 @@ public class ConsulServiceRegister implements IServiceRegister {
         try {
             ConsulClient client = ConsulUtil.client();
             List<RegisterServiceInfo> list = new ArrayList<>();
-            List<HealthService> value = client.getHealthServices(rpcRequest.getServiceName(), HealthServicesRequest.newBuilder().build()).getValue();
+            List<HealthService> value = client.getHealthServices(rpcRequest.getRpcMethodInfo().getAppName(), HealthServicesRequest.newBuilder().build()).getValue();
             for (HealthService healthService : value) {
                 HealthService.Service service = healthService.getService();
                 RegisterServiceInfo registerServiceInfo = new RegisterServiceInfo();

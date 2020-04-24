@@ -11,6 +11,8 @@ public class AppConf {
 
     private int port;
 
+    private String rootPath;
+
     private String checkUrl;
 
     private String checkTimout;

@@ -19,6 +19,10 @@ import org.springcat.dragonli.core.config.SettingUtil;
  */
 public abstract class DragonLiConfig extends JFinalConfig {
 
+    private ConsulConf consulConf = SettingUtil.getConfBean(SettingGroup.consul);
+    private AppConf appConf = SettingUtil.getConfBean(SettingGroup.application);
+    private RpcConf rpcConf = SettingUtil.getConfBean(SettingGroup.rpc);
+
     @Override
     public void configConstant(Constants me) {
         configConstantPlus(me);
@@ -34,17 +38,13 @@ public abstract class DragonLiConfig extends JFinalConfig {
     @Override
     public void configRoute(Routes me) {
         configRoutePlus(me);
-        JFinalStatusController.init(me);
+        JFinalStatusController.init(me,appConf);
     }
 
     public abstract void configRoutePlus(Routes me);
 
     @Override
     public void configPlugin(Plugins me) {
-
-        ConsulConf consulConf = SettingUtil.getConfBean(SettingGroup.consul);
-        AppConf appConf = SettingUtil.getConfBean(SettingGroup.application);
-        RpcConf rpcConf = SettingUtil.getConfBean(SettingGroup.rpc);
 
         //为了先从配置中心拉取配置
         me.add(new ConsulPlugin(consulConf, appConf));

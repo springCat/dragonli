@@ -1,11 +1,18 @@
 package org.springcat.dragonli.core.rpc;
 
+import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.convert.Converter;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
 import org.springcat.dragonli.core.rpc.ihandle.*;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -32,6 +39,8 @@ public class RpcInvoke {
 
     private static IValidation validation;
 
+    private static Map<Method,RpcMethodInfo> apiMap = new HashMap<>();
+
     public static void init(RpcConf rpcConfPara, Consumer<Map<Class<?>, Object>> consumer) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         rpcConf = rpcConfPara;
         //初始化负载均衡
@@ -48,13 +57,29 @@ public class RpcInvoke {
         validation = (IValidation) Class.forName(rpcConf.getValidationImplClass()).newInstance();
 
         //初始化接口代理类
-        List<Class<?>> services = RpcUtil.scanRpcService(rpcConf.getScanPackages());
+        List<Class<?>> services = RpcStarter.scanRpcService(rpcConf.getScanPackages());
 
         //初始化接口实现类
-        Map<Class<?>, Object> implMap = RpcUtil.convert2RpcServiceImpl(services);
+        Map<Class<?>, Object> implMap = RpcStarter.convert2RpcServiceImpl(services);
         consumer.accept(implMap);
 
-        RpcUtil.initRpcServicesHook(services);
+        for (Class<?> service : services) {
+            Method[] declaredMethods = service.getDeclaredMethods();
+
+            String className = service.getSimpleName();
+            className = StrUtil.strip(className,rpcConf.getRpcServiceClassNameSuffix());
+            className = StrUtil.lowerFirst(className);
+
+            for (Method method : declaredMethods) {
+                RpcMethodInfo rpcMethodInfo = new RpcMethodInfo();
+                Map<String, Object> annotationValueMap = AnnotationUtil.getAnnotationValueMap(service, Rpc.class);
+                BeanUtil.fillBeanWithMapIgnoreCase(annotationValueMap,rpcMethodInfo,false);
+                rpcMethodInfo.setControllerPath(className);
+                rpcMethodInfo.setMethodName(method.getName());
+                rpcMethodInfo.setReturnType(method.getReturnType());
+                apiMap.put(method,rpcMethodInfo);
+            }
+        }
     }
 
     /**
@@ -70,6 +95,9 @@ public class RpcInvoke {
      */
     public static RpcResponse invoke(RpcRequest rpcRequest) throws RpcException{
 
+        RpcMethodInfo rpcMethodInfo = getApiMap().get(rpcRequest.getMethod());
+        rpcRequest.setRpcMethodInfo(rpcMethodInfo);
+
         //1 校验参数,异常会中止流程
         String code = validation.validate(rpcRequest.getRequestObj());
         if(StrUtil.isNotBlank(code)){
@@ -78,7 +106,7 @@ public class RpcInvoke {
 
         //2 serviceGetter
         List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
-        
+
         //3 loaderBalance
         RegisterServiceInfo choose = loadBalanceRule.choose(serviceList,rpcRequest);
 
@@ -102,9 +130,12 @@ public class RpcInvoke {
 
         //7 serialize decode
         if(StrUtil.isNotBlank(resp)){
-            return serialize.decode(resp, rpcRequest.getReturnType());
+            return serialize.decode(resp, rpcRequest.getRpcMethodInfo().getReturnType());
         }
         return null;
     }
 
+    public static Map<Method, RpcMethodInfo> getApiMap() {
+        return apiMap;
+    }
 }

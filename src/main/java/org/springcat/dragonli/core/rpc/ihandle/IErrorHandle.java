@@ -8,29 +8,29 @@ import java.util.function.Supplier;
 public interface IErrorHandle {
 
     default  <T> Supplier<T> transformErrorHandle(Supplier<T> transformSupplier, RpcRequest rpcRequest, RegisterServiceInfo registerServiceInfo){
-        String key = genKey(rpcRequest, registerServiceInfo);
-        transformSupplier = decorateCircuitBreaker(key,transformSupplier);
-        transformSupplier = decorateRetry(key,transformSupplier);
+
+        transformSupplier = decorateCircuitBreaker(rpcRequest,transformSupplier);
+        transformSupplier = decorateRetry(rpcRequest,transformSupplier);
         return transformSupplier;
     }
 
     /**
      * 熔断实现类
-     * @param key
+     * @param rpcRequest
      * @param supplier
      * @param <T>
      * @return
      */
-    <T> Supplier<T> decorateCircuitBreaker(String key,Supplier<T> supplier);
+    <T> Supplier<T> decorateCircuitBreaker(RpcRequest rpcRequest,Supplier<T> supplier);
 
     /**
      * 失败重试实现类
-     * @param key
+     * @param rpcRequest
      * @param supplier
      * @param <T>
      * @return
      */
-    <T> Supplier<T> decorateRetry(String key,Supplier<T> supplier);
+    <T> Supplier<T> decorateRetry(RpcRequest rpcRequest,Supplier<T> supplier);
 
     /**
      * 生成标识类
@@ -38,12 +38,12 @@ public interface IErrorHandle {
      * @param registerServiceInfo
      * @return
      */
-    default String genKey(RpcRequest rpcRequest, RegisterServiceInfo registerServiceInfo){
-        String key = StrUtil.join("|",
-                registerServiceInfo.getAddress(),
-                registerServiceInfo.getPort(),
-                rpcRequest.getClassName(),
-                rpcRequest.getMethodName());
-        return key;
-    }
+//    default String genKey(RpcRequest rpcRequest, RegisterServiceInfo registerServiceInfo){
+//        String key = StrUtil.join("|",
+//                registerServiceInfo.getAddress(),
+//                registerServiceInfo.getPort(),
+//                rpcRequest.getRpcMethodInfo().getControllerPath(),
+//                rpcRequest.getMethodName());
+//        return key;
+//    }
 }

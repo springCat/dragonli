@@ -6,6 +6,7 @@ port = 8500
 name = jfinalDemo
 ip = 192.168.99.170
 port = 8080
+rootPath =
 appTags =
 checkUrl = http://192.168.99.170:8080/status
 checkInterval = 3s

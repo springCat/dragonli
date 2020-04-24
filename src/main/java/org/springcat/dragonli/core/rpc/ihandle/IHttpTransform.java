@@ -17,9 +17,9 @@ public interface IHttpTransform {
                     .append(":")
                     .append(registerServiceInfo.getPort())
                     .append("/")
-                    .append(StrUtil.lowerFirst(StrUtil.strip(rpcRequest.getClassName(),"Service")))
+                    .append(rpcRequest.getRpcMethodInfo().getControllerPath())
                     .append("/")
-                    .append(rpcRequest.getMethodName()).toString();
+                    .append(rpcRequest.getRpcMethodInfo().getMethodName()).toString();
             return url;
       }
 

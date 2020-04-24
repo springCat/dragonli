@@ -10,7 +10,8 @@ public enum RpcExceptionCodes{
     ERR_TRANSFORM_INVOKE("5"),
     ERR_RESPONSE_DESERIALIZE("6"),
     ERR_CURRENT_LIMITING("7"),
-    ERR_FUSING("8");
+    ERR_FUSING("8"),
+    ERR_RPC_INIT("9");
 
     private String code;
 

@@ -25,14 +25,8 @@ public class RpcRequest{
             rpcHeader.putAll(reqHeader);
         }
 
-        Class<?> declaringClass = method.getDeclaringClass();
-        Map<String, Object> map = AnnotationUtil.getAnnotationValueMap(declaringClass, Rpc.class);
-        serviceName = (String) map.get("value");
-        labels = (String[]) map.get("labels");
+        this.method = method;
 
-        className = declaringClass.getSimpleName();
-        returnType = method.getReturnType();
-        methodName = method.getName();
     }
 
     private Method method;
@@ -43,16 +37,6 @@ public class RpcRequest{
 
     private Supplier supplier;
 
-    private String serviceName;
-
-    private String[] labels;
-
-    private String methodName;
-
-    private Class returnType;
-
-    private String className;
-
-    private ISerialize serialize;
+    private RpcMethodInfo rpcMethodInfo;
 
 }
