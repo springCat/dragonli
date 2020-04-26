@@ -7,6 +7,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import lombok.SneakyThrows;
 import org.springcat.dragonli.core.rpc.*;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
@@ -34,6 +36,7 @@ import java.util.*;
  *
  */
 public class DragonLiStarter {
+    private final static Log log = LogFactory.get();
 
     @SneakyThrows
     public static Map<Class<?>, Object> start(RpcConf rpcConf){
@@ -42,28 +45,35 @@ public class DragonLiStarter {
 
         //初始化负载均衡
         invoke.setLoadBalanceRule((ILoadBalanceRule) Class.forName(rpcConf.getLoadBalanceRuleImplClass()).newInstance());
-
+        log.info("init LoadBalanceRule {}",rpcConf.getLoadBalanceRuleImplClass());
         //初始化序列化
         invoke.setSerialize((ISerialize)Class.forName(rpcConf.getSerializeImplClass()).newInstance());
+        log.info("init Serialize {}",rpcConf.getSerializeImplClass());
 
         //初始化http请求客户端
         invoke.setHttpTransform((IHttpTransform) Class.forName(rpcConf.getHttpTransformImplClass()).newInstance());
+        log.info("init httpTransform {}",rpcConf.getHttpTransformImplClass());
 
         //初始化服务列表获取
         invoke.setServiceRegister((IServiceRegister) Class.forName(rpcConf.getServiceRegisterImplClass()).newInstance());
+        log.info("init ServiceRegister {}",rpcConf.getServiceRegisterImplClass());
 
         //初始化验证
         invoke.setValidation((IValidation) Class.forName(rpcConf.getValidationImplClass()).newInstance());
+        log.info("init Validation {}",rpcConf.getValidationImplClass());
 
         //初始化接口代理类
         List<Class<?>> services = DragonLiStarter.scanRpcService(rpcConf.getScanPackages());
+        log.info("find services for rpc{}",services);
+
+        //初始化接口实现类
+        Map<Class<?>, Object> serviceImplMap = buildServiceImpl(services,invoke);
+        log.info("build serviceImpl for rpc success");
 
         //初始化rpcMethod配置
         Map<Method, RpcMethodInfo> methodRpcMethodInfoMap = DragonLiStarter.initRpcMehod(rpcConf, services);
         invoke.setApiMap(methodRpcMethodInfoMap);
-
-        //初始化接口实现类
-        Map<Class<?>, Object> serviceImplMap = buildServiceImpl(services,invoke);
+        log.info("init remote Service success");
         return serviceImplMap;
     }
 
@@ -99,7 +109,7 @@ public class DragonLiStarter {
 
 
     @SneakyThrows
-    public static Map<Method,RpcMethodInfo>  initRpcMehod(RpcConf rpcConf,List<Class<?>> services){
+    public static Map<Method,RpcMethodInfo> initRpcMehod(RpcConf rpcConf,List<Class<?>> services){
         Map<Method, RpcMethodInfo> map = new HashMap<>();
         for (Class<?> service : services) {
             Method[] declaredMethods = service.getDeclaredMethods();

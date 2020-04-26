@@ -1,7 +1,8 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
+import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;;
+import cn.hutool.log.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -13,6 +14,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
+
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ import java.util.Map;
  */
 public class HttpclientTransform implements IHttpTransform {
 
-    private static final Log log = LogFactory.get(HttpclientTransform.class);
+    private final static Log log = LogFactory.get();
 
     static final int DEFAULT_MAX_CONNECTIONS = 1000;
     static final int DEFAULT_MAX_PER_ROUTE_CONNECTIONS = 500;
@@ -60,6 +62,8 @@ public class HttpclientTransform implements IHttpTransform {
 
     @Override
     public String post(String url, Map<String, String> headers, String request) throws RpcException {
+        TimeInterval timeInterval = new TimeInterval();
+        String response = null;
         try {
             HttpPost httpPost = new HttpPost(url);
             addHeadersToRequest(httpPost, headers);
@@ -67,13 +71,17 @@ public class HttpclientTransform implements IHttpTransform {
             httpPost.setEntity(new StringEntity(request));
             httpResponse = httpClient.execute(httpPost);
             if(isSuccess(httpResponse.getStatusLine().getStatusCode())) {
-                return IoUtil.read(httpResponse.getEntity().getContent(), Charset.defaultCharset());
+                response = IoUtil.read(httpResponse.getEntity().getContent(), Charset.defaultCharset());
             }
-            return null;
         } catch (Exception e) {
+            log.error("HttpclientTransform invoke error url:{},headers:{},request:{},error:{}" ,url,headers,request,e.getMessage());
             throw new RpcException(RpcExceptionCodes.ERR_TRANSFORM_INVOKE.getCode());
+        }finally {
+            log.info("rpc invoke url:{},header:{},req:{},resp{},cost:{}",url,headers,request,response,timeInterval.interval());
         }
+        return response;
     }
+
 
 
     private void addHeadersToRequest(HttpRequestBase request, Map<String, String> headers) {

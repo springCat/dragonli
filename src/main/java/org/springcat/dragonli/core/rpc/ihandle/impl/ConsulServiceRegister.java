@@ -1,14 +1,16 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.health.HealthServicesRequest;
 import com.ecwid.consul.v1.health.model.HealthService;
 import org.springcat.dragonli.core.consul.ConsulUtil;
+import org.springcat.dragonli.core.rpc.RpcRequest;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.IServiceRegister;
-import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +19,12 @@ import java.util.List;
  */
 public class ConsulServiceRegister implements IServiceRegister {
 
+    private final static Log log = LogFactory.get();
+
     public List<RegisterServiceInfo> getServiceList(RpcRequest rpcRequest) throws RpcException {
+        List<RegisterServiceInfo> list = new ArrayList<>();
         try {
             ConsulClient client = ConsulUtil.client();
-            List<RegisterServiceInfo> list = new ArrayList<>();
             List<HealthService> value = client.getHealthServices(rpcRequest.getRpcMethodInfo().getAppName(), HealthServicesRequest.newBuilder().build()).getValue();
             for (HealthService healthService : value) {
                 HealthService.Service service = healthService.getService();
@@ -30,7 +34,10 @@ public class ConsulServiceRegister implements IServiceRegister {
             }
             return list;
         }catch (Exception e){
+            log.error("ConsulServiceRegister getServiceList error rpcRequest:{},error:{}" ,rpcRequest,e.getMessage());
             throw new RpcException(RpcExceptionCodes.ERR_SERVICE_NOT_FIND.getCode());
+        }finally {
+            log.debug("RegisterServiceInfoList:{}",list);
         }
     }
 }

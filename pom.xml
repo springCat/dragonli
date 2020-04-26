@@ -44,7 +44,6 @@
 			<groupId>com.jfinal</groupId>
 			<artifactId>jfinal</artifactId>
 			<version>4.8</version>
-<!--			<scope>provided</scope>-->
 		</dependency>
 
 		<dependency>
@@ -70,7 +69,7 @@
 			<version>2.2.4</version>
 		</dependency>
 
-		<!-- tool go工具类-->
+		<!-- tool 基础工具类-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -98,12 +97,14 @@
 			</exclusions>
 		</dependency>
 
+		<!--httpclient 注册中心,配置中心-->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.5</version>
 		</dependency>
 
+       <!--	 fasjson json序列化-->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -123,6 +124,7 @@
 			<version>1.3.1</version>
 		</dependency>
 
+		<!--单测-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -130,7 +132,12 @@
 			<scope>test</scope>
 		</dependency>
 
-
+		<!--log4j2-->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
 
 	</dependencies>
 	

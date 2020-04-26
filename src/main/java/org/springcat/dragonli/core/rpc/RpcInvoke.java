@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 @Data
 public class RpcInvoke {
 
-    private static final Log log = LogFactory.get(RpcInvoke.class);
+    private final static Log log = LogFactory.get();
 
     private RpcConf rpcConf;
 
@@ -57,6 +57,7 @@ public class RpcInvoke {
             //1 校验参数,异常会中止流程
             Optional<RpcResponse> response = validation.validateWithRpcResponse(rpcRequest);
             if(response.isPresent()){
+                log.debug("RpcInvoke validate rpcRequest{},failed error code:{}" ,rpcRequest,response.get().getCode());
                 return response.get();
             }
 
@@ -103,6 +104,8 @@ public class RpcInvoke {
 
         }catch (RpcException rpcException){
             return RpcUtil.buildRpcResponse(rpcException.getMessage(),rpcRequest.getRpcMethodInfo().getReturnType()).get();
+        }catch (Exception error){
+            log.error("RpcInvoke invoke error rpcRequest{},error:{}",rpcRequest,error);
         }
 
         return RpcUtil.newInstance(rpcRequest.getRpcMethodInfo().getReturnType());
