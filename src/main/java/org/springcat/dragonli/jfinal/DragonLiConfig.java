@@ -3,16 +3,17 @@ package org.springcat.dragonli.jfinal;
 import com.jfinal.config.*;
 import com.jfinal.json.MixedJsonFactory;
 import com.jfinal.template.Engine;
-import org.springcat.dragonli.core.rpc.RpcConf;
 import org.springcat.dragonli.core.Context;
+import org.springcat.dragonli.core.config.ConfigConf;
+import org.springcat.dragonli.core.config.ConfigUtil;
+import org.springcat.dragonli.core.config.SettingGroup;
+import org.springcat.dragonli.core.consul.ConsulConf;
+import org.springcat.dragonli.core.registry.AppConf;
+import org.springcat.dragonli.core.rpc.RpcConf;
 import org.springcat.dragonli.core.rpc.RpcUtil;
-import org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule;
+import org.springcat.dragonli.jfinal.plugin.ConfigPlugin;
 import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
 import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
-import org.springcat.dragonli.core.registry.AppConf;
-import org.springcat.dragonli.core.consul.ConsulConf;
-import org.springcat.dragonli.core.config.SettingGroup;
-import org.springcat.dragonli.core.config.SettingUtil;
 
 
 /**
@@ -20,9 +21,10 @@ import org.springcat.dragonli.core.config.SettingUtil;
  */
 public abstract class DragonLiConfig extends JFinalConfig {
 
-    private ConsulConf consulConf = SettingUtil.getConfBean(SettingGroup.consul);
-    private AppConf appConf = SettingUtil.getConfBean(SettingGroup.application);
-    private RpcConf rpcConf = SettingUtil.getConfBean(SettingGroup.rpc);
+    private ConsulConf consulConf = ConfigUtil.getPrjConf(SettingGroup.consul);
+    private AppConf appConf = ConfigUtil.getPrjConf(SettingGroup.application);
+    private RpcConf rpcConf = ConfigUtil.getPrjConf(SettingGroup.rpc);
+    private ConfigConf configConf = ConfigUtil.getPrjConf(SettingGroup.config);
 
     @Override
     public void configConstant(Constants me) {
@@ -49,6 +51,7 @@ public abstract class DragonLiConfig extends JFinalConfig {
 
         //为了先从配置中心拉取配置
         me.add(new ConsulPlugin(consulConf, appConf));
+        me.add(new ConfigPlugin(configConf));
 
         configPluginPlus(me);
 
@@ -65,7 +68,7 @@ public abstract class DragonLiConfig extends JFinalConfig {
         me.add(inv -> {
             Context.init();
             //传递rpc调用间的参数
-            Context.setRpcParam(ConsistentHashRule.LOADER_BALANCE_FLAG, RpcUtil.getClientIp(inv.getController().getRequest()));
+            Context.setRpcParam(rpcConf.getLoadBalanceKeyName(), RpcUtil.getClientIp(inv.getController().getRequest()));
             inv.invoke();
             Context.clear();
         });

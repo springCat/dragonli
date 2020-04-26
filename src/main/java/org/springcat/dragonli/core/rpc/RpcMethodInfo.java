@@ -24,4 +24,6 @@ public class RpcMethodInfo {
     private String[] labels;
 
     private IErrorHandle iErrorHandle;
+
+    private String loadBalancerKeyName;
 }

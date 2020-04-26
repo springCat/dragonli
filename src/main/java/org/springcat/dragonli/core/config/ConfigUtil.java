@@ -1,51 +1,74 @@
 package org.springcat.dragonli.core.config;
 
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.TimedCache;
-import cn.hutool.core.lang.Dict;
+import cn.hutool.setting.Setting;
+import cn.hutool.setting.SettingUtil;
 import com.ecwid.consul.v1.Response;
 import com.ecwid.consul.v1.kv.model.GetValue;
-import org.springcat.dragonli.core.registry.AppConf;
+import lombok.SneakyThrows;
 import org.springcat.dragonli.core.consul.ConsulUtil;
 
 import java.util.List;
 
 /**
- * sysconf 用于系统启动前获取的参数,比如数据库配置等
- * userconf 用于普通的业务参数
- * 后续会把配置异步写入本地文件,遇到配置中心异常后,可以不影响业务运行
+ * prjConf           ->  dragonli.setting,打包后不再变化
+ * sysConf           ->  启动前从consul加载,启动后不再变化,规划路径为 /config/sysConf/${appName}/ ,直接存于内存中
+ * userConf          ->  启动后从consul加载,随时变化,规划路径为  /config/userConf/${appName}/ , 需要备份到硬盘,防止配置中心挂了
  */
 public class ConfigUtil {
 
-    private static TimedCache<String, String> userConfCache = CacheUtil.newTimedCache(1000);
+    private final static Setting prjConf;
 
-    private static Dict dict;
+    private static Setting sysConf;
 
-    public static String getUserConf(String key) {
-        return userConfCache.get(key, () -> {
-            Response<GetValue> kvValue = ConsulUtil.client().getKVValue(key);
-            if(kvValue == null || kvValue.getValue() == null){
-                return null;
-            }
-            return kvValue.getValue().getDecodedValue();
-        });
+    private static Setting userConf;
+
+    static {
+        prjConf = new Setting("dragonli.setting",true);
     }
 
-    public static void fetchSysConf(AppConf appConf) {
-        Dict tempDict = new Dict();
-        Response<List<GetValue>> kvValues = ConsulUtil.client().getKVValues("/sysconf/" + appConf.getName());
+    public static <T> T getPrjConf(SettingGroup settingGroup){
+        try {
+            T bean = (T) prjConf.getSetting(settingGroup.name()).toBean(settingGroup.getCls().newInstance());
+            return bean;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @SneakyThrows
+    public static void initSysConf(ConfigConf configConf){
+        sysConf = SettingUtil.get(configConf.getSysConfLocalPath());
+        Response<List<GetValue>> kvValues = ConsulUtil.client().getKVValues(configConf.getSysConfPath());
         if(kvValues != null && kvValues.getValue() != null) {
+            sysConf.clear();
             for (GetValue value : kvValues.getValue()) {
-                tempDict.put(value.getKey(), value.getDecodedValue());
+                sysConf.put(value.getKey(), value.getDecodedValue());
             }
         }
-        dict = tempDict;
     }
 
-    public static Dict getSysConf() {
-        if(dict == null){
-            throw new RuntimeException("InitConf should fetch from Consul first");
-        }
-      return dict;
+    public static Setting getSysConf(){
+        return sysConf;
     }
+
+    @SneakyThrows
+    public static void initUserConf(ConfigConf configConf){
+        userConf = SettingUtil.get(configConf.getUserConfLocalPath());
+        Response<List<GetValue>> kvValues = ConsulUtil.client().getKVValues(configConf.getUserConfPath());
+        if(kvValues != null && kvValues.getValue() != null) {
+            userConf.clear();
+            for (GetValue value : kvValues.getValue()) {
+                userConf.put(value.getKey(), value.getDecodedValue());
+            }
+            userConf.store(configConf.getUserConfLocalPath());
+        }
+    }
+
+    public static Setting getUserConf(){
+        return userConf;
+    }
+
+
 }

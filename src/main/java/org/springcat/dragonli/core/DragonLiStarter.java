@@ -133,6 +133,7 @@ public class DragonLiStarter {
                 IErrorHandle errorHandle = (IErrorHandle) Class.forName(rpcConf.getErrorHandleImplClass()).newInstance();
                 errorHandle.init(SecureUtil.md5(method.toString()));
                 rpcMethodInfo.setIErrorHandle(errorHandle);
+                rpcMethodInfo.setLoadBalancerKeyName(rpcConf.getLoadBalanceKeyName());
                 map.put(method,rpcMethodInfo);
             }
         }

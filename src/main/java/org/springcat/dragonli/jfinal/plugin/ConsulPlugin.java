@@ -1,10 +1,9 @@
 package org.springcat.dragonli.jfinal.plugin;
 
 import com.jfinal.plugin.IPlugin;
-import org.springcat.dragonli.core.config.ConfigUtil;
+import org.springcat.dragonli.core.consul.ConsulConf;
 import org.springcat.dragonli.core.consul.ConsulUtil;
 import org.springcat.dragonli.core.registry.AppConf;
-import org.springcat.dragonli.core.consul.ConsulConf;
 import org.springcat.dragonli.core.registry.ConsulRegister;
 
 public class ConsulPlugin implements IPlugin {
@@ -21,7 +20,6 @@ public class ConsulPlugin implements IPlugin {
     public boolean start() {
         try {
             ConsulUtil.init(consulConf);
-            ConfigUtil.fetchSysConf(appConf);
             ConsulRegister.register(ConsulUtil.client(), appConf);
             return true;
         }catch (Exception exception){

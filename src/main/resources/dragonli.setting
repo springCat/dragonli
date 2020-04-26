@@ -21,6 +21,14 @@ httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Httpclient
 loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
 errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
 serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceRegister
+loadBalanceKeyName=x-uid
+
+[config]
+sysConfPath=/config/sysConf/${application.name}/
+sysConfLocalPath=sysConf.setting
+userConfPath=/config/userConf/${application.name}/
+userConfLocalPath=userConf.setting
+
 
 
 
