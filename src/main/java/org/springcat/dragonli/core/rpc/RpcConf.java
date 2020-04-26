@@ -10,6 +10,9 @@ public class RpcConf {
     //rpc注解标注的类的后缀
     private String rpcServiceClassNameSuffix = "Service";
 
+    //客户端参数校验是否开启
+    private int clientValidateOpen = 1;
+
     //具体的验证实现类名,可以自定义
     private String validationImplClass = "org.springcat.dragonli.core.rpc.ihandle.impl.Jsr303Validation";
 

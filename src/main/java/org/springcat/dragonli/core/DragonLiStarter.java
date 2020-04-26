@@ -42,7 +42,8 @@ public class DragonLiStarter {
     public static Map<Class<?>, Object> start(RpcConf rpcConf){
 
         RpcInvoke invoke = new RpcInvoke();
-
+        //注入配置
+        invoke.setRpcConf(rpcConf);
         //初始化负载均衡
         invoke.setLoadBalanceRule((ILoadBalanceRule) Class.forName(rpcConf.getLoadBalanceRuleImplClass()).newInstance());
         log.info("init LoadBalanceRule {}",rpcConf.getLoadBalanceRuleImplClass());

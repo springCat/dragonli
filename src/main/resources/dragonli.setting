@@ -14,6 +14,7 @@ checkTimout = 1s
 
 [rpc]
 scanPackages = com.demo
+clientValidateOpen = 1
 validationImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Jsr303Validation
 serializeImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.FastJsonSerialize
 httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform

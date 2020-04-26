@@ -14,6 +14,7 @@ import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -52,51 +53,54 @@ public class RpcInvoke {
     public RpcResponse invoke(RpcRequest rpcRequest){
         rpcRequest.setRpcMethodInfo(apiMap.get(rpcRequest.getMethod()));
         Class returnType = rpcRequest.getRpcMethodInfo().getReturnType();
+        IErrorHandle errorHandle = rpcRequest.getRpcMethodInfo().getIErrorHandle();
+
+        //1 客户端校验参数,从rpcSupplier中分离出,因为客户端参数校验必须在开发阶段就处理掉,不需要重试,熔断和错误处理
+        if(rpcConf.getClientValidateOpen() == 1) {
+            validation.validate(rpcRequest);
+        }
 
         Supplier<RpcResponse> rpcSupplier = () -> {
-                RpcResponse rpcResponse = null;
-                //1 校验参数,异常会中止流程
-                validation.validate(rpcRequest);
-                //2 serviceGetter
-                List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
-                //3 loaderBalance
-                RegisterServiceInfo choose = loadBalanceRule.choose(serviceList, rpcRequest);
-                //4 serialize encode
-                String body = serialize.encode(rpcRequest.getRequestObj());
-                //5 http invoke
-                String resp = httpTransform.post(rpcRequest,choose, body);
-                //6 serialize decode
-                if (StrUtil.isNotBlank(resp)) {
-                    rpcResponse = serialize.decode(resp, returnType);
-                    rpcResponse.setCode(RpcExceptionCodes.SUCCESS.getCode());
-                    return rpcResponse;
-                }
-                //for empty resp
-                return RpcUtil.buildRpcResponse(RpcExceptionCodes.SUCCESS.getCode(), returnType);
+            RpcResponse rpcResponse = null;
+            //2 serviceGetter
+            List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
+            //3 loaderBalance
+            RegisterServiceInfo choose = loadBalanceRule.choose(serviceList, rpcRequest);
+            //4 serialize encode
+            String body = serialize.encode(rpcRequest.getRequestObj());
+            //5 http invoke
+            String resp = httpTransform.post(rpcRequest,choose, body);
+            //6 serialize decode
+            if (StrUtil.isNotBlank(resp)) {
+                rpcResponse = serialize.decode(resp, returnType);
+                rpcResponse.setCode(RpcExceptionCodes.SUCCESS.getCode());
+                return rpcResponse;
+            }
+            //for empty resp
+            return RpcUtil.buildRpcResponse(RpcExceptionCodes.SUCCESS.getCode(), returnType);
         };
 
 
-        IErrorHandle errorHandle = rpcRequest.getRpcMethodInfo().getIErrorHandle();
-
-        RpcResponse execute = errorHandle.execute(rpcRequest, rpcSupplier, throwable -> {
+        Function<? super Throwable, ? extends RpcResponse> errorHandler = throwable -> {
             //重试返回
-            if(rpcRequest.getRecover() != null){
+            if (rpcRequest.getRecover() != null) {
                 return rpcRequest.recoverResult();
             }
-
-            if(throwable instanceof RpcException){
-                RpcResponse rpcResponse = RpcUtil.buildRpcResponse(throwable.getMessage(), returnType);
-                return rpcResponse;
+            //系统异常码处理
+            if (throwable instanceof RpcException) {
+                return RpcUtil.buildRpcResponse(throwable.getMessage(), returnType);
             }
-
-            if(throwable instanceof CallNotPermittedException){
-                log.error("CallNotPermittedException error request:{}",rpcRequest);
+            //熔断
+            if (throwable instanceof CallNotPermittedException) {
+                log.error("CallNotPermittedException error class:{},method:{}", rpcRequest.getClass(), rpcRequest.getMethod());
                 return RpcUtil.buildRpcResponse(RpcExceptionCodes.ERR_FUSING.getCode(), returnType);
             }
+            //兜底,不知道哪里出来的异常码
+            log.error("invoke error request:{},error:{}", rpcRequest, throwable);
+            return RpcUtil.buildRpcResponse(RpcExceptionCodes.ERR_OTHER.getCode(), returnType);
+        };
 
-            log.error("invoke error request:{},error:{}",rpcRequest,throwable);
-            return  RpcUtil.buildRpcResponse(RpcExceptionCodes.ERR_OTHER.getCode(), returnType);
-        });
+        RpcResponse execute = errorHandle.execute(rpcRequest, rpcSupplier,errorHandler);
 
         return execute;
     }
