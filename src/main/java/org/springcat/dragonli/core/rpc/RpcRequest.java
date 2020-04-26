@@ -7,7 +7,6 @@ import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -38,15 +37,15 @@ public class RpcRequest{
 
     private RpcMethodInfo rpcMethodInfo;
 
-    public Optional<RpcResponse> recoverResult(){
+    public RpcResponse recoverResult(){
         if(getRecover() != null){
             RpcResponse rpcResponse = (RpcResponse)getRecover().get();
             if(rpcResponse != null) {
                 rpcResponse.setCode(RpcExceptionCodes.ERR_RECOVER.getCode());
             }
-            return Optional.ofNullable(rpcResponse);
+            return rpcResponse;
         }
-        return Optional.empty();
+        return null;
     }
 
 }

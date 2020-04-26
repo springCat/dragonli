@@ -11,7 +11,13 @@ import java.util.Map;
 public interface IHttpTransform {
 
 
-      String post(String url, Map<String, String> headers, String request) throws RpcException;
+      String post(String url, Map<String, String> headers, String requestBody) throws RpcException;
+
+
+      default String post(RpcRequest rpcRequest, RegisterServiceInfo choose,String requestBody) throws RpcException {
+            String url = genUrl(rpcRequest, choose);
+            return post(url, rpcRequest.getRpcHeader(), requestBody);
+      }
 
       default boolean isSuccess(int httpCode){
             return httpCode >= 200 && httpCode < 300;

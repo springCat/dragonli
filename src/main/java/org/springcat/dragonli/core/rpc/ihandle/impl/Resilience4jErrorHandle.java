@@ -3,10 +3,13 @@ package org.springcat.dragonli.core.rpc.ihandle.impl;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.retry.Retry;
+import io.vavr.control.Try;
 import lombok.Data;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import org.springcat.dragonli.core.rpc.ihandle.IErrorHandle;
+
 import java.time.Duration;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -38,8 +41,10 @@ public class Resilience4jErrorHandle implements IErrorHandle {
     }
 
     @Override
-    public <T> Supplier<T> decorateRetry(RpcRequest rpcRequest, Supplier<T> supplier) {
-        return Retry.decorateSupplier(retry, supplier);
+    public <T> Try<T> decorateRetry(RpcRequest rpcRequest, Supplier<T> supplier, Function<? super Throwable, ? extends T> errorHandler) {
+
+        return Try.ofSupplier(supplier)
+                .recover(errorHandler);
     }
 
 }

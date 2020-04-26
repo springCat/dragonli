@@ -3,7 +3,6 @@ package org.springcat.dragonli.core.rpc;
 import cn.hutool.core.util.StrUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 public class RpcUtil {
 
@@ -25,28 +24,15 @@ public class RpcUtil {
         return ip;
     }
 
-    public static Optional<RpcResponse> buildRpcResponse(String code,Class cls){
-        if(StrUtil.isBlank(code)){
-            return Optional.empty();
-        }
-        RpcResponse rpcResponse = RpcUtil.newInstance(cls);
-        if(rpcResponse != null) {
-            rpcResponse.setCode(code);
-        }
-        return Optional.ofNullable(rpcResponse);
-    }
-
-    public static <T> T newInstance(Class<?> cls){
+    public static RpcResponse buildRpcResponse(String code,Class cls){
         try {
-            Object o = cls.newInstance();
-            return (T)o;
-        }catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+            RpcResponse rpcResponse = (RpcResponse) cls.newInstance();
+            rpcResponse.setCode(code);
+            return rpcResponse;
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-
 
 }

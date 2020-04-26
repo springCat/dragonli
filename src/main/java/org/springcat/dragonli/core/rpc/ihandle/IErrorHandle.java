@@ -1,15 +1,17 @@
 package org.springcat.dragonli.core.rpc.ihandle;
 
-import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
+import io.vavr.control.Try;
 import org.springcat.dragonli.core.rpc.RpcRequest;
+
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface IErrorHandle {
 
-    default  <T> Supplier<T> transformErrorHandle(Supplier<T> transformSupplier, RpcRequest rpcRequest, RegisterServiceInfo registerServiceInfo){
-        transformSupplier = decorateCircuitBreaker(rpcRequest,transformSupplier);
-        transformSupplier = decorateRetry(rpcRequest,transformSupplier);
-        return transformSupplier;
+    default  <T> T execute(RpcRequest rpcRequest,Supplier<T> rpcSupplier, Function<? super Throwable, ? extends T> errorHandler){
+        Supplier<T> transformSupplier = decorateCircuitBreaker(rpcRequest,rpcSupplier);
+        Try<T> retry = decorateRetry(rpcRequest, transformSupplier, errorHandler);
+        return retry.get();
     }
 
     void init(String key);
@@ -26,9 +28,10 @@ public interface IErrorHandle {
      * 失败重试实现类
      * @param rpcRequest
      * @param supplier
+     * @param errorHandler
      * @param <T>
      * @return
      */
-    <T> Supplier<T> decorateRetry(RpcRequest rpcRequest,Supplier<T> supplier);
+    <T> Try<T> decorateRetry(RpcRequest rpcRequest, Supplier<T> supplier, Function<? super Throwable, ? extends T> errorHandler);
 
 }
