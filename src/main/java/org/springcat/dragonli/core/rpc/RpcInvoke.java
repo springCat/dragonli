@@ -3,6 +3,7 @@ package org.springcat.dragonli.core.rpc;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
@@ -78,7 +79,7 @@ public class RpcInvoke {
         IErrorHandle errorHandle = rpcRequest.getRpcMethodInfo().getIErrorHandle();
 
         RpcResponse execute = errorHandle.execute(rpcRequest, rpcSupplier, throwable -> {
-
+            //重试返回
             if(rpcRequest.getRecover() != null){
                 return rpcRequest.recoverResult();
             }
@@ -86,6 +87,11 @@ public class RpcInvoke {
             if(throwable instanceof RpcException){
                 RpcResponse rpcResponse = RpcUtil.buildRpcResponse(throwable.getMessage(), returnType);
                 return rpcResponse;
+            }
+
+            if(throwable instanceof CallNotPermittedException){
+                log.error("CallNotPermittedException error request:{}",rpcRequest);
+                return RpcUtil.buildRpcResponse(RpcExceptionCodes.ERR_FUSING.getCode(), returnType);
             }
 
             log.error("invoke error request:{},error:{}",rpcRequest,throwable);

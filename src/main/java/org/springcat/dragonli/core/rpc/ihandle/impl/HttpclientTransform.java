@@ -82,8 +82,6 @@ public class HttpclientTransform implements IHttpTransform {
         return response;
     }
 
-
-
     private void addHeadersToRequest(HttpRequestBase request, Map<String, String> headers) {
         if (headers == null) {
             return;

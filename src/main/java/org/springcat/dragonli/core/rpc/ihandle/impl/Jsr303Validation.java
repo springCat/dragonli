@@ -1,5 +1,7 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
 
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import org.hibernate.validator.HibernateValidator;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
@@ -16,6 +18,8 @@ import java.util.Set;
  * 用jsr303简化参数验证
  */
 public class Jsr303Validation implements IValidation {
+
+    private final static Log log = LogFactory.get();
 
     private Validator validator;
 
@@ -35,6 +39,7 @@ public class Jsr303Validation implements IValidation {
         Set<ConstraintViolation<Object>> violations = validator.validate(requestObj);
         if(violations.size() > 0){
             ConstraintViolation<Object> next = violations.iterator().next();
+            log.error("validate error request{},code:{}",rpcRequest,next.getMessage());
             throw new RpcException(next.getMessage());
         }
     }

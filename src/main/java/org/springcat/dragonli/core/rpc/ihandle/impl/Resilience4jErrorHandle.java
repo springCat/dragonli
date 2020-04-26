@@ -25,8 +25,9 @@ public class Resilience4jErrorHandle implements IErrorHandle {
     public void init(String key){
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig
                 .custom()
-                .minimumNumberOfCalls(50)
+                .minimumNumberOfCalls(100)
                 .enableAutomaticTransitionFromOpenToHalfOpen()
+                .failureRateThreshold(30.0f)
                 .waitDurationInOpenState(Duration.ofSeconds(30))
                 .build();
 
@@ -40,9 +41,14 @@ public class Resilience4jErrorHandle implements IErrorHandle {
         return  CircuitBreaker.decorateSupplier(circuitBreaker, supplier);
     }
 
-    @Override
-    public <T> Try<T> decorateRetry(RpcRequest rpcRequest, Supplier<T> supplier, Function<? super Throwable, ? extends T> errorHandler) {
 
+    @Override
+    public <T> Supplier<T> decorateRetry(RpcRequest rpcRequest,Supplier<T> supplier) {
+        return Retry.decorateSupplier(retry,supplier);
+    }
+
+    @Override
+    public <T> Try<T> recover(RpcRequest rpcRequest, Supplier<T> supplier, Function<? super Throwable, ? extends T> errorHandler) {
         return Try.ofSupplier(supplier)
                 .recover(errorHandler);
     }
