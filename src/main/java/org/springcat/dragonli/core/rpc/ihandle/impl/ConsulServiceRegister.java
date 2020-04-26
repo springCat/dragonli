@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class ConsulServiceRegister implements IServiceRegister {
 
-    //need cache
     public List<RegisterServiceInfo> getServiceList(RpcRequest rpcRequest) throws RpcException {
         try {
             ConsulClient client = ConsulUtil.client();
@@ -34,6 +33,4 @@ public class ConsulServiceRegister implements IServiceRegister {
             throw new RpcException(RpcExceptionCodes.ERR_SERVICE_NOT_FIND.getCode());
         }
     }
-
-
 }

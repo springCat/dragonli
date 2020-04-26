@@ -15,7 +15,6 @@ import org.springcat.dragonli.core.rpc.ihandle.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  *         register

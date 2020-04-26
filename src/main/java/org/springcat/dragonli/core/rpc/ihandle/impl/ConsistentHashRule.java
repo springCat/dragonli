@@ -2,6 +2,7 @@ package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import cn.hutool.core.util.HashUtil;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
+import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
 import org.springcat.dragonli.core.rpc.RpcRequest;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ConsistentHashRule implements ILoadBalanceRule {
             int i = consistentHash(HashUtil.murmur32(loaderBalanceFlag.getBytes()), serviceList.size());
             return serviceList.get(i);
         }catch (Exception e){
-            throw new RpcException(e.getMessage());
+            throw new RpcException(RpcExceptionCodes.ERR_LOAD_BALANCE.getCode());
         }
     }
 

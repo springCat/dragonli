@@ -5,8 +5,6 @@ import cn.hutool.core.net.NetUtil;
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.agent.model.NewService;
 import lombok.experimental.UtilityClass;
-import org.springcat.dragonli.core.rpc.RpcEnum;
-
 import java.util.HashMap;
 
 @UtilityClass

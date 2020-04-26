@@ -3,15 +3,16 @@ package org.springcat.dragonli.core.rpc.exception;
 public enum RpcExceptionCodes{
 
     SUCCESS("0"),
-    REQUEST_NONNULL("1"),
-    ERR_SERVICE_NOT_FIND("2"),
-    ERR_LOAD_BALANCE("3"),
-    ERR_REQUEST_SERIALIZE("4"),
-    ERR_TRANSFORM_INVOKE("5"),
-    ERR_RESPONSE_DESERIALIZE("6"),
-    ERR_CURRENT_LIMITING("7"),
-    ERR_FUSING("8"),
-    ERR_RPC_INIT("9");
+    ERR_REQUEST_NULL("1"),
+    ERR_VALIDATE_CODE("2"),
+    ERR_SERVICE_NOT_FIND("3"),
+    ERR_LOAD_BALANCE("4"),
+    ERR_REQUEST_SERIALIZE("5"),
+    ERR_TRANSFORM_INVOKE("6"),
+    ERR_RESPONSE_DESERIALIZE("7"),
+    ERR_CURRENT_LIMITING("8"),
+    ERR_FUSING("9"),
+    ERR_RPC_INIT("10");
 
     private String code;
 
