@@ -66,9 +66,8 @@ public class HttpclientTransform implements IHttpTransform {
             HttpResponse httpResponse = null;
             httpPost.setEntity(new StringEntity(request));
             httpResponse = httpClient.execute(httpPost);
-            if(httpResponse.getStatusLine().getStatusCode() == 200) {
-                String resp = IoUtil.read(httpResponse.getEntity().getContent(), Charset.defaultCharset());
-                return resp;
+            if(isSuccess(httpResponse.getStatusLine().getStatusCode())) {
+                return IoUtil.read(httpResponse.getEntity().getContent(), Charset.defaultCharset());
             }
             return null;
         } catch (Exception e) {

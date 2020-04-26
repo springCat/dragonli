@@ -12,6 +12,10 @@ public interface IHttpTransform {
 
       String post(String url, Map<String, String> headers, String request) throws RpcException;
 
+      default boolean isSuccess(int httpCode){
+            return httpCode >= 200 && httpCode < 300;
+      }
+
       default String genUrl(RpcRequest rpcRequest, RegisterServiceInfo registerServiceInfo) {
             RpcMethodInfo rpcMethodInfo = rpcRequest.getRpcMethodInfo();
 

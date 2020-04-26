@@ -73,7 +73,7 @@ public class RpcInvoke {
             String url = httpTransform.genUrl(rpcRequest, choose);
 
 
-            AtomicReference<RpcException> httpTransformRpcException = null;
+            AtomicReference<RpcException> httpTransformRpcException = new AtomicReference<RpcException>();
             Supplier<String> transformSupplier = () -> {
                 try {
                     return httpTransform.post(url, rpcRequest.getRpcHeader(), body);
@@ -89,8 +89,9 @@ public class RpcInvoke {
             //6 Transform invoke
             String resp = supplier.get();
 
-            if(httpTransformRpcException != null){
-                throw httpTransformRpcException.get();
+            RpcException rpcException = httpTransformRpcException.get();
+            if( rpcException != null){
+                throw rpcException;
             }
 
             //7 serialize decode
