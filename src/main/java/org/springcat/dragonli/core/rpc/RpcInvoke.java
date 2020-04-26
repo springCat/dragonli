@@ -58,6 +58,10 @@ public class RpcInvoke {
             Optional<RpcResponse> response = validation.validateWithRpcResponse(rpcRequest);
             if(response.isPresent()){
                 log.debug("RpcInvoke validate rpcRequest{},failed error code:{}" ,rpcRequest,response.get().getCode());
+                Optional<RpcResponse> recoverResponse = rpcRequest.recoverResult();
+                if(recoverResponse.isPresent()){
+                    return recoverResponse.get();
+                }
                 return response.get();
             }
 
@@ -103,9 +107,21 @@ public class RpcInvoke {
             }
 
         }catch (RpcException rpcException){
-            return RpcUtil.buildRpcResponse(rpcException.getMessage(),rpcRequest.getRpcMethodInfo().getReturnType()).get();
+            Optional<RpcResponse> recoverResponse = rpcRequest.recoverResult();
+            if(recoverResponse.isPresent()){
+                return recoverResponse.get();
+            }else {
+                return RpcUtil.buildRpcResponse(rpcException.getMessage(), rpcRequest.getRpcMethodInfo().getReturnType()).get();
+            }
         }catch (Exception error){
-            log.error("RpcInvoke invoke error rpcRequest{},error:{}",rpcRequest,error);
+            log.error("RpcInvoke invoke error rpcRequest{},error:{}", rpcRequest, error);
+
+            Optional<RpcResponse> recoverResponse = rpcRequest.recoverResult();
+            if(recoverResponse.isPresent()){
+                return recoverResponse.get();
+            }else {
+                return RpcUtil.buildRpcResponse(RpcExceptionCodes.ERR_OTHER.getCode(), rpcRequest.getRpcMethodInfo().getReturnType()).get();
+            }
         }
 
         return RpcUtil.newInstance(rpcRequest.getRpcMethodInfo().getReturnType());

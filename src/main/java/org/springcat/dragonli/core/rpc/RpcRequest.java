@@ -3,8 +3,11 @@ package org.springcat.dragonli.core.rpc;
 import cn.hutool.core.util.ArrayUtil;
 import lombok.Data;
 import org.springcat.dragonli.core.Context;
+import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
+
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -17,7 +20,7 @@ public class RpcRequest{
 
         requestObj = ArrayUtil.get(args, 0);
         Map<String,String> reqHeader = ArrayUtil.get(args, 1);
-        supplier = ArrayUtil.get(args, 2);
+        recover = ArrayUtil.get(args, 2);
         rpcHeader = Context.getAllRpcParam();
         if(reqHeader != null){
             rpcHeader.putAll(reqHeader);
@@ -31,8 +34,19 @@ public class RpcRequest{
 
     private Object requestObj;
 
-    private Supplier supplier;
+    private Supplier recover;
 
     private RpcMethodInfo rpcMethodInfo;
+
+    public Optional<RpcResponse> recoverResult(){
+        if(getRecover() != null){
+            RpcResponse rpcResponse = (RpcResponse)getRecover().get();
+            if(rpcResponse != null) {
+                rpcResponse.setCode(RpcExceptionCodes.ERR_RECOVER.getCode());
+            }
+            return Optional.ofNullable(rpcResponse);
+        }
+        return Optional.empty();
+    }
 
 }
