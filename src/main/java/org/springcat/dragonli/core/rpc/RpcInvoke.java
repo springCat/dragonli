@@ -99,7 +99,7 @@ public class RpcInvoke {
             return RpcUtil.buildRpcResponse(RpcExceptionCodes.ERR_OTHER.getCode(), returnType);
         };
 
-        return errorHandle.execute(rpcRequest, rpcSupplier, errorHandler);
+        return errorHandle.execute(rpcSupplier, errorHandler);
     }
 
 
