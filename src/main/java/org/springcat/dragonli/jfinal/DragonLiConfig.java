@@ -41,8 +41,9 @@ public abstract class DragonLiConfig extends JFinalConfig {
     @Override
     public void configRoute(Routes me) {
         configRoutePlus(me);
-        JFinalStatusController.init(me,appConf);
         me.add("config",ConfigController.class);
+        //在JFinalStatusController前会被统计进status/urls接口,在这个方法后面就不会
+        JFinalStatusController.init(me,appConf);
     }
 
     public abstract void configRoutePlus(Routes me);

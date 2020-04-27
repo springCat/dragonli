@@ -25,9 +25,7 @@ loadBalanceKeyName=x-uid
 
 [config]
 sysConfPath=/config/sysConf/${application.name}/
-sysConfLocalPath=sysConf.setting
 userConfPath=/config/userConf/${application.name}/
-userConfLocalPath=userConf.setting
 
 
 

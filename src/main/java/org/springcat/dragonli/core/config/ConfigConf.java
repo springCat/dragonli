@@ -7,9 +7,5 @@ public class ConfigConf {
 
     private String sysConfPath;
 
-    private String sysConfLocalPath;
-
     private String userConfPath;
-
-    private String userConfLocalPath;
 }
