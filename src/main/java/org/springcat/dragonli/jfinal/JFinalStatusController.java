@@ -36,13 +36,14 @@ public class JFinalStatusController extends Controller {
         log.info("init service url :{}"+urlList);
     }
 
-    public void appconf(){
+    public void appInfo(){
         renderJson(appConf);
     }
 
     public void urls(){
         renderJson(urlList);
     }
+
 
     private static List<String> getUrls(AppConf appConf, ActionMapping actionMapping){
         String rootPath = appConf.getRootPath();

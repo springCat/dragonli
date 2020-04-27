@@ -42,6 +42,7 @@ public abstract class DragonLiConfig extends JFinalConfig {
     public void configRoute(Routes me) {
         configRoutePlus(me);
         JFinalStatusController.init(me,appConf);
+        me.add("config",ConfigController.class);
     }
 
     public abstract void configRoutePlus(Routes me);
@@ -51,7 +52,7 @@ public abstract class DragonLiConfig extends JFinalConfig {
 
         //为了先从配置中心拉取配置
         me.add(new ConsulPlugin(consulConf, appConf));
-        me.add(new ConfigPlugin(configConf));
+        me.add(new ConfigPlugin());
 
         configPluginPlus(me);
 
