@@ -1,6 +1,7 @@
 package org.springcat.dragonli.core.rpc.ihandle.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.ecwid.consul.v1.ConsulClient;
@@ -25,7 +26,13 @@ public class ConsulServiceRegister implements IServiceRegister {
         List<RegisterServiceInfo> list = new ArrayList<>();
         try {
             ConsulClient client = ConsulUtil.client();
-            List<HealthService> value = client.getHealthServices(rpcRequest.getRpcMethodInfo().getAppName(), HealthServicesRequest.newBuilder().build()).getValue();
+            String[] labels = rpcRequest.getRpcMethodInfo().getLabels();
+            List<HealthService> value = client.getHealthServices(rpcRequest.getRpcMethodInfo().getAppName(),
+                    HealthServicesRequest.newBuilder().setTags(labels).build()).getValue();
+
+            if(CollectionUtil.isEmpty(value)){
+                log.error("ConsulServiceRegister getServiceList no service find rpcRequest:{}" ,rpcRequest);
+            }
             for (HealthService healthService : value) {
                 HealthService.Service service = healthService.getService();
                 RegisterServiceInfo registerServiceInfo = new RegisterServiceInfo();

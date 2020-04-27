@@ -2,6 +2,7 @@ package org.springcat.dragonli.core.config;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.setting.Setting;
+import cn.hutool.system.SystemUtil;
 import com.ecwid.consul.v1.Response;
 import com.ecwid.consul.v1.kv.model.GetValue;
 import org.springcat.dragonli.core.consul.ConsulUtil;
@@ -9,17 +10,13 @@ import org.springcat.dragonli.core.consul.ConsulUtil;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * prjConf           ->  dragonli.setting,打包后不再变化
- * sysConf           ->  启动前从consul加载,启动后不再变化,规划路径为 /config/sysConf/${appName}/ ,直接存于内存中
- * userConf          ->  启动后从consul加载,随时变化,规划路径为 /config/userConf/${appName}/ ,支持单个刷新和直接设置
- */
 public class ConfigUtil {
 
+    //prjConf    ->  dragonli.setting,打包后不再变化
     private final static Setting prjConf;
-
+    //sysConf    ->  启动前从consul加载,启动后不再变化,规划路径为 /config/sysConf/${appName}/ ,直接存于内存中
     private static Setting sysConf = new Setting();
-
+    //userConf   ->   启动后从consul加载,随时变化,规划路径为 /config/userConf/${appName}/ ,支持单个刷新和直接设置
     private static Setting userConf = new Setting();
 
     private final static ConfigConf configConf;
@@ -29,6 +26,12 @@ public class ConfigUtil {
         configConf = getPrjConf(SettingGroup.config);
     }
 
+    //-------------------------------------EnvConf----------------------------------
+    public static String getEnvConf(String name,String defaultValue){
+        return SystemUtil.get(name,defaultValue);
+    }
+
+    //-------------------------------------PrjConf----------------------------------
     public static <T> T getPrjConf(SettingGroup settingGroup){
         try {
             T bean = (T) prjConf.getSetting(settingGroup.name()).toBean(settingGroup.getCls().newInstance());
@@ -40,30 +43,35 @@ public class ConfigUtil {
         }
         return null;
     }
+    //-------------------------------------SysConf----------------------------------
+    public static Setting getSysConf(){
+        return sysConf;
+    }
 
     public static void refreshSysConf(){
         Response<List<GetValue>> resp = ConsulUtil.client().getKVValues(configConf.getSysConfPath());
         List<GetValue> values = resp.getValue();
         Optional.ofNullable(values).ifPresent(list -> {
-                for (GetValue value : list) {
-                    put(sysConf,value,configConf.getSysConfPath());
+                    for (GetValue value : list) {
+                        put(sysConf,value,configConf.getSysConfPath());
+                    }
                 }
-            }
         );
     }
+    //---------------------------------------UserConf--------------------------------
 
-    public static Setting getSysConf(){
-        return sysConf;
+    public static Setting getUserConf(){
+        return userConf;
     }
 
     public static void refreshUserConf(){
         Response<List<GetValue>> resp = ConsulUtil.client().getKVValues(configConf.getUserConfPath());
         List<GetValue> values = resp.getValue();
         Optional.ofNullable(values).ifPresent(list -> {
-                for (GetValue value : list) {
-                    put(userConf,value,configConf.getUserConfPath());
+                    for (GetValue value : list) {
+                        put(userConf,value,configConf.getUserConfPath());
+                    }
                 }
-            }
         );
     }
 
@@ -75,6 +83,7 @@ public class ConfigUtil {
     public static void setUserConf(String name,String value){
         userConf.put(name,value);
     }
+    //-----------------------------------------------------------------------
 
     private static void put(Setting setting, GetValue value, String path){
         int len = path.length();
@@ -84,10 +93,4 @@ public class ConfigUtil {
             setting.put(key,value.getDecodedValue());
         }
     }
-
-    public static Setting getUserConf(){
-        return userConf;
-    }
-
-
 }

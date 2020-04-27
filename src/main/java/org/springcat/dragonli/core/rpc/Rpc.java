@@ -17,5 +17,5 @@ public @interface Rpc {
     String url() default "";
 
     //预留,为了实现跨分组服务功能,基于这个功能可以实现优先调用本机房服务,遇到故障再调用跨机房服务的功能
-    String[] labels() default {};
+    String[] labels() default {"DEFAULT"};
 }

@@ -22,7 +22,7 @@ import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
 public abstract class DragonLiConfig extends JFinalConfig {
 
     private ConsulConf consulConf = ConfigUtil.getPrjConf(SettingGroup.consul);
-    private AppConf appConf = ConfigUtil.getPrjConf(SettingGroup.application);
+    private AppConf appConf = AppConf.getInstance();
     private RpcConf rpcConf = ConfigUtil.getPrjConf(SettingGroup.rpc);
     private ConfigConf configConf = ConfigUtil.getPrjConf(SettingGroup.config);
 

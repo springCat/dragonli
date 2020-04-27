@@ -3,6 +3,8 @@ package org.springcat.dragonli.core.rpc.ihandle.impl;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
+import io.vavr.collection.HashMap;
 import io.vavr.control.Try;
 import lombok.Data;
 import org.springcat.dragonli.core.rpc.RpcRequest;
@@ -33,7 +35,8 @@ public class Resilience4jErrorHandle implements IErrorHandle {
 
         this.circuitBreaker =  CircuitBreaker.of(key, circuitBreakerConfig);
 
-        this.retry = Retry.ofDefaults(key);
+        RetryConfig retryConfig = new RetryConfig.Builder().maxAttempts(2).build();
+        this.retry = Retry.of(key,retryConfig, HashMap.empty());
     }
 
     @Override
