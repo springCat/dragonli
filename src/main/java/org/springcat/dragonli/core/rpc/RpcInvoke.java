@@ -80,7 +80,6 @@ public class RpcInvoke {
             return RpcUtil.buildRpcResponse(RpcExceptionCodes.SUCCESS.getCode(), returnType);
         };
 
-
         Function<? super Throwable, ? extends RpcResponse> errorHandler = throwable -> {
             //重试返回
             if (rpcRequest.getRecover() != null) {
@@ -100,9 +99,7 @@ public class RpcInvoke {
             return RpcUtil.buildRpcResponse(RpcExceptionCodes.ERR_OTHER.getCode(), returnType);
         };
 
-        RpcResponse execute = errorHandle.execute(rpcRequest, rpcSupplier,errorHandler);
-
-        return execute;
+        return errorHandle.execute(rpcRequest, rpcSupplier, errorHandler);
     }
 
 
