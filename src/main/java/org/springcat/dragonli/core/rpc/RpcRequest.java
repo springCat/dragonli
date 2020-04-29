@@ -15,6 +15,10 @@ import java.util.function.Supplier;
 @Data
 public class RpcRequest{
 
+    public RpcRequest(){
+
+    }
+
     public RpcRequest(Method method, Object[] args){
 
         requestObj = ArrayUtil.get(args, 0);

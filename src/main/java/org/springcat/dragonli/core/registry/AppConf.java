@@ -25,6 +25,8 @@ public class AppConf {
 
     private String checkInterval;
 
+    private String healthCheckPath;
+
     /**
      * 标识机器分组,比如现网debug点等等
      */

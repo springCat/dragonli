@@ -7,8 +7,9 @@ name = jfinalDemo
 ip = 192.168.99.170
 port = 8080
 rootPath =
-appTags =
-checkUrl = http://192.168.99.170:8080/status
+#appTags =
+healthCheckPath = /status
+checkUrl = http://${application.ip}:${application.port}/${application.healthCheckPath}
 checkInterval = 3s
 checkTimout = 1s
 
@@ -26,7 +27,5 @@ loadBalanceKeyName=x-uid
 [config]
 sysConfPath=/config/sysConf/${application.name}/
 userConfPath=/config/userConf/${application.name}/
-
-
 
 
