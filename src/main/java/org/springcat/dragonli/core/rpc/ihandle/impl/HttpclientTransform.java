@@ -33,7 +33,7 @@ public class HttpclientTransform implements IHttpTransform {
 
     private final HttpClient httpClient;
 
-    protected HttpClient getHttpClient() {
+    public HttpClient getHttpClient() {
         return httpClient;
     }
 
