@@ -51,9 +51,11 @@ public class RpcInvoke {
      */
     @SneakyThrows
     public RpcResponse invoke(RpcRequest rpcRequest){
-        rpcRequest.setRpcMethodInfo(apiMap.get(rpcRequest.getMethod()));
-        Class returnType = rpcRequest.getRpcMethodInfo().getReturnType();
-        IErrorHandle errorHandle = rpcRequest.getRpcMethodInfo().getIErrorHandle();
+        RpcMethodInfo rpcMethodInfo = apiMap.get(rpcRequest.getMethod());
+        rpcRequest.setRpcMethodInfo(rpcMethodInfo);
+
+        Class returnType = rpcMethodInfo.getReturnType();
+        IErrorHandle errorHandle = rpcMethodInfo.getIErrorHandle();
 
         //1 客户端校验参数,从rpcSupplier中分离出,因为客户端参数校验必须在开发阶段就处理掉,不需要重试,熔断和错误处理
         if(rpcConf.getClientValidateOpen() == 1) {
@@ -63,9 +65,14 @@ public class RpcInvoke {
         Supplier<RpcResponse> rpcSupplier = () -> {
             RpcResponse rpcResponse = null;
             //2 serviceGetter
-            List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(rpcRequest);
+            String appName = rpcMethodInfo.getAppName();
+            String[] labels = rpcMethodInfo.getLabels();
+            List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(appName,labels);
+
             //3 loaderBalance
-            RegisterServiceInfo choose = loadBalanceRule.choose(serviceList, rpcRequest);
+            String loaderBalanceFlag = rpcRequest.getRpcHeader().getOrDefault(rpcMethodInfo.getLoadBalancerKeyName(), "");
+            RegisterServiceInfo choose = loadBalanceRule.choose(serviceList, loaderBalanceFlag);
+
             //4 serialize encode
             String body = serialize.encode(rpcRequest.getRequestObj());
             //5 http invoke

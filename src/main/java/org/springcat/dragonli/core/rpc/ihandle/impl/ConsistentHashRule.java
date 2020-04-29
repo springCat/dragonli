@@ -6,7 +6,7 @@ import cn.hutool.log.LogFactory;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
-import org.springcat.dragonli.core.rpc.RpcRequest;
+
 import java.util.List;
 
 /**
@@ -16,11 +16,17 @@ public class ConsistentHashRule implements ILoadBalanceRule {
 
     private final static Log log = LogFactory.get();
 
-    public RegisterServiceInfo choose(List<RegisterServiceInfo> serviceList, RpcRequest rpcRequest) throws RpcException {
+    /**
+     *
+     * @param serviceList
+     * @return
+     * @throws RpcException
+     */
+    public RegisterServiceInfo choose(List<RegisterServiceInfo> serviceList, Object loaderBalanceFlag) throws RpcException {
         RegisterServiceInfo registerServiceInfo = null;
         try {
-            String loaderBalanceFlag = rpcRequest.getRpcHeader().getOrDefault(rpcRequest.getRpcMethodInfo().getLoadBalancerKeyName(), "");
-            int i = consistentHash(HashUtil.murmur32(loaderBalanceFlag.getBytes()), serviceList.size());
+            byte[] data =  ((String)loaderBalanceFlag).getBytes();
+            int i = consistentHash(HashUtil.murmur32(data), serviceList.size());
             registerServiceInfo = serviceList.get(i);
             return registerServiceInfo;
         }catch (Exception e){

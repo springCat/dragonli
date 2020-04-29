@@ -8,10 +8,10 @@ import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.health.HealthServicesRequest;
 import com.ecwid.consul.v1.health.model.HealthService;
 import org.springcat.dragonli.core.consul.ConsulUtil;
-import org.springcat.dragonli.core.rpc.RpcRequest;
 import org.springcat.dragonli.core.rpc.exception.RpcException;
 import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.IServiceRegister;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +22,21 @@ public class ConsulServiceRegister implements IServiceRegister {
 
     private final static Log log = LogFactory.get();
 
-    public List<RegisterServiceInfo> getServiceList(RpcRequest rpcRequest) throws RpcException {
+    /**
+     *
+     *
+     * @return
+     * @throws RpcException
+     */
+    public List<RegisterServiceInfo> getServiceList(String appName,String[] labels) throws RpcException {
         List<RegisterServiceInfo> list = new ArrayList<>();
         try {
             ConsulClient client = ConsulUtil.client();
-            String[] labels = rpcRequest.getRpcMethodInfo().getLabels();
-            List<HealthService> value = client.getHealthServices(rpcRequest.getRpcMethodInfo().getAppName(),
+            List<HealthService> value = client.getHealthServices(appName,
                     HealthServicesRequest.newBuilder().setTags(labels).build()).getValue();
 
             if(CollectionUtil.isEmpty(value)){
-                log.error("ConsulServiceRegister getServiceList no service find rpcRequest:{}" ,rpcRequest);
+                log.error("ConsulServiceRegister getServiceList no service find appName:{},labels:{}" ,appName,labels);
             }
             for (HealthService healthService : value) {
                 HealthService.Service service = healthService.getService();
@@ -41,7 +46,7 @@ public class ConsulServiceRegister implements IServiceRegister {
             }
             return list;
         }catch (Exception e){
-            log.error("ConsulServiceRegister getServiceList error rpcRequest:{},error:{}" ,rpcRequest,e.getMessage());
+            log.error("ConsulServiceRegister getServiceList error appName:{},labels:{},error:{}" ,appName,labels,e.getMessage());
             throw new RpcException(RpcExceptionCodes.ERR_SERVICE_NOT_FIND.getCode());
         }finally {
             log.debug("RegisterServiceInfoList:{}",list);
