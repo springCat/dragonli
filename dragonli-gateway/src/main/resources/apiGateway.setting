@@ -1,0 +1,3 @@
+[consumer]
+/status/urls=DEFAULT
+/blog/testRpc=DEFAULT

@@ -1,0 +1,30 @@
+[consul]
+ip = 127.0.0.1
+port = 8500
+
+[application]
+name = jfinalDemo
+ip = 192.168.99.170
+port = 8080
+rootPath =
+#appTags =
+healthCheckPath = /status
+checkUrl = http://${application.ip}:${application.port}/${application.healthCheckPath}
+checkInterval = 3s
+checkTimout = 1s
+
+[config]
+sysConfPath=/config/sysConf/${application.name}/
+userConfPath=/config/userConf/${application.name}/
+
+[apiGateway]
+healthCheckUrl = /status
+configPathConsul =
+apiExposeUrlsFilepath = apiGateway.setting
+httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
+loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
+errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
+serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceRegister
+
+
+

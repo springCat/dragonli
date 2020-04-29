@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dragonli-parent</artifactId>
+        <groupId>org.springcat</groupId>
+        <version>1.0.0-SNAPHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dragonli-gateway</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!--        undertow-->
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
+            <version>2.1.0.Final</version>
+        </dependency>
+
+        <!-- dragonli-->
+        <dependency>
+            <groupId>org.springcat</groupId>
+            <artifactId>dragonli-core</artifactId>
+            <version>1.0.0-SNAPHOT</version>
+        </dependency>
+        <!-- lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>
