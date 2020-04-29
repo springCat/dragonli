@@ -32,9 +32,9 @@ public class ConfigUtil {
     }
 
     //-------------------------------------PrjConf----------------------------------
-    public static <T> T getPrjConf(SettingGroup settingGroup){
+    public static <T> T getPrjConf(String settingGroupName,Class cls){
         try {
-            T bean = (T) prjConf.getSetting(settingGroup.name()).toBean(settingGroup.getCls().newInstance());
+            T bean = (T) prjConf.getSetting(settingGroupName).toBean(cls.newInstance());
             return bean;
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -43,6 +43,11 @@ public class ConfigUtil {
         }
         return null;
     }
+
+    public static <T> T getPrjConf(SettingGroup settingGroup){
+        return getPrjConf(settingGroup.name(), settingGroup.getCls());
+    }
+
     //-------------------------------------SysConf----------------------------------
     public static Setting getSysConf(){
         return sysConf;
