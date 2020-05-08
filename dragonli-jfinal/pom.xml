@@ -19,9 +19,23 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springcat</groupId>
-            <artifactId>dragonli-core</artifactId>
+            <artifactId>dragonli-util</artifactId>
             <version>1.0.0-SNAPHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springcat</groupId>
+            <artifactId>dragonli-rpc</artifactId>
+            <version>1.0.0-SNAPHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

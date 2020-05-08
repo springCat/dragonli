@@ -4,14 +4,17 @@ package org.springcat.dragonli.gateway;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import cn.hutool.setting.Setting;
-import org.springcat.dragonli.core.config.ConfigUtil;
-import org.springcat.dragonli.core.config.SettingGroup;
-import org.springcat.dragonli.core.consul.ConsulConf;
-import org.springcat.dragonli.core.consul.ConsulUtil;
 import org.springcat.dragonli.core.rpc.ihandle.IErrorHandle;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
-import org.springcat.dragonli.core.rpc.ihandle.IServiceRegister;
+import org.springcat.dragonli.core.rpc.ihandle.IServiceProvider;
+import org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider;
+import org.springcat.dragonli.util.configcenter.ConfigCenter;
+import org.springcat.dragonli.util.configcenter.ConfigCenterConf;
+import org.springcat.dragonli.util.consul.Consul;
+import org.springcat.dragonli.util.consul.ConsulConf;
+import org.springcat.dragonli.util.registercenter.register.ApplicationConf;
+import org.springcat.dragonli.util.registercenter.register.ServiceRegister;
 
 import java.util.List;
 import java.util.Map;
@@ -21,15 +24,28 @@ public class ApiGatewayInvokeStarter {
 
     private final static Log log = LogFactory.get();
 
-    public static ApiGatewayInvoke initApiGatewayInvoke(ApiGateWayConf apiGateWayConf){
+    public static ApiGatewayInvoke init(){
         try {
-
-            ConsulConf consulConf = ConfigUtil.getPrjConf(SettingGroup.consul);
-            ConsulUtil.init(consulConf);
-
             ApiGatewayInvoke invoke = new ApiGatewayInvoke();
 
+            //init consul
+            ConsulConf consulConf = new ConsulConf().load();
+            Consul consul = new Consul().connect(consulConf);
+
+            //init service register
+            ApplicationConf applicationConf = new ApplicationConf().load();
+            ServiceRegister serviceRegister = new ServiceRegister(consul);
+            serviceRegister.register(applicationConf);
+
+            //init consulServiceProvider for connect ServiceProvider and Rpc
+            ConsulServiceProvider consulServiceProvider = new ConsulServiceProvider(consul);
+
+            //init config
+            ConfigCenterConf configCenterConf = new ConfigCenterConf().load();
+            ConfigCenter.init(configCenterConf, consul);
+
             //注入配置
+            ApiGateWayConf apiGateWayConf = new ApiGateWayConf().load();
             invoke.setApiGateWayConf(apiGateWayConf);
 
             //初始化负载均衡
@@ -40,12 +56,17 @@ public class ApiGatewayInvokeStarter {
             invoke.setHttpTransform((IHttpTransform) Class.forName(apiGateWayConf.getHttpTransformImplClass()).newInstance());
             log.info("init httpTransform {}", apiGateWayConf.getHttpTransformImplClass());
 
-            //初始化服务列表获取
-            invoke.setServiceRegister((IServiceRegister) Class.forName(apiGateWayConf.getServiceRegisterImplClass()).newInstance());
-            log.info("init ServiceRegister {}", apiGateWayConf.getServiceRegisterImplClass());
 
             //初始化路由
             initRoute(invoke, apiGateWayConf);
+
+            Setting apiExposeUrls = invoke.getApiExposeUrls();
+            //初始化服务列表获取
+            IServiceProvider serviceProvider = (IServiceProvider) Class.forName(apiGateWayConf.getServiceRegisterImplClass()).newInstance();
+            serviceProvider.init();
+            invoke.setServiceRegister(serviceProvider);
+            log.info("init ServiceRegister {}", apiGateWayConf.getServiceRegisterImplClass());
+
             return invoke;
         }catch (Exception e){
             log.info(e.getMessage());

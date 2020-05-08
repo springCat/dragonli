@@ -1,10 +1,10 @@
 package org.springcat.dragonli.gateway;
 
 import lombok.Data;
-import org.springcat.dragonli.core.config.ConfigUtil;
+import org.springcat.dragonli.util.config.IConfig;
 
 @Data
-public class ApiGateWayConf {
+public class ApiGateWayConf implements IConfig {
 
     private String configPathConsul = "exposeUrl";
 
@@ -20,13 +20,7 @@ public class ApiGateWayConf {
     private String errorHandleImplClass = "org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle";
 
     //具体的服务地址列表获取实现类,可以自定义
-    private String serviceRegisterImplClass = "org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceRegister";
-
+    private String serviceRegisterImplClass = "org.springcat.dragonli.jfinal.ConsulServiceRegister";
 
     private String healthCheckUrl = "/status";
-
-
-    public static ApiGateWayConf GetInstance(){
-        return ConfigUtil.getPrjConf("apiGateway",ApiGateWayConf.class);
-    }
 }

@@ -2,7 +2,7 @@ package org.springcat.dragonli.jfinal;
 
 import cn.hutool.core.util.StrUtil;
 import com.jfinal.core.Controller;
-import org.springcat.dragonli.core.config.ConfigUtil;
+import org.springcat.dragonli.util.configcenter.ConfigCenter;
 
 /**
  * 暴露配置管理接口,后续可以获取consul中所有的服务器,然后依次调用刷新接口,来控制集群配置更新
@@ -10,33 +10,33 @@ import org.springcat.dragonli.core.config.ConfigUtil;
 public class ConfigController extends Controller {
 
     public void sysConf(){
-        renderJson(ConfigUtil.getSysConf());
+        renderJson(ConfigCenter.me().getSysConf());
     }
 
     public void userConf(){
         String key = getPara("k");
         if(StrUtil.isNotBlank(key)){
-            renderJson(ConfigUtil.getUserConf().get(key));
+            renderJson(ConfigCenter.me().getUserConf().get(key));
             return;
         }
-        renderJson(ConfigUtil.getUserConf());
+        renderJson(ConfigCenter.me().getUserConf());
     }
 
     public void refreshUserConf(){
-        ConfigUtil.refreshUserConf();
+        ConfigCenter.me().refreshUserConf();
         renderText("ok");
     }
 
     public void fetchUserConf(){
         String key = getPara("k");
-        ConfigUtil.pullUserConf(key);
+        ConfigCenter.me().pullUserConf(key);
         renderText("ok");
     }
 
     public void setUserConf(){
         String key = getPara("k");
         String value = getPara("v");
-        ConfigUtil.setUserConf(key,value);
+        ConfigCenter.me().setUserConf(key,value);
         renderText("ok");
     }
 }

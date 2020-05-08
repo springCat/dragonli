@@ -21,9 +21,9 @@ import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
 import org.springcat.dragonli.core.rpc.ihandle.IErrorHandle;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
-import org.springcat.dragonli.core.rpc.ihandle.IServiceRegister;
+import org.springcat.dragonli.core.rpc.ihandle.IServiceProvider;
 import org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform;
-import org.springcat.dragonli.core.rpc.ihandle.impl.RegisterServiceInfo;
+import org.springcat.dragonli.util.registercenter.provider.RegisterServiceInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +45,7 @@ public class ApiGatewayInvoke {
 
     private IHttpTransform httpTransform;
 
-    private IServiceRegister serviceRegister;
+    private IServiceProvider serviceRegister;
 
     private Setting apiExposeUrls;
 

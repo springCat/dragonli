@@ -1,0 +1,30 @@
+[consul]
+ip = 127.0.0.1
+port = 8500
+
+[application]
+name = dragonliDemo
+ip = 192.168.99.170
+port = 8080
+rootPath =
+appTags = DEFAULT
+healthCheckPath = /status
+checkUrl = http://${application.ip}:${application.port}/${application.healthCheckPath}
+checkInterval = 3s
+checkTimout = 1s
+
+[configCenter]
+applicationName = ${application.name}
+bootConfPath=/config/boot/
+bootConfRefreshPeriod = -1;
+sysConfPath=/config/sys/
+sysConfRefreshPeriod = -1;
+userConfPath=/config/user/
+userConfRefreshPeriod = -1;
+routeConfPath=/config/route/
+routeConfRefreshPeriod = -1;
+
+
+[serviceProvider]
+serviceScanPeriod = 3
+serviceFetcherNum = 5

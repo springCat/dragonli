@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class ApiGateWayFilter extends HttpFilter {
 
-    private final static ApiGateWayConf apiGateWayConf = ApiGateWayConf.GetInstance();
+    private final static ApiGateWayConf apiGateWayConf = new ApiGateWayConf().load();
 
     private final static ApiGatewayInvoke apiGatewayInvoke = ApiGatewayInvokeStarter.initApiGatewayInvoke(apiGateWayConf);
 

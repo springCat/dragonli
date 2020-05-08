@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!--        undertow-->
+        <!-- undertow-->
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-servlet</artifactId>
@@ -23,15 +23,16 @@
         <!-- dragonli-->
         <dependency>
             <groupId>org.springcat</groupId>
-            <artifactId>dragonli-core</artifactId>
+            <artifactId>dragonli-util</artifactId>
             <version>1.0.0-SNAPHOT</version>
         </dependency>
-        <!-- lombok-->
+
+        <!-- dragonli-->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
-            <scope>compile</scope>
+            <groupId>org.springcat</groupId>
+            <artifactId>dragonli-rpc</artifactId>
+            <version>1.0.0-SNAPHOT</version>
         </dependency>
+
     </dependencies>
 </project>

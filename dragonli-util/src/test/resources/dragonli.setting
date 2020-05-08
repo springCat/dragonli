@@ -1,0 +1,16 @@
+[groupName]
+id = 1
+name = name
+labels = 1,2,3
+
+[consul]
+ip = 127.0.0.1
+port = 8500
+
+[configCenter]
+sysConfPath = /config/sysConf/
+bootstrap/tConfPath = /config/bootstrap/
+userConfPath = /config/userConf/
+applicationName = appName
+sysConfRefreshPeriod = -1
+userConfRefreshPeriod = -1

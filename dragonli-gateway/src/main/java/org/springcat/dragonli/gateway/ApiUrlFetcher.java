@@ -6,7 +6,10 @@ import cn.hutool.log.LogFactory;
 import cn.hutool.setting.Setting;
 import com.ecwid.consul.v1.Response;
 import com.ecwid.consul.v1.kv.model.GetValue;
-import org.springcat.dragonli.core.consul.ConsulUtil;
+import org.springcat.dragonli.consul.ConsulUtil;
+import org.springcat.dragonli.util.configcenter.ConfigCenter;
+import org.springcat.dragonli.util.consul.Consul;
+import org.springcat.dragonli.util.registercenter.provider.ServiceProvider;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +32,9 @@ public class ApiUrlFetcher {
         }
         return setting;
     }
-    public static Setting refreshApiExposeUrlsFormConsul(ApiGateWayConf apiGateWayConf){
-        Setting setting = new Setting();
+
+    public static Setting refreshApiExposeUrlsFormConsul(ConfigCenter configCenter, ApiGateWayConf apiGateWayConf){
+
         Response<List<GetValue>> resp = ConsulUtil.client().getKVValues(apiGateWayConf.getConfigPathConsul());
         List<GetValue> values = resp.getValue();
         Optional.ofNullable(values).ifPresent(list -> {

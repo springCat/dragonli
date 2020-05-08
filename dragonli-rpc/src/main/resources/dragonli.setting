@@ -3,37 +3,30 @@ ip = 127.0.0.1
 port = 8500
 
 [application]
-name = consumer
+name = jfinalDemo
 ip = 192.168.99.170
-port = 8082
+port = 8080
 rootPath =
 #appTags =
 healthCheckPath = /status
-checkUrl = http://${application.ip}:${application.port}${application.healthCheckPath}
+checkUrl = http://${application.ip}:${application.port}/${application.healthCheckPath}
 checkInterval = 3s
 checkTimout = 1s
 
-
 [rpc]
 scanPackages = com.demo
-clientValidateOpen = 0
+clientValidateOpen = 1
 validationImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Jsr303Validation
 serializeImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.JacksonSerialize
 httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
 loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
 errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
-serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
+//todo
+serviceProviderImplClass = org.springcat.org.springcat.dragonli.jfinal.ConsulServiceProvider
 loadBalanceKeyName=x-uid
 
 [config]
 sysConfPath=/config/sysConf/${application.name}/
 userConfPath=/config/userConf/${application.name}/
 
-[apiGateway]
-healthCheckUrl = /status
-configPathConsul = exposeUrl
-apiExposeUrlsFilepath = apiGateway.setting
-httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
-loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
-errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
-serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
+

@@ -4,16 +4,11 @@ import com.jfinal.config.*;
 import com.jfinal.json.JacksonFactory;
 import com.jfinal.template.Engine;
 import org.springcat.dragonli.core.Context;
-import org.springcat.dragonli.core.config.ConfigConf;
-import org.springcat.dragonli.core.config.ConfigUtil;
-import org.springcat.dragonli.core.config.SettingGroup;
-import org.springcat.dragonli.core.consul.ConsulConf;
-import org.springcat.dragonli.core.registry.AppConf;
 import org.springcat.dragonli.core.rpc.RpcConf;
 import org.springcat.dragonli.core.rpc.RpcUtil;
-import org.springcat.dragonli.jfinal.plugin.ConfigPlugin;
-import org.springcat.dragonli.jfinal.plugin.ConsulPlugin;
-import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
+import org.springcat.dragonli.jfinal.health.JFinalStatusController;
+import org.springcat.dragonli.jfinal.plugin.DragonLiPlugin;
+import org.springcat.dragonli.util.registercenter.register.ApplicationConf;
 
 
 /**
@@ -21,10 +16,10 @@ import org.springcat.dragonli.jfinal.plugin.RpcPlugin;
  */
 public abstract class DragonLiConfig extends JFinalConfig {
 
-    private ConsulConf consulConf = ConfigUtil.getPrjConf(SettingGroup.consul);
-    private AppConf appConf = AppConf.getInstance();
-    private RpcConf rpcConf = ConfigUtil.getPrjConf(SettingGroup.rpc);
-    private ConfigConf configConf = ConfigUtil.getPrjConf(SettingGroup.config);
+
+    private ApplicationConf appConf = new ApplicationConf().load();
+
+    private RpcConf rpcConf = new RpcConf().load();
 
     @Override
     public void configConstant(Constants me) {
@@ -50,17 +45,10 @@ public abstract class DragonLiConfig extends JFinalConfig {
 
     @Override
     public void configPlugin(Plugins me) {
-
-        //为了先从配置中心拉取配置
-        me.add(new ConsulPlugin(consulConf, appConf));
-        me.add(new ConfigPlugin());
-
+        DragonLiPlugin dragonLiPlugin = new DragonLiPlugin();
+        me.add(dragonLiPlugin);
         configPluginPlus(me);
-
-        //init rpc client
-        RpcPlugin rpcPlugin = new RpcPlugin(rpcConf);
-        me.add(rpcPlugin);
-}
+    }
 
     public abstract void configPluginPlus(Plugins me);
 
