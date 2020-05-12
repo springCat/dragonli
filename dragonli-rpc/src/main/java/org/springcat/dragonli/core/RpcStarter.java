@@ -41,7 +41,8 @@ public class RpcStarter {
     private final static Log log = LogFactory.get();
 
     @SneakyThrows
-    public static RpcInvoke init(RpcConf rpcConf,IServiceProvider serviceProvider){
+    public static RpcInvoke init(IServiceProvider serviceProvider){
+        RpcConf rpcConf = new RpcConf().load();
 
         RpcInvoke invoke = new RpcInvoke();
         //注入配置

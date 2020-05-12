@@ -24,9 +24,9 @@ public class Consul {
 
     private ConsulClient client;
 
-    public Consul connect(ConsulConf consulConf){
+    public Consul(){
+        ConsulConf consulConf = new ConsulConf().load();
         client = new ConsulClient(consulConf.getIp(), consulConf.getPort());
-        return this;
     }
 
     /**

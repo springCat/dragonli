@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface IServiceProvider {
 
-    void init( Map<String,String[]> appRouteMap);
+    void init(Map<String,String[]> appRouteMap);
 
     List<RegisterServiceInfo> getServiceList(String appName, String[] label);
 }

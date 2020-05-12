@@ -9,12 +9,11 @@ import java.io.IOException;
 
 public class ApiGateWayFilter extends HttpFilter {
 
-    private final static ApiGateWayConf apiGateWayConf = new ApiGateWayConf().load();
 
-    private final static ApiGatewayInvoke apiGatewayInvoke = ApiGatewayInvokeStarter.initApiGatewayInvoke(apiGateWayConf);
+    private final static ApiGatewayInvoke apiGatewayInvoke = ApiGatewayInvokeStarter.init();
 
     @Override
     public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        apiGatewayInvoke.invokePost(req, res);
+        apiGatewayInvoke.invoke(req, res);
     }
 }

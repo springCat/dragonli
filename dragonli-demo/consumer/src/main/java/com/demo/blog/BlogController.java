@@ -4,7 +4,6 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.system.SystemUtil;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Inject;
-import org.springcat.dragonli.core.config.ConfigUtil;
 import org.springcat.dragonli.jfinal.controller.JsonController;
 
 public class BlogController extends JsonController {
@@ -20,9 +19,6 @@ public class BlogController extends JsonController {
 		renderJson(resp);
 	}
 
-	public void config(){
-		renderText(ConfigUtil.getUserConf().get("keykey1"));
-	}
 
 	public void env(){
 		String java_home = SystemUtil.get("JAVA_HOME");

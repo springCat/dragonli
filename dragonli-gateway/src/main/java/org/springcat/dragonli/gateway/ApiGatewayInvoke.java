@@ -54,11 +54,12 @@ public class ApiGatewayInvoke {
 
     public static final String ERROR_HEADER_NAME = "x_err_code";
 
-    public boolean invokePost(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException {
-        String target = servletRequest.getRequestURI();
+    public boolean invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException {
 
+        String target = servletRequest.getRequestURI();
         String gatewayUri = StrUtil.strip(target,"/");
         String applicationName = StrUtil.subBefore(gatewayUri, "/", false);
+
         if (StrUtil.isEmpty(applicationName)) {
             servletResponse.setStatus(404);
             return false;
@@ -76,7 +77,8 @@ public class ApiGatewayInvoke {
             RpcResponse rpcResponse = null;
             //2 serviceGetter
             List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(applicationName,labels.split(","));
-            //3 loaderBalance, 暂时先写死,后续优化
+
+            //3 loaderBalance,  todo loaderBalanceFlag暂时先写死,后续优化
             RegisterServiceInfo choose = loadBalanceRule.choose(serviceList, IdUtil.fastUUID());
 
             HttpclientTransform httpTransform = (HttpclientTransform) this.httpTransform;
@@ -84,17 +86,20 @@ public class ApiGatewayInvoke {
             //handle request
             //直接copy body stream,减少内存消耗和解析的性能开销
             try {
+                //构造gateway 向后端的请求
                 String uri = "http://" + choose.getAddress() + ":" + choose.getPort()  + path;
                 HttpPost httpPost = new HttpPost(uri);
-
                 httpPost.setEntity(new InputStreamEntity(servletRequest.getInputStream()));
+
                 //处理请求头部
                 handleRequestHeader(servletRequest,httpPost);
+
                 //invoke
                 HttpResponse httpResponse = httpTransform.getHttpClient().execute(httpPost);
-                //handle response
+
                 //处理返回头部
                 handleResponseHeader(servletResponse,httpResponse);
+
                 //直接copy body stream,减少内存消耗和解析的性能开销
                 IoUtil.copy(httpResponse.getEntity().getContent(), servletResponse.getOutputStream());
             } catch (IOException e) {

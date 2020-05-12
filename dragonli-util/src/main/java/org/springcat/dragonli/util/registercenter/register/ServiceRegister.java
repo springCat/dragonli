@@ -16,6 +16,8 @@ public class ServiceRegister {
 
     public ServiceRegister(Consul consul) {
         this.consul = consul;
+        ApplicationConf applicationConf = new ApplicationConf().load();
+        register(applicationConf);
     }
 
     /**
