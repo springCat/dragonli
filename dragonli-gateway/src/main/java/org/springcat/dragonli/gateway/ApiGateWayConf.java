@@ -20,7 +20,7 @@ public class ApiGateWayConf implements IConfig {
     private String errorHandleImplClass = "org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle";
 
     //具体的服务地址列表获取实现类,可以自定义
-    private String serviceRegisterImplClass = "org.springcat.dragonli.jfinal.ConsulServiceRegister";
+    private String serviceRegisterImplClass = "org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider";
 
     private String healthCheckUrl = "/status";
 }

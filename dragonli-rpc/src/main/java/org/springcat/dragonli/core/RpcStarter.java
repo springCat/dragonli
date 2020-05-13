@@ -45,11 +45,14 @@ public class RpcStarter {
         RpcConf rpcConf = new RpcConf().load();
 
         RpcInvoke invoke = new RpcInvoke();
+
         //注入配置
         invoke.setRpcConf(rpcConf);
+
         //初始化负载均衡
         invoke.setLoadBalanceRule((ILoadBalanceRule) Class.forName(rpcConf.getLoadBalanceRuleImplClass()).newInstance());
         log.info("init LoadBalanceRule {}",rpcConf.getLoadBalanceRuleImplClass());
+
         //初始化序列化
         invoke.setSerialize((ISerialize)Class.forName(rpcConf.getSerializeImplClass()).newInstance());
         log.info("init Serialize {}",rpcConf.getSerializeImplClass());
@@ -59,6 +62,9 @@ public class RpcStarter {
         log.info("init httpTransform {}",rpcConf.getHttpTransformImplClass());
 
         //初始化验证
+        invoke.setValidation((IValidation) Class.forName(rpcConf.getValidationImplClass()).newInstance());
+        log.info("init validation {}",rpcConf.getValidationImplClass());
+
         //初始化接口代理类
         List<Class<?>> services = RpcUtil.scanRpcService(rpcConf.getScanPackages());
         log.info("find services for rpc{}",services);

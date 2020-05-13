@@ -3,28 +3,32 @@ ip = 127.0.0.1
 port = 8500
 
 [application]
-name = jfinalDemo
-ip = 192.168.99.170
-port = 8080
+name = apigateway
+ip = 192.168.99.238
+port = 8082
 rootPath =
 #appTags =
 healthCheckPath = /status
-checkUrl = http://${application.ip}:${application.port}/${application.healthCheckPath}
+checkUrl = http://${application.ip}:${application.port}${application.healthCheckPath}
 checkInterval = 3s
 checkTimout = 1s
 
-[config]
-sysConfPath=/config/sysConf/${application.name}/
-userConfPath=/config/userConf/${application.name}/
+[configCenter]
+applicationName = ${application.name}
+bootConfPath=config/boot/
+bootConfRefreshPeriod = -1
+sysConfPath=config/sys/
+sysConfRefreshPeriod = -1
+userConfPath=config/user/
+userConfRefreshPeriod = -1
+routeConfPath=config/route/
+routeConfRefreshPeriod = 1
 
 [apiGateway]
 healthCheckUrl = /status
-configPathConsul =
 apiExposeUrlsFilepath = apiGateway.setting
 httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
 loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
 errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
 serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
-
-
 

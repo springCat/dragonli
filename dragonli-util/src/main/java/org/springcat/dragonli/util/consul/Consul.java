@@ -46,7 +46,7 @@ public class Consul {
                 return setting;
             }
             for (GetValue value : values) {
-                setting.put(value.getKey(),value.getDecodedValue());
+                setting.put(value.getKey().replace(path,""),value.getDecodedValue());
             }
             return setting;
         }catch (Exception e){

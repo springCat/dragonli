@@ -53,7 +53,15 @@ public class ICenterConfig {
         return setting;
     }
 
-    public Setting getConfigList() {
+    public String getValue(String key,String defaultValue) {
+        return localConfCache.get().get(key,defaultValue);
+    }
+
+    public String getValue(String key) {
+        return localConfCache.get().get(key);
+    }
+
+    public Setting getAll() {
         return localConfCache.get();
     }
 

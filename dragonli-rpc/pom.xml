@@ -78,6 +78,12 @@
             <version>1.0.0-SNAPHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.2.7</version>
+        </dependency>
+
     </dependencies>
 
 </project>

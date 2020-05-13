@@ -34,7 +34,7 @@ public class ConsulTest {
         Consul consul = new Consul();
         consul.setClient(consulClient);
         Setting kvValues = consul.getKVValues(k);
-        Assert.assertEquals(v,kvValues.get(k));
+        Assert.assertEquals(v,kvValues.get(""));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class ConsulTest {
         String v = "value";
         Consul consul = new Consul();
         Setting kvValues = consul.getKVValues(k);
-        Assert.assertNull(kvValues);
+        Assert.assertTrue(kvValues.isEmpty());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class ConsulTest {
         Consul consul = new Consul();
 
         String kvValue = consul.getKVValue(k);
-        Assert.assertNull(kvValue);
+        Assert.assertTrue("".equals(kvValue));
     }
 
     private GetValue mockGetValue(String key, String value){

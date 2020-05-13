@@ -4,7 +4,7 @@ port = 8500
 
 [application]
 name = producer
-ip = 192.168.99.170
+ip = 192.168.99.238
 port = 8081
 rootPath =
 #appTags =
@@ -16,18 +16,25 @@ checkTimout = 1s
 
 [rpc]
 scanPackages = com.demo
-clientValidateOpen = 0
+clientValidateOpen = 1
 validationImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Jsr303Validation
 serializeImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.JacksonSerialize
 httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
 loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
 errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
-serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
+serviceProviderImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
 loadBalanceKeyName=x-uid
 
-[config]
-sysConfPath=/config/sysConf/${application.name}/
-userConfPath=/config/userConf/${application.name}/
+[configCenter]
+applicationName = ${application.name}
+bootConfPath=config/boot/
+bootConfRefreshPeriod = -1;
+sysConfPath=config/sys/
+sysConfRefreshPeriod = -1;
+userConfPath=config/user/
+userConfRefreshPeriod = -1;
+routeConfPath=config/route/
+routeConfRefreshPeriod = -1;
 
 [apiGateway]
 healthCheckUrl = /status

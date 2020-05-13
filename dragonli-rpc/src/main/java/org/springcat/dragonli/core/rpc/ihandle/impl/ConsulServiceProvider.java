@@ -25,7 +25,7 @@ public class ConsulServiceProvider implements IServiceProvider {
 
     private Consul consul;
 
-    public ConsulServiceProvider(Consul consul) {
+    public void init(Consul consul) {
         serviceProviderConf = new ServiceProviderConf().load();
         this.consul = consul;
     }

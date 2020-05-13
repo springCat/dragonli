@@ -21,12 +21,18 @@ serializeImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.JacksonSeriali
 httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
 loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
 errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
-//todo
-serviceProviderImplClass = org.springcat.org.springcat.dragonli.jfinal.ConsulServiceProvider
+serviceProviderImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
 loadBalanceKeyName=x-uid
 
-[config]
-sysConfPath=/config/sysConf/${application.name}/
-userConfPath=/config/userConf/${application.name}/
+[configCenter]
+applicationName = ${application.name}
+bootConfPath=config/boot/
+bootConfRefreshPeriod = -1
+sysConfPath=config/sys/
+sysConfRefreshPeriod = -1
+userConfPath=config/user/
+userConfRefreshPeriod = -1
+routeConfPath=config/route/
+routeConfRefreshPeriod = 1
 
 

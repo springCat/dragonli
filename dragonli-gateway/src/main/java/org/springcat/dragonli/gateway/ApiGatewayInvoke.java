@@ -6,7 +6,6 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import cn.hutool.setting.Setting;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.Data;
 import org.apache.http.HttpRequest;
@@ -23,6 +22,7 @@ import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
 import org.springcat.dragonli.core.rpc.ihandle.IServiceProvider;
 import org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform;
+import org.springcat.dragonli.util.configcenter.ConfigCenter;
 import org.springcat.dragonli.util.registercenter.provider.RegisterServiceInfo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,8 +47,6 @@ public class ApiGatewayInvoke {
 
     private IServiceProvider serviceRegister;
 
-    private Setting apiExposeUrls;
-
     private Map<String, IErrorHandle> iErrorHandleMap = new ConcurrentHashMap<>();
 
 
@@ -65,8 +63,7 @@ public class ApiGatewayInvoke {
             return false;
         }
 
-        String path = gatewayUri.substring(applicationName.length());
-        String labels = apiExposeUrls.get(applicationName, path);
+        String labels = ConfigCenter.getRouteConf().getValue(target);
         if (StrUtil.isEmpty(labels)) {
             servletResponse.setStatus(404);
             return false;
@@ -87,6 +84,7 @@ public class ApiGatewayInvoke {
             //直接copy body stream,减少内存消耗和解析的性能开销
             try {
                 //构造gateway 向后端的请求
+                String path = gatewayUri.substring(applicationName.length());
                 String uri = "http://" + choose.getAddress() + ":" + choose.getPort()  + path;
                 HttpPost httpPost = new HttpPost(uri);
                 httpPost.setEntity(new InputStreamEntity(servletRequest.getInputStream()));
@@ -127,7 +125,7 @@ public class ApiGatewayInvoke {
             return false;
         };
 
-        IErrorHandle errorHandle = iErrorHandleMap.get(gatewayUri);
+        IErrorHandle errorHandle = iErrorHandleMap.get(target);
         return errorHandle.execute(rpcSupplier, errorHandler);
 
     }

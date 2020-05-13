@@ -14,7 +14,7 @@ public class BlogController extends JsonController {
 
 	@Before(BlogPara.class)
 	public void testRpc(){
-		BlogPara blogPara = new BlogPara();
+		BlogPara blogPara = getJsonBean(BlogPara.class);
 		BlogPara resp = blogService.json(blogPara,MapUtil.of("x-uid","xxxx"),null);
 		renderJson(resp);
 	}

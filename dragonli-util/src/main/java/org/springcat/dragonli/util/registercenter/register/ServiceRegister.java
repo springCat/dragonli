@@ -12,20 +12,20 @@ public class ServiceRegister {
 
     private final static Log log = LogFactory.get();
 
+    private  ApplicationConf appConf = new ApplicationConf().load();
+
     private Consul consul;
 
     public ServiceRegister(Consul consul) {
         this.consul = consul;
-        ApplicationConf applicationConf = new ApplicationConf().load();
-        register(applicationConf);
+        register();
     }
 
     /**
      * 服务注册
-     * @param appConf
      * @return
      */
-    public boolean register(ApplicationConf appConf){
+    public boolean register(){
         NewService application = new NewService();
         application.setName(appConf.getName());
         application.setAddress(appConf.getIp());
@@ -49,10 +49,9 @@ public class ServiceRegister {
 
     /**
      * 服务注销
-     * @param appConf
      * @throws Exception
      */
-    public boolean unRegister(ApplicationConf appConf){
+    public boolean unRegister(){
         return consul.unRegister(appConf);
     }
 

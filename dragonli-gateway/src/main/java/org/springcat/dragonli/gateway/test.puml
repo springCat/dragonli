@@ -1,4 +1,0 @@
-@startuml
-A -> B: do something
-B -> A: do something
-@enduml

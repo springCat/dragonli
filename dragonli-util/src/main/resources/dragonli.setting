@@ -15,14 +15,14 @@ checkTimout = 1s
 
 [configCenter]
 applicationName = ${application.name}
-bootConfPath=/config/boot/
-bootConfRefreshPeriod = -1;
-sysConfPath=/config/sys/
-sysConfRefreshPeriod = -1;
-userConfPath=/config/user/
-userConfRefreshPeriod = -1;
-routeConfPath=/config/route/
-routeConfRefreshPeriod = -1;
+bootConfPath=config/boot/
+bootConfRefreshPeriod = -1
+sysConfPath=config/sys/
+sysConfRefreshPeriod = -1
+userConfPath=config/user/
+userConfRefreshPeriod = -1
+routeConfPath=config/route/
+routeConfRefreshPeriod = -1
 
 
 [serviceProvider]

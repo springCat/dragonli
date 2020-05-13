@@ -8,16 +8,13 @@ import cn.hutool.setting.Setting;
 import org.springcat.dragonli.core.rpc.ihandle.IErrorHandle;
 import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
 import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
-import org.springcat.dragonli.core.rpc.ihandle.IServiceProvider;
+import org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider;
 import org.springcat.dragonli.util.configcenter.ConfigCenter;
 import org.springcat.dragonli.util.consul.Consul;
-import org.springcat.dragonli.util.registercenter.register.ApplicationConf;
 import org.springcat.dragonli.util.registercenter.register.ServiceRegister;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ApiGatewayInvokeStarter {
 
@@ -31,9 +28,8 @@ public class ApiGatewayInvokeStarter {
             Consul consul = new Consul();
 
             //init service register
-            ApplicationConf applicationConf = new ApplicationConf().load();
             ServiceRegister serviceRegister = new ServiceRegister(consul);
-            serviceRegister.register(applicationConf);
+            serviceRegister.register();
 
             //init config
             ConfigCenter.init(consul);
@@ -52,14 +48,17 @@ public class ApiGatewayInvokeStarter {
             log.info("init httpTransform {}", apiGateWayConf.getHttpTransformImplClass());
 
             //从配置中心拉取所有服务
-            Setting routes = ConfigCenter.getRouteConf().getConfigList();
+            Setting routes = ConfigCenter.getRouteConf().pullConfigList();
             log.info("init routes {}", routes);
 
             //初始化错误处理
             initRoute(invoke, apiGateWayConf,routes);
 
             //初始化服务列表获取
-            IServiceProvider serviceProvider = (IServiceProvider) Class.forName(apiGateWayConf.getServiceRegisterImplClass()).newInstance();
+            ConsulServiceProvider consulServiceProvider = new ConsulServiceProvider();
+            consulServiceProvider.init(consul);
+
+
             Map<String,String[]> appRouteMap = new HashMap<>();
             for (Map.Entry<String, String> stringStringEntry : routes.entrySet()) {
                 String key = stringStringEntry.getKey();
@@ -67,8 +66,8 @@ public class ApiGatewayInvokeStarter {
                 String[] labels = StrUtil.split(value, ",");
                 appRouteMap.put(key.replace("/routeConf/",""),labels);
             }
-            serviceProvider.init(appRouteMap);
-            invoke.setServiceRegister(serviceProvider);
+            consulServiceProvider.init(appRouteMap);
+            invoke.setServiceRegister(consulServiceProvider);
             log.info("init ServiceRegister {}", apiGateWayConf.getServiceRegisterImplClass());
 
             return invoke;
@@ -80,33 +79,23 @@ public class ApiGatewayInvokeStarter {
 
     private static void initRoute(ApiGatewayInvoke invoke,ApiGateWayConf apiGateWayConf,Setting routes){
         Map<String, IErrorHandle> iErrorHandleMap = invoke.getIErrorHandleMap();
-        if(!routes.isEmpty()){
-            //初始化错误处理
-            List<String> groups = routes.getGroups();
-            //获取appName list
-            for (String group : groups) {
-                Set<String> keys = routes.keySet(group);
-                for (String rawUrl : keys) {
-                    String key = group+rawUrl;
-                    iErrorHandleMap.computeIfAbsent(key,k ->{
-                        try {
-                            IErrorHandle iErrorHandle = (IErrorHandle) Class.forName(apiGateWayConf.getErrorHandleImplClass()).newInstance();
-                            iErrorHandle.init(key);
-                            return iErrorHandle;
-                        } catch (InstantiationException e) {
-                            e.printStackTrace();
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    });
+        for (Map.Entry<String, String> entity : routes.entrySet()) {
+            String key = entity.getKey();
+            iErrorHandleMap.computeIfAbsent(key,k ->{
+                try {
+                    IErrorHandle iErrorHandle = (IErrorHandle) Class.forName(apiGateWayConf.getErrorHandleImplClass()).newInstance();
+                    iErrorHandle.init(key);
+                    return iErrorHandle;
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-            }
+                return null;
+            });
         }
-
-        invoke.setApiExposeUrls(routes);
         invoke.setIErrorHandleMap(iErrorHandleMap);
         log.info("init errorHandle {}", iErrorHandleMap);
     }
