@@ -1,7 +1,7 @@
 package org.springcat.dragonli.gateway;
 
 import lombok.Data;
-import org.springcat.dragonli.util.config.IConfig;
+import org.springcat.dragonli.config.IConfig;
 
 @Data
 public class ApiGateWayConf implements IConfig {

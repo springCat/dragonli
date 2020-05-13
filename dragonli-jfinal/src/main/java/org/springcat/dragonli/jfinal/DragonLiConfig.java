@@ -3,12 +3,12 @@ package org.springcat.dragonli.jfinal;
 import com.jfinal.config.*;
 import com.jfinal.json.JacksonFactory;
 import com.jfinal.template.Engine;
-import org.springcat.dragonli.core.Context;
-import org.springcat.dragonli.core.rpc.RpcConf;
-import org.springcat.dragonli.core.rpc.RpcUtil;
+import org.springcat.dragonli.rpc.Context;
+import org.springcat.dragonli.rpc.RpcConf;
+import org.springcat.dragonli.rpc.RpcUtil;
 import org.springcat.dragonli.jfinal.health.JFinalStatusController;
 import org.springcat.dragonli.jfinal.plugin.DragonLiPlugin;
-import org.springcat.dragonli.util.registercenter.register.ApplicationConf;
+import org.springcat.dragonli.registercenter.register.ApplicationConf;
 
 
 /**

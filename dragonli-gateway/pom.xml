@@ -20,14 +20,12 @@
             <version>2.1.0.Final</version>
         </dependency>
 
-        <!-- dragonli-->
         <dependency>
             <groupId>org.springcat</groupId>
-            <artifactId>dragonli-util</artifactId>
+            <artifactId>dragonli-core</artifactId>
             <version>1.0.0-SNAPHOT</version>
         </dependency>
 
-        <!-- dragonli-->
         <dependency>
             <groupId>org.springcat</groupId>
             <artifactId>dragonli-rpc</artifactId>

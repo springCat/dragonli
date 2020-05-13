@@ -1,7 +1,6 @@
 package org.springcat.dragonli.gateway;
 
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
@@ -12,18 +11,15 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
-import org.springcat.dragonli.core.rpc.RpcMethodInfo;
-import org.springcat.dragonli.core.rpc.RpcRequest;
-import org.springcat.dragonli.core.rpc.RpcResponse;
-import org.springcat.dragonli.core.rpc.exception.RpcException;
-import org.springcat.dragonli.core.rpc.exception.RpcExceptionCodes;
-import org.springcat.dragonli.core.rpc.ihandle.IErrorHandle;
-import org.springcat.dragonli.core.rpc.ihandle.IHttpTransform;
-import org.springcat.dragonli.core.rpc.ihandle.ILoadBalanceRule;
-import org.springcat.dragonli.core.rpc.ihandle.IServiceProvider;
-import org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform;
-import org.springcat.dragonli.util.configcenter.ConfigCenter;
-import org.springcat.dragonli.util.registercenter.provider.RegisterServiceInfo;
+import org.springcat.dragonli.configcenter.ConfigCenter;
+import org.springcat.dragonli.exception.RpcException;
+import org.springcat.dragonli.exception.RpcExceptionCodes;
+import org.springcat.dragonli.handle.ILoadBalanceRule;
+import org.springcat.dragonli.registercenter.provider.IServiceProvider;
+import org.springcat.dragonli.registercenter.provider.RegisterServiceInfo;
+import org.springcat.dragonli.rpc.ihandle.IErrorHandle;
+import org.springcat.dragonli.rpc.ihandle.IHttpTransform;
+import org.springcat.dragonli.rpc.ihandle.impl.HttpclientTransform;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,7 +67,6 @@ public class ApiGatewayInvoke {
 
         //build  rpcRequest
         Supplier<Boolean> rpcSupplier = () -> {
-            RpcResponse rpcResponse = null;
             //2 serviceGetter
             List<RegisterServiceInfo> serviceList = serviceRegister.getServiceList(applicationName,labels.split(","));
 
@@ -137,18 +132,6 @@ public class ApiGatewayInvoke {
 
     private void handleResponseHeader(HttpServletResponse servletResponse,HttpResponse httpResponse) {
 
-    }
-
-    private RpcRequest buildApiGatewayRequest(String applicationName, String[] label, String url) {
-        RpcRequest rpcRequest = new RpcRequest();
-        RpcMethodInfo rpcMethodInfo = new RpcMethodInfo();
-        rpcMethodInfo.setAppName(applicationName);
-        rpcMethodInfo.setLabels(label);
-        rpcMethodInfo.setUrl(url);
-        rpcMethodInfo.setLoadBalancerKeyName("x-uid");
-        rpcRequest.setRpcMethodInfo(rpcMethodInfo);
-        rpcRequest.setRpcHeader(MapUtil.of("x-uid","x-uid11"));
-        return rpcRequest;
     }
 
 }

@@ -10,7 +10,6 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dragonli-rpc</artifactId>
-    <groupId>org.springcat</groupId>
     <version>1.0.0-SNAPHOT</version>
 
     <dependencies>
@@ -44,26 +43,6 @@
             <version>2.11.0</version>
         </dependency>
 
-        <!--熔断,限流,异常处理-->
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-circuitbreaker</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-retry</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-
-        <!-- httpclient-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.12</version>
-        </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -71,19 +50,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- dragonli-->
         <dependency>
             <groupId>org.springcat</groupId>
-            <artifactId>dragonli-util</artifactId>
+            <artifactId>dragonli-core</artifactId>
             <version>1.0.0-SNAPHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>3.2.7</version>
-        </dependency>
-
     </dependencies>
 
 </project>

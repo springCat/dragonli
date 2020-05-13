@@ -7,7 +7,7 @@ import cn.hutool.log.LogFactory;
 import com.jfinal.config.Routes;
 import com.jfinal.core.ActionMapping;
 import com.jfinal.core.Controller;
-import org.springcat.dragonli.util.registercenter.register.ApplicationConf;
+import org.springcat.dragonli.registercenter.register.ApplicationConf;
 
 import java.util.List;
 

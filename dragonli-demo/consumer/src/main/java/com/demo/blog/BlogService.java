@@ -1,7 +1,7 @@
 package com.demo.blog;
 
 
-import org.springcat.dragonli.core.rpc.Rpc;
+import org.springcat.dragonli.rpc.Rpc;
 
 import java.util.Map;
 import java.util.function.Supplier;

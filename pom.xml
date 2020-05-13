@@ -6,7 +6,7 @@
 	<artifactId>dragonli-parent</artifactId>
 	<version>1.0.0-SNAPHOT</version>
 	<modules>
-		<module>dragonli-util</module>
+		<module>dragonli-core</module>
 		<module>dragonli-rpc</module>
 		<module>dragonli-jfinal</module>
 		<module>dragonli-gateway</module>
@@ -43,44 +43,6 @@
 			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
 		</pluginRepository>
 	</pluginRepositories>
-
-   <!--	控制其他依赖的版本-->
-	<dependencyManagement>
-
-	</dependencyManagement>
-
-    <!--	基础依赖-->
-	<dependencies>
-		<!-- tool 基础工具类-->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.10</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>cn.hutool</groupId>
-			<artifactId>hutool-all</artifactId>
-			<version>5.1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.5</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- tool -->
-
-	</dependencies>
 
 	<build>
 		<plugins>
