@@ -1,6 +1,5 @@
 package org.springcat.dragonli.gateway;
 
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
@@ -9,17 +8,13 @@ import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.Data;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.InputStreamEntity;
 import org.springcat.dragonli.configcenter.ConfigCenter;
 import org.springcat.dragonli.exception.RpcException;
 import org.springcat.dragonli.exception.RpcExceptionCodes;
+import org.springcat.dragonli.handle.IErrorHandle;
 import org.springcat.dragonli.handle.ILoadBalanceRule;
 import org.springcat.dragonli.registercenter.provider.IServiceProvider;
 import org.springcat.dragonli.registercenter.provider.RegisterServiceInfo;
-import org.springcat.dragonli.rpc.ihandle.IErrorHandle;
-import org.springcat.dragonli.rpc.ihandle.IHttpTransform;
-import org.springcat.dragonli.rpc.ihandle.impl.HttpclientTransform;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,9 +34,9 @@ public class ApiGatewayInvoke {
 
     private ILoadBalanceRule loadBalanceRule;
 
-    private IHttpTransform httpTransform;
-
     private IServiceProvider serviceRegister;
+
+    private ApiGatewayHttpClient httpClient;
 
     private Map<String, IErrorHandle> iErrorHandleMap = new ConcurrentHashMap<>();
 
@@ -73,31 +68,13 @@ public class ApiGatewayInvoke {
             //3 loaderBalance,  todo loaderBalanceFlag暂时先写死,后续优化
             RegisterServiceInfo choose = loadBalanceRule.choose(serviceList, IdUtil.fastUUID());
 
-            HttpclientTransform httpTransform = (HttpclientTransform) this.httpTransform;
+            ApiGatewayHttpClient httpClient = new ApiGatewayHttpClient();
 
-            //handle request
-            //直接copy body stream,减少内存消耗和解析的性能开销
-            try {
-                //构造gateway 向后端的请求
-                String path = gatewayUri.substring(applicationName.length());
-                String uri = "http://" + choose.getAddress() + ":" + choose.getPort()  + path;
-                HttpPost httpPost = new HttpPost(uri);
-                httpPost.setEntity(new InputStreamEntity(servletRequest.getInputStream()));
+            //构造gateway 向后端的请求
+            String path = gatewayUri.substring(applicationName.length());
+            String url = "http://" + choose.getAddress() + ":" + choose.getPort()  + path;
+            httpClient.proxyPost(url,servletRequest,servletResponse);
 
-                //处理请求头部
-                handleRequestHeader(servletRequest,httpPost);
-
-                //invoke
-                HttpResponse httpResponse = httpTransform.getHttpClient().execute(httpPost);
-
-                //处理返回头部
-                handleResponseHeader(servletResponse,httpResponse);
-
-                //直接copy body stream,减少内存消耗和解析的性能开销
-                IoUtil.copy(httpResponse.getEntity().getContent(), servletResponse.getOutputStream());
-            } catch (IOException e) {
-                throw new RpcException(RpcExceptionCodes.ERR_OTHER.getCode());
-            }
             return true;
         };
 

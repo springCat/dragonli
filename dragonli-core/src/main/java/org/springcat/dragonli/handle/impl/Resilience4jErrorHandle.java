@@ -1,4 +1,4 @@
-package org.springcat.dragonli.rpc.ihandle.impl;
+package org.springcat.dragonli.handle.impl;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
@@ -7,7 +7,7 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.vavr.collection.HashMap;
 import io.vavr.control.Try;
 import lombok.Data;
-import org.springcat.dragonli.rpc.ihandle.IErrorHandle;
+import org.springcat.dragonli.handle.IErrorHandle;
 
 import java.time.Duration;
 import java.util.function.Function;

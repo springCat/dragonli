@@ -6,12 +6,10 @@ import cn.hutool.log.LogFactory;
 import cn.hutool.setting.Setting;
 import org.springcat.dragonli.configcenter.ConfigCenter;
 import org.springcat.dragonli.consul.Consul;
+import org.springcat.dragonli.handle.IErrorHandle;
 import org.springcat.dragonli.handle.ILoadBalanceRule;
 import org.springcat.dragonli.registercenter.provider.ConsulServiceProvider;
 import org.springcat.dragonli.registercenter.register.ServiceRegister;
-import org.springcat.dragonli.rpc.ihandle.IErrorHandle;
-import org.springcat.dragonli.rpc.ihandle.IHttpTransform;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +41,8 @@ public class ApiGatewayInvokeStarter {
             log.info("init LoadBalanceRule {}", apiGateWayConf.getLoadBalanceRuleImplClass());
 
             //初始化http请求客户端
-            invoke.setHttpTransform((IHttpTransform) Class.forName(apiGateWayConf.getHttpTransformImplClass()).newInstance());
-            log.info("init httpTransform {}", apiGateWayConf.getHttpTransformImplClass());
+            invoke.setHttpClient(new ApiGatewayHttpClient());
+            log.info("init HttpClient success ");
 
             //从配置中心拉取所有服务
             Setting routes = ConfigCenter.getRouteConf().pullConfigList();

@@ -1,4 +1,4 @@
-package org.springcat.dragonli.rpc.ihandle;
+package org.springcat.dragonli.handle;
 
 import io.vavr.control.Try;
 

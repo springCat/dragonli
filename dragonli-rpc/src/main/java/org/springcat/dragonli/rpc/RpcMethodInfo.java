@@ -1,7 +1,7 @@
 package org.springcat.dragonli.rpc;
 
 import lombok.Data;
-import org.springcat.dragonli.rpc.ihandle.IErrorHandle;
+import org.springcat.dragonli.handle.IErrorHandle;
 
 /**
  * 用于缓存方法基本的配置,需要包含rpc注解中的所有属性,以及熔断,错误处理,限流等等的设置
