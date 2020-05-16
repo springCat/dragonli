@@ -4,7 +4,7 @@ import com.demo.blog.BlogController;
 import com.jfinal.config.*;
 import com.jfinal.server.undertow.UndertowServer;
 import com.jfinal.template.Engine;
-import org.springcat.dragonli.jfinal.DragonLiConfig;
+import org.springcat.dragonli.core.jfinal.DragonLiConfig;
 
 /**
  * 本 demo 仅表达最为粗浅的 jfinal 用法，更为有价值的实用的企业级用法

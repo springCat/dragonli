@@ -2,7 +2,7 @@ package org.springcat.dragonli.rpc;
 
 import cn.hutool.core.util.ArrayUtil;
 import lombok.Data;
-import org.springcat.dragonli.exception.RpcExceptionCodes;
+import org.springcat.dragonli.core.exception.RpcExceptionCodes;
 
 import java.lang.reflect.Method;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package org.springcat.dragonli.rpc;
 
 import lombok.Data;
-import org.springcat.dragonli.config.IConfig;
+import org.springcat.dragonli.core.config.IConfig;
 
 @Data
 public class RpcConf implements IConfig {

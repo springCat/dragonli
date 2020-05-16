@@ -4,7 +4,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springcat.dragonli.rpc.RpcResponse;
-import org.springcat.dragonli.jfinal.controller.JsonBeanValidate;
+import org.springcat.dragonli.core.jfinal.controller.JsonBeanValidate;
 import javax.validation.constraints.NotBlank;
 
 @Data

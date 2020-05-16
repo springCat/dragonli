@@ -27,8 +27,7 @@ routeConfRefreshPeriod = 1
 [apiGateway]
 healthCheckUrl = /status
 apiExposeUrlsFilepath = apiGateway.setting
-httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
-loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
-errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
-serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
+loadBalanceRuleImplClass = org.springcat.dragonli.core.handle.impl.ConsistentHashRule
+errorHandleImplClass = org.springcat.dragonli.core.handle.impl.Resilience4jErrorHandle
+serviceRegisterImplClass = org.springcat.dragonli.core.registercenter.provider.ConsulServiceProvider
 

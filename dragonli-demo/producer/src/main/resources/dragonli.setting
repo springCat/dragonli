@@ -4,7 +4,7 @@ port = 8500
 
 [application]
 name = producer
-ip = 192.168.99.238
+ip = 192.168.76.49
 port = 8081
 rootPath =
 #appTags =
@@ -17,12 +17,12 @@ checkTimout = 1s
 [rpc]
 scanPackages = com.demo
 clientValidateOpen = 1
-validationImplClass = Jsr303Validation
-serializeImplClass = JacksonSerialize
-httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
-loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
-errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
-serviceProviderImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
+validationImplClass = org.springcat.dragonli.rpc.handle.impl.Jsr303Validation
+serializeImplClass = org.springcat.dragonli.rpc.handle.impl.JacksonSerialize
+httpTransformImplClass = org.springcat.dragonli.rpc.handle.impl.HttpclientTransform
+loadBalanceRuleImplClass = org.springcat.dragonli.core.handle.impl.ConsistentHashRule
+errorHandleImplClass = org.springcat.dragonli.core.handle.impl.Resilience4jErrorHandle
+serviceProviderImplClass =org.springcat.dragonli.core.handle.impl.ConsulServiceProvider
 loadBalanceKeyName=x-uid
 
 [configCenter]
@@ -40,7 +40,7 @@ routeConfRefreshPeriod = -1;
 healthCheckUrl = /status
 configPathConsul = exposeUrl
 apiExposeUrlsFilepath = apiGateway.setting
-httpTransformImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.HttpclientTransform
-loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsistentHashRule
-errorHandleImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.Resilience4jErrorHandle
-serviceRegisterImplClass = org.springcat.dragonli.core.rpc.ihandle.impl.ConsulServiceProvider
+httpTransformImplClass = HttpclientTransform
+loadBalanceRuleImplClass = org.springcat.dragonli.core.rpc.handle.impl.ConsistentHashRule
+errorHandleImplClass = org.springcat.dragonli.core.rpc.handle.impl.Resilience4jErrorHandle
+serviceRegisterImplClass = org.springcat.dragonli.core.registercenter.provider.ConsulServiceProvider

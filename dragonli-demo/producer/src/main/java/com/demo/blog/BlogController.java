@@ -1,7 +1,7 @@
 package com.demo.blog;
 
 import com.jfinal.aop.Before;
-import org.springcat.dragonli.jfinal.controller.JsonController;
+import org.springcat.dragonli.core.jfinal.controller.JsonController;
 
 public class BlogController extends JsonController {
 
