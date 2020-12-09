@@ -108,5 +108,6 @@ producer   默认8081端口
 "id":1,
 "title":"title",
 "content":"content"
-}'
+}' 
+
 2 result:  {"code":"0","id":0,"title":null,"content":null}
