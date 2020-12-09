@@ -4,7 +4,7 @@ port = 8500
 
 [application]
 name = apigateway
-ip = 192.168.76.49
+ip = 127.0.0.1
 port = 8080
 rootPath =
 #appTags =

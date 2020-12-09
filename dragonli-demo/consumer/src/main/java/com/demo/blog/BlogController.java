@@ -1,10 +1,10 @@
 package com.demo.blog;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.system.SystemUtil;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Inject;
 import org.springcat.dragonli.core.jfinal.controller.JsonController;
+import org.springcat.dragonli.rpc.Context;
 
 public class BlogController extends JsonController {
 
@@ -15,7 +15,9 @@ public class BlogController extends JsonController {
 	@Before(BlogPara.class)
 	public void testRpc(){
 		BlogPara blogPara = getJsonBean(BlogPara.class);
-		BlogPara resp = blogService.json(blogPara,MapUtil.of("x-uid","xxxx"),null);
+
+		Context.setRpcParam("x-uid",getHeader("x-uid"));
+		BlogPara resp = blogService.json(blogPara);
 		renderJson(resp);
 	}
 

@@ -4,8 +4,8 @@ port = 8500
 
 [application]
 name = apigateway
-ip = 192.168.99.238
-port = 8082
+ip = 127.0.0.1
+port = 8080
 rootPath =
 #appTags =
 healthCheckPath = /status

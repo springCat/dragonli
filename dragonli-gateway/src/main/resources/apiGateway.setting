@@ -1,3 +1,5 @@
+#consul conf : set config/route/apigateway/consumer/blog/testRpc  DEFAULT
+
 [consumer]
 /status/urls=DEFAULT
 /blog/testRpc=DEFAULT
