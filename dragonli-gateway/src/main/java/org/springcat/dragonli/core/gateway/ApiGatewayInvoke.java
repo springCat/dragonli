@@ -6,13 +6,11 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.Data;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
 import org.springcat.dragonli.core.configcenter.ConfigCenter;
-import org.springcat.dragonli.core.handle.IErrorHandle;
-import org.springcat.dragonli.core.handle.ILoadBalanceRule;
 import org.springcat.dragonli.core.exception.RpcException;
 import org.springcat.dragonli.core.exception.RpcExceptionCodes;
+import org.springcat.dragonli.core.handle.IErrorHandle;
+import org.springcat.dragonli.core.handle.ILoadBalanceRule;
 import org.springcat.dragonli.core.registercenter.provider.IServiceProvider;
 import org.springcat.dragonli.core.registercenter.provider.RegisterServiceInfo;
 
@@ -101,14 +99,4 @@ public class ApiGatewayInvoke {
         return errorHandle.execute(rpcSupplier, errorHandler);
 
     }
-
-
-    private void handleRequestHeader(HttpServletRequest servletRequest, HttpRequest request) {
-
-    }
-
-    private void handleResponseHeader(HttpServletResponse servletResponse,HttpResponse httpResponse) {
-
-    }
-
 }

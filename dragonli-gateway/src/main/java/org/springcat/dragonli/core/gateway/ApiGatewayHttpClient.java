@@ -13,6 +13,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springcat.dragonli.core.exception.RpcException;
 import org.springcat.dragonli.core.exception.RpcExceptionCodes;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -83,13 +84,12 @@ public class ApiGatewayHttpClient {
     }
 
     public void pushHeadersToRequest(HttpRequest httpRequest, HttpServletRequest httpServletRequest) {
-
-
+        //只透传固定的header todo 后续这边可以做个配置参数
+        httpRequest.addHeader("x-uid",httpServletRequest.getHeader("x-uid"));
     }
 
-    public void pullHeadersFromResponse(HttpResponse HttpResponse, HttpServletResponse httpServletResponse) {
-
-
+    public void pullHeadersFromResponse(HttpResponse httpResponse, HttpServletResponse httpServletResponse) {
+        //只透传固定的header todo 后续这边可以做个配置参数
     }
 
     boolean isSuccess(int httpCode) {
