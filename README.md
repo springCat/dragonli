@@ -101,5 +101,12 @@ apigateway 默认8080端口
 consumer   默认8082端口
 producer   默认8081端口
 
-1 curl http://localhost:8080/consumer/blog/testRpc -d '{"id":10,"title":"title","content":"content"}'
+1 curl --location --request POST 'http://localhost:8080/consumer/blog/testRpc' \
+--header 'x-uid: 111' \
+--header 'Content-Type: text/plain' \
+--data-raw '{
+"id":1,
+"title":"title",
+"content":"content"
+}'
 2 result:  {"code":"0","id":0,"title":null,"content":null}
