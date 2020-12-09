@@ -52,6 +52,13 @@ public class ApiGatewayInvoke {
             return false;
         }
 
+        if (StrUtil.equals(applicationName,"status")) {
+            servletResponse.setStatus(200);
+            servletResponse.getWriter().write("ok");
+            return false;
+        }
+
+
         String labels = ConfigCenter.getRouteConf().getValue(target);
         if (StrUtil.isEmpty(labels)) {
             servletResponse.setStatus(404);
@@ -94,7 +101,7 @@ public class ApiGatewayInvoke {
             servletResponse.addHeader(ERROR_HEADER_NAME,  RpcExceptionCodes.ERR_OTHER.getCode());
             return false;
         };
-        //todo
+
         IErrorHandle errorHandle = iErrorHandleMap.get(target);
         return errorHandle.execute(rpcSupplier, errorHandler);
 

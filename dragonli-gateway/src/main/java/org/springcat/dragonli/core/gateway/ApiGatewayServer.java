@@ -28,7 +28,7 @@ public class ApiGatewayServer {
         DeploymentManager deploymentManager =  Servlets.defaultContainer().addDeployment(deploymentInfo);
         deploymentManager.deploy();
         Undertow server = Undertow.builder()
-                .addHttpListener(8080, "localhost")
+                .addHttpListener(8080, "192.168.99.86")
                 .setHandler(deploymentManager.start()).build();
         server.start();
     }
