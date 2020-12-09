@@ -103,7 +103,7 @@ producer   默认8081端口
 
 1 curl --location --request POST 'http://localhost:8080/consumer/blog/testRpc' \
 --header 'x-uid: 111' \
---header 'Content-Type: text/plain' \
+--header 'Content-Type: application/json' \
 --data-raw '{
 "id":1,
 "title":"title",
