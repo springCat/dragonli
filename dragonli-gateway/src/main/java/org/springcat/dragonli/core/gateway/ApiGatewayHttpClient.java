@@ -72,7 +72,9 @@ public class ApiGatewayHttpClient {
             HttpResponse httpResponse = httpClient.execute(httpPost);
             if (isSuccess(httpResponse.getStatusLine().getStatusCode())) {
                 pullHeadersFromResponse(httpResponse, response);
+                //1 stream to stream
                 IoUtil.copy(httpResponse.getEntity().getContent(), response.getOutputStream());
+                //2 todo 优化 zero copy 可能要用netty来实现了
             }
         } catch (Exception e) {
             log.error("HttpclientTransform invoke error url:{},error:{}", url, e.getMessage());
